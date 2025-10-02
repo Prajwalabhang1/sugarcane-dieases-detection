@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="mr" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta
+      name="description"
+      content="ऊस एकरी १०० टन - AI द्वारा ऊसाच्या रोगांची ओळख आणि उपचार"
+    />
+    <meta
+      name="keywords"
+      content="ऊस, रोग, AI, कृषी, शेतकरी, उपचार, Chordz Technologies"
+    />
+    <meta name="author" content="Chordz Technologies" />
+
+    <!-- Open Graph for social sharing -->
+    <meta property="og:title" content="ऊस एकरी १०० टन" />
+    <meta
+      property="og:description"
+      content="AI द्वारे ऊसाच्या रोगांची तत्काळ ओळख"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ request.url }}" />
+
+    <title>
+      {% block title %}ऊस एकरी १०० टन{% endblock %} | Chordz Technologies
+    </title>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='images/favicon.ico') }}"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="{{ url_for('static', filename='images/logo.png') }}"
+    />
+
+    <!-- Google Fonts - Marathi Support -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- CSS Files -->
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/main.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/farmer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/mobile.css') }}"
+    />
+
+    <!-- Progressive Web App Support -->
+    <meta name="theme-color" content="#4CAF50" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="ऊस एकरी १०० टन" />
+
+    {% block extra_head %}{% endblock %}
+  </head>
+
+  <body class="farmer-friendly">
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay hidden">
+      <div class="loading-content">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">कृपया थांबा...</div>
+        <div class="loading-subtext">AI आपल्या पिकाचे विश्लेषण करत आहे</div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+      <div class="container">
+        <div class="header-content">
+          <!-- Logo and Branding -->
+          <div class="brand-section">
+            <div class="logo-container">
+              <img
+                src="../static/images/uslogo.jpg"
+                alt="Chordz Technologies Logo"
+                class="company-logo"
+              />
+              <!-- <div class="sugarcane-icon">🌾</div> -->
+            </div>
+            <div class="brand-text">
+              <h1 class="app-title" style="color:#1a2a0a; font-weight:900; text-shadow:0 2px 8px #b2b2b2;">ऊस एकरी १०० टन</h1>
+              <p class="company-name">Chordz Technologies</p>
+              <p class="tagline" style="font-weight: bold; font-size: 1rem; color: #388e3c; background: linear-gradient(90deg, #e8f5e9 0%, #f1f8e9 100%); border-radius: 8px; padding: 6px 12px; display: inline-block; margin: 0; letter-spacing: 0.5px;"><span style="font-size:1.1em;vertical-align:middle;">🤖</span> AI द्वारे ऊसाच्या रोगांची तत्काळ ओळख</p>
+            </div>
+          </div>
+
+          <!-- System Status -->
+          <!-- <div class="system-status">
+            <div class="status-indicator" id="system-status">
+              <div class="status-dot loading"></div>
+              <span class="status-text">लोड होत आहे...</span>
+            </div>
+          </div> -->
+        </div>
+      </div>
+    </header>
+
+    <!-- Navigation -->
+  <nav class="main-nav" id="main-nav" style="display: none;">
+      <div class="container">
+        <div class="nav-items">
+          <a
+            href="{{ url_for('main.home') }}"
+            class="nav-item {% if request.endpoint == 'main.home' %}active{% endif %}"
+          >
+            <span class="nav-icon">🏠</span>
+            <span class="nav-text">मुख्य पेज</span>
+          </a>
+          <!-- <a href="#disease-info" class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span class="nav-text">रोग माहिती</span>
+                </a>
+                <a href="#farmer-support" class="nav-item">
+                    <span class="nav-icon">📞</span>
+                    <span class="nav-text">सहाय्य</span>
+                </a>
+                <a href="#about" class="nav-item">
+                    <span class="nav-icon">ℹ️</span>
+                    <span class="nav-text">माहिती</span>
+                </a> -->
+        </div>
+      </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div class="flash-messages">
+      {% for category, message in messages %}
+      <div class="flash-message flash-{{ category }}">
+        <span class="flash-icon">
+          {% if category == 'error' %}❌ {% elif category == 'warning' %}⚠️ {%
+          elif category == 'success' %}✅ {% else %}ℹ️{% endif %}
+        </span>
+        <span class="flash-text">{{ message }}</span>
+        <button class="flash-close" onclick="this.parentElement.remove()">
+          ✕
+        </button>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <div class="container">{% block content %}{% endblock %}</div>
+    </main>
+
+    <!-- Premium Footer -->
+    <footer class="main-footer">
+      <div class="footer-wave">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+          <path
+            d="M0,64 C60,84 120,84 180,64 C240,44 300,44 360,64 C420,84 480,84 540,64 C600,44 660,44 720,64 C780,84 840,84 900,64 C960,44 1020,44 1080,64 C1140,84 1200,84 1260,64 C1320,44 1380,44 1440,64 L1440,120 L0,120 Z"
+            fill="url(#footerGradient)"
+          />
+          <defs>
+            <linearGradient
+              id="footerGradient"
+              x1="0%"
+              y1="0%"
+              x2="100%"
+              y2="0%"
+            >
+              <stop offset="0%" style="stop-color: #4caf50; stop-opacity: 1" />
+              <stop offset="50%" style="stop-color: #66bb6a; stop-opacity: 1" />
+              <stop
+                offset="100%"
+                style="stop-color: #4caf50; stop-opacity: 1"
+              />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="footer-content">
+        <div class="container">
+          <!-- Main Footer Content -->
+          <div class="footer-main">
+            <!-- Company Section -->
+            <div class="footer-section company-section">
+              <div class="company-branding">
+                <div class="logo-container">
+                  <img
+                    src="../static/images/uslogo.jpg"
+                    alt="Chordz Technologies Logo"
+                    class="company-logo"
+                  />
+                  <div class="logo-text">
+                    <h3 class="company-name">Chordz Technologies</h3>
+                    <p class="company-tagline">
+                      भारतीय शेतकऱ्यासाठी आधुनिक तंत्रज्ञान
+                    </p>
+                  </div>
+                </div>
+                <!-- <div class="company-logo">
+                  <div class="logo-icon">🌾</div>
+                  <div class="logo-text">
+                    <h3 class="company-name">Chordz Technologies</h3>
+                    <p class="company-tagline">
+                      भारतीय शेतकऱ्यासाठी आधुनिक तंत्रज्ञान
+                    </p>
+                  </div>
+                </div> -->
+                <p class="company-description">
+                  AI-powered disease detection for Indian sugarcane farmers.
+                  Making agriculture smarter, one field at a time.
+                </p>
+                <!-- <div class="company-stats">
+                  <div class="stat-item">
+                    <span class="stat-number">50,000+</span>
+                    <span class="stat-label">शेतकरी</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-number">95%</span>
+                    <span class="stat-label">अचूकता</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-number">15+</span>
+                    <span class="stat-label">रोग</span>
+                  </div>
+                </div> -->
+              </div>
+            </div>
+
+            <!-- Quick Links Section -->
+            <div class="footer-section">
+              <h4 class="footer-title">
+                <span class="title-icon">🔗</span>
+                त्वरित दुवे
+              </h4>
+              <ul class="footer-links">
+                <li>
+                  <a href="{{ url_for('main.home') }}" class="footer-link">
+                    <span class="link-icon">🏠</span>मुख्य पान
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#diseases-section"
+                    class="footer-link"
+                    onclick="scrollToSection('diseases-section')"
+                  >
+                    <span class="link-icon">🦠</span>रोग माहिती
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="footer-link"
+                    style="cursor: pointer"
+                    onclick="showHelpModal()"
+                  >
+                    <span class="link-icon">🆘</span>सहाय्य
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="footer-link"
+                    style="cursor: pointer"
+                    onclick="showPrivacyModal()"
+                  >
+                    <span class="link-icon">🔒</span>गोपनीयता
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="footer-link"
+                    style="cursor: pointer"
+                    onclick="showAboutModal()"
+                  >
+                    <span class="link-icon">ℹ️</span>आमच्याबद्दल
+                  </a>
+                </li>
+                <!-- <li>
+                  <a class="footer-link" onclick="downloadApp()">
+                    <span class="link-icon">📱</span>अॅप डाउनलोड
+                  </a>
+                </li> -->
+              </ul>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="footer-section">
+              <h4 class="footer-title">
+                <span class="title-icon">📞</span>
+                संपर्क माहिती
+              </h4>
+              <div class="contact-info">
+                <a href="tel:1800 111 622" class="contact-item">
+                  <span class="contact-icon">📞</span>
+                  <div class="contact-details">
+                    <span class="contact-label">फ्री हेल्पलाइन</span>
+                    <span class="contact-value">1800 111 622</span>
+                  </div>
+                </a>
+                <a href="https://chordztechnologies.com/#/contact" class="contact-item">
+                  <span class="contact-icon">📧</span>
+                  <div class="contact-details">
+                    <span class="contact-label">ईमेल</span>
+                    <span class="contact-value">chordzconnect@gmail.com</span>
+                  </div>
+                </a>
+                <a href="https://chordztechnologies.com/#/contact" class="contact-item">
+                  <span class="contact-icon">🌐</span>
+                  <div class="contact-details">
+                    <span class="contact-label">वेबसाइट</span>
+                    <span class="contact-value">chordztechnologies.com</span>
+                  </div>
+                </a>
+              </div>
+            </div>
+
+            <!-- App Info Section -->
+            <div class="footer-section">
+              <h4 class="footer-title">
+                <span class="title-icon">📱</span>
+                ॲप माहिती
+              </h4>
+              <div class="app-info">
+                <div class="info-item">
+                  <span class="info-label">आवृत्ती:</span>
+                  <span class="info-value"
+                    >{{ system.version if system else '1.0.0' }}</span
+                  >
+                </div>
+                <div class="info-item">
+                  <span class="info-label">रोग प्रकार:</span>
+                  <span class="info-value"
+                    >{{ system.total_diseases if system else '12' }}</span
+                  >
+                </div>
+                <div class="info-item">
+                  <span class="info-label">भाषा:</span>
+                  <span class="info-value">मराठी/English</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">स्थिती:</span>
+                  <span class="info-value status-indicator">
+                    <span class="status-dot online"></span>
+                    {{ system.status_marathi if system else 'तयार' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Bottom -->
+          <div class="footer-bottom">
+            <div class="footer-bottom-content">
+              <div class="copyright">
+                <p class="copyright-text">
+                  © 2025 Chordz Technologies. सर्व हक्क राखीव.
+                </p>
+                <p class="tagline">
+                  भारतीय कृषी क्षेत्रासाठी बनवलेले | Made for Indian Agriculture
+                </p>
+              </div>
+
+              <div class="footer-badges">
+                <div class="badge premium-badge">
+                  <span class="badge-icon">🇮🇳</span>
+                  <span class="badge-text">Make in India</span>
+                </div>
+                <div class="badge farmer-badge">
+                  <span class="badge-icon">👨‍🌾</span>
+                  <span class="badge-text">For Farmers</span>
+                </div>
+                <div class="badge ai-badge">
+                  <span class="badge-icon">🤖</span>
+                  <span class="badge-text">AI Powered</span>
+                </div>
+                <div class="badge secure-badge">
+                  <span class="badge-icon">🔒</span>
+                  <span class="badge-text">Secure</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Offline Message -->
+    <div id="offline-message" class="offline-message hidden">
+      <div class="offline-content">
+        <span class="offline-icon">📡</span>
+        <span class="offline-text">इंटरनेट कनेक्शन नाही</span>
+        <button class="retry-btn" onclick="location.reload()">
+          पुन्हा प्रयत्न करा
+        </button>
+      </div>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="{{ url_for('static', filename='js/camera.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/api.js') }}"></script>
+
+    {% block extra_scripts %}{% endblock %}
+
+    <!-- Initialize App -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        SugarcaneApp.init({
+          apiUrl: '{{ url_for("main.predict_disease") }}',
+          healthUrl: '{{ url_for("main.health_check") }}',
+          supportUrl: '{{ url_for("main.farmer_support") }}',
+          language: "marathi",
+          farmerMode: true,
+          autoCheckHealth: true,
+        });
+      });
+    </script>
+  </body>
+</html>

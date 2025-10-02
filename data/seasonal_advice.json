@@ -1,0 +1,201 @@
+{
+  "seasonal_advice": {
+    "pre_monsoon": {
+      "period": "मार्च - मे",
+      "marathi_title": "पाऊस पूर्व तयारी",
+      "key_activities": [
+        "नवीन लागवडीची तयारी",
+        "जुन्या पिकांची देखभाल",
+        "सिंचन व्यवस्था तपासणी",
+        "खत आणि बियाणे खरेदी"
+      ],
+      "disease_prevention": {
+        "high_risk_diseases": ["Sett Rot", "Early Brown Spot"],
+        "preventive_measures": [
+          "गुणवत्तापूर्ण बियाणे वापरा",
+          "मृदा उपचार करा", 
+          "पाणी निचरा सुनिश्चित करा",
+          "साफसफाईवर लक्ष द्या"
+        ],
+        "recommended_treatments": {
+          "Sett_Rot_Prevention": {
+            "chemical": "कार्बेंडाझिम 2 ग्राम/लिटर",
+            "organic": "ट्रायकोडर्मा 5 ग्राम/लिटर",
+            "application": "बियाणे उपचार"
+          }
+        }
+      },
+      "weather_considerations": [
+        "तापमान वाढीचा विचार करा",
+        "पाण्याची कमतरता होऊ शकते",
+        "मातीची ओलावा राखा",
+        "उन्हाळी वाऱ्यांपासून संरक्षण"
+      ]
+    },
+    "monsoon": {
+      "period": "जून - सप्टेंबर",
+      "marathi_title": "पावसाळी व्यवस्थापन",
+      "key_activities": [
+        "पाणी निचरा व्यवस्थापन",
+        "तण नियंत्रण",
+        "पोषक व्यवस्थापन",
+        "रोग निरीक्षण"
+      ],
+      "disease_prevention": {
+        "high_risk_diseases": ["Red Rot", "Brown Spot", "Mosaic Virus"],
+        "preventive_measures": [
+          "जास्त ओलावा टाळा",
+          "हवा फिरवण्याची व्यवस्था करा",
+          "नियमित निरीक्षण करा",
+          "संक्रमित झाडे काढून टाका"
+        ],
+        "recommended_treatments": {
+          "Red_Rot_Control": {
+            "chemical": "कॉपर ऑक्सीक्लोराइड 3 ग्राम/लिटर",
+            "organic": "बोर्डो मिक्सचर 1%",
+            "application": "फवारणी - 15 दिवसांनी"
+          },
+          "Brown_Spot_Management": {
+            "chemical": "मॅन्कोझेब 2.5 ग्राम/लिटर",
+            "organic": "नीम तेल 5 मिली/लिटर",
+            "application": "पानांवर फवारणी"
+          }
+        }
+      },
+      "weather_considerations": [
+        "अती पर्जन्याची शक्यता",
+        "ओलावा नियंत्रण आवश्यक",
+        "मातीची संक्रमण क्षमता वाढते",
+        "फंगल रोगांचा धोका"
+      ]
+    },
+    "post_monsoon": {
+      "period": "ऑक्टोबर - नोव्हेंबर",
+      "marathi_title": "पाऊस नंतरची देखभाल",
+      "key_activities": [
+        "पिकाचे आरोग्य मूल्यांकन",
+        "मातीची चाचणी",
+        "फलनिर्मिती वाढवणे",
+        "रोग नियंत्रण"
+      ],
+      "disease_prevention": {
+        "high_risk_diseases": ["Yellow Leaf Disease", "Smut"],
+        "preventive_measures": [
+          "पोषक संतुलन राखा",
+          "मातीची सुधारणा करा",
+          "नियमित पाणी देणे",
+          "संतुलित खताचा वापर"
+        ],
+        "recommended_treatments": {
+          "Yellow_Leaf_Treatment": {
+            "chemical": "झिंक सल्फेट 5 ग्राम/लिटर",
+            "organic": "कंपोस्ट + झिंक",
+            "application": "मुळाशी देणे"
+          }
+        }
+      },
+      "weather_considerations": [
+        "तापमान कमी होत जाते",
+        "दवबिंदू वाढतो",
+        "फंगल संक्रमण संभाव्य",
+        "वाढीचा दर कमी होतो"
+      ]
+    },
+    "winter": {
+      "period": "डिसेंबर - फेब्रुवारी",
+      "marathi_title": "हिवाळी संरक्षण",
+      "key_activities": [
+        "थंडीपासून संरक्षण",
+        "सिंचन व्यवस्थापन",
+        "पोषक पुरवठा",
+        "कापणीची तयारी"
+      ],
+      "disease_prevention": {
+        "high_risk_diseases": ["Frost Damage", "Cold Stress"],
+        "preventive_measures": [
+          "धुरा देऊन थंडी कमी करा",
+          "पाण्याचा वापर वाढवा",
+          "पोटॅश खत द्या",
+          "पानांवर पाणी फवारा"
+        ],
+        "recommended_treatments": {
+          "Cold_Protection": {
+            "chemical": "पोटॅशियम नायट्रेट 2 ग्राम/लिटर",
+            "organic": "लाकडाचा धुरा",
+            "application": "संध्याकाळी फवारणी"
+          }
+        }
+      },
+      "weather_considerations": [
+        "कमी तापमानाचा धोका",
+        "दव आणि धुके",
+        "पाण्याची गरज कमी",
+        "वाढ मंद होते"
+      ]
+    },
+    "summer": {
+      "period": "मार्च - मे",
+      "marathi_title": "उन्हाळी व्यवस्थापन",
+      "key_activities": [
+        "पाण्याचे नियोजन",
+        "उष्णतेपासून संरक्षण",
+        "कापणी आणि साठवण",
+        "पुढील हंगामाची तयारी"
+      ],
+      "disease_prevention": {
+        "high_risk_diseases": ["Heat Stress", "Water Stress"],
+        "preventive_measures": [
+          "नियमित सिंचन",
+          "पालापाचोळा वापरा",
+          "सकाळी लवकर पाणी द्या",
+          "मातीची ओलावा राखा"
+        ],
+        "recommended_treatments": {
+          "Heat_Stress_Management": {
+            "chemical": "पोटॅशियम सल्फेट 3 ग्राम/लिटर",
+            "organic": "ह्युमिक एसिड",
+            "application": "मुळाशी पाणी देताना"
+          }
+        }
+      },
+      "weather_considerations": [
+        "अति उच्च तापमान",
+        "पाण्याची तीव्र गरज",
+        "मातीतून पाणी बाष्पीभवन",
+        "पिकावर ताण"
+      ]
+    }
+  },
+  "monthly_calendar": {
+    "january": {
+      "marathi_name": "जानेवारी",
+      "priority_tasks": [
+        "हिवाळी संरक्षण",
+        "सिंचन व्यवस्थापन",
+        "पोषक व्यवस्थापन"
+      ],
+      "disease_watch": ["Cold damage", "Frost injury"],
+      "treatments": "थंडीपासून संरक्षण आणि पोषक पुरवठा"
+    },
+    "february": {
+      "marathi_name": "फेब्रुवारी", 
+      "priority_tasks": [
+        "वसंत तयारी",
+        "मातीची चाचणी",
+        "खत नियोजन"
+      ],
+      "disease_watch": ["Early season diseases"],
+      "treatments": "मातीची सुधारणा आणि पोषक संतुलन"
+    },
+    "march": {
+      "marathi_name": "मार्च",
+      "priority_tasks": [
+        "नवीन लागवड",
+        "बियाणे उपचार",
+        "मातीची तयारी"
+      ],
+      "disease_watch": ["Sett rot", "Germination problems"],
+      "treatments": "बियाणे उपचार आणि माती कीटाणूनाशन"
+    }
+  }
+}

@@ -1,0 +1,200 @@
+{
+  "cost_estimates": {
+    "currency": "INR",
+    "last_updated": "2025-09-29",
+    "regional_variations": {
+      "maharashtra": {
+        "labor_cost_per_hour": 200,
+        "transport_cost_per_km": 15,
+        "equipment_rental_per_day": 800,
+        "price_multiplier": 1.0
+      },
+      "karnataka": {
+        "labor_cost_per_hour": 180,
+        "transport_cost_per_km": 12,
+        "equipment_rental_per_day": 700,
+        "price_multiplier": 0.9
+      },
+      "uttar_pradesh": {
+        "labor_cost_per_hour": 150,
+        "transport_cost_per_km": 10,
+        "equipment_rental_per_day": 600,
+        "price_multiplier": 0.8
+      }
+    },
+    "treatment_costs": {
+      "RedRot": {
+        "immediate_treatment": {
+          "chemical_cost": 1200,
+          "application_cost": 800,
+          "labor_cost": 1000,
+          "equipment_cost": 400,
+          "total_cost": 3400,
+          "cost_breakdown": {
+            "कॉपर ऑक्सीक्लोराइड (1 किलो)": 600,
+            "स्प्रे पंप भाडे": 400, 
+            "श्रमिक मजुरी (5 तास)": 1000,
+            "इतर खर्च": 300,
+            "फवारणी यंत्रणा": 400,
+            "वाहतूक": 200,
+            "तांत्रिक सल्ला": 500
+          },
+          "organic_alternative": {
+            "बोर्डो मिक्स (2 किलो)": 400,
+            "नीम तेल (500 मिली)": 300,
+            "श्रमिक मजुरी": 800,
+            "इतर": 200,
+            "total": 1700
+          }
+        },
+        "follow_up_treatment": {
+          "cost_per_application": 1500,
+          "frequency": "15 दिवसांनी",
+          "total_applications": 3,
+          "total_follow_up_cost": 4500
+        },
+        "prevention_cost": {
+          "प्रतिकारक जाति": 2000,
+          "माती उपचार": 800,
+          "नियमित निरीक्षण": 500,
+          "total_prevention": 3300
+        },
+        "estimated_loss_without_treatment": {
+          "per_acre": 25000,
+          "percentage_loss": "40-60%"
+        },
+        "roi_with_treatment": {
+          "treatment_investment": 7900,
+          "loss_prevented": 20000,
+          "net_benefit": 12100,
+          "roi_percentage": "153%"
+        }
+      },
+      "BrownSpot": {
+        "immediate_treatment": {
+          "chemical_cost": 800,
+          "application_cost": 600,
+          "labor_cost": 800,
+          "equipment_cost": 300,
+          "total_cost": 2500,
+          "cost_breakdown": {
+            "मॅन्कोझेब (500 ग्राम)": 400,
+            "स्टिकर (100 मिली)": 200,
+            "श्रमिक मजुरी (4 तास)": 800,
+            "फवारणी खर्च": 300,
+            "इतर": 200,
+            "तांत्रिक मार्गदर्शन": 300,
+            "वाहतूक": 300
+          },
+          "organic_alternative": {
+            "नीम तेल (250 मिली)": 200,
+            "बायो फंगीसाइड": 300,
+            "श्रमिक मजुरी": 600,
+            "इतर": 150,
+            "total": 1250
+          }
+        },
+        "follow_up_treatment": {
+          "cost_per_application": 1200,
+          "frequency": "20 दिवसांनी",
+          "total_applications": 2,
+          "total_follow_up_cost": 2400
+        },
+        "prevention_cost": {
+          "पोषक व्यवस्थापन": 1000,
+          "हवा फिरवणे": 500,
+          "नियमित सफाई": 300,
+          "total_prevention": 1800
+        }
+      },
+      "YellowLeaf": {
+        "immediate_treatment": {
+          "chemical_cost": 600,
+          "application_cost": 400,
+          "labor_cost": 600,
+          "equipment_cost": 200,
+          "total_cost": 1800,
+          "cost_breakdown": {
+            "झिंक सल्फेट (1 किलो)": 300,
+            "मॅग्नेशियम सल्फेट": 200,
+            "श्रमिक मजुरी": 600,
+            "अप्लिकेशन टूल": 200,
+            "इतर खर्च": 150,
+            "तांत्रिक सहाय्य": 350
+          }
+        },
+        "nutritional_management": {
+          "soil_testing": 500,
+          "fertilizer_correction": 2000,
+          "micronutrient_spray": 800,
+          "total_nutrition_cost": 3300
+        }
+      },
+      "Healthy": {
+        "maintenance_cost": {
+          "नियमित निरीक्षण": 200,
+          "प्रतिबंधक फवारणी": 800,
+          "पोषक व्यवस्थापन": 1500,
+          "total_maintenance": 2500
+        },
+        "optimization_investment": {
+          "उत्पादन वाढीसाठी": 3000,
+          "गुणवत्ता सुधारणा": 2000,
+          "total_optimization": 5000
+        }
+      }
+    },
+    "farm_size_adjustments": {
+      "small_farm": {
+        "size_range": "0.5-2 acres",
+        "cost_multiplier": 1.2,
+        "minimum_cost": 1000,
+        "shared_equipment_discount": 0.15
+      },
+      "medium_farm": {
+        "size_range": "2-5 acres", 
+        "cost_multiplier": 1.0,
+        "bulk_purchase_discount": 0.1
+      },
+      "large_farm": {
+        "size_range": "5+ acres",
+        "cost_multiplier": 0.85,
+        "bulk_purchase_discount": 0.2,
+        "equipment_ownership_benefit": 0.3
+      }
+    },
+    "seasonal_price_variations": {
+      "peak_season": {
+        "months": ["June", "July", "August"],
+        "price_multiplier": 1.3,
+        "availability_issues": true
+      },
+      "normal_season": {
+        "months": ["March", "April", "September", "October"],
+        "price_multiplier": 1.0
+      },
+      "off_season": {
+        "months": ["November", "December", "January", "February"],
+        "price_multiplier": 0.9,
+        "better_availability": true
+      }
+    },
+    "government_subsidies": {
+      "plant_protection_subsidy": {
+        "percentage": 50,
+        "max_amount": 2000,
+        "eligibility": "Small and marginal farmers"
+      },
+      "organic_farming_incentive": {
+        "percentage": 30,
+        "max_amount": 5000,
+        "eligibility": "Certified organic farmers"
+      },
+      "crop_insurance": {
+        "premium_percentage": 2,
+        "coverage": "Up to sum insured",
+        "government_share": 80
+      }
+    }
+  }
+}

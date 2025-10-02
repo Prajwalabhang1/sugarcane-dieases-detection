@@ -1,0 +1,306 @@
+{
+  "classes": [
+    "Banded Chlorosis",
+    "Brown Spot",
+    "BrownRust",
+    "Dried Leaves",
+    "Grassy shoot",
+    "Healthy",
+    "Mosaic",
+    "Pokkah Boeng",
+    "RedRot",
+    "Rust",
+    "Sett Rot",
+    "Yellow Leaf"
+  ],
+  "class_indices": {
+    "0": "Banded Chlorosis",
+    "1": "Brown Spot",
+    "2": "BrownRust",
+    "3": "Dried Leaves",
+    "4": "Grassy shoot",
+    "5": "Healthy",
+    "6": "Mosaic",
+    "7": "Pokkah Boeng",
+    "8": "RedRot",
+    "9": "Rust",
+    "10": "Sett Rot",
+    "11": "Yellow Leaf"
+  },
+  "marathi_names": {
+    "Banded Chlorosis": "पट्टेदार पिवळसर रोग",
+    "Brown Spot": "तपकिरी ठिपके",
+    "BrownRust": "तपकिरी तांबेरा",
+    "Dried Leaves": "सुकलेली पाने",
+    "Grassy shoot": "गवताळ वाढ रोग",
+    "Healthy": "निरोगी",
+    "Mosaic": "मोझेक रोग",
+    "Pokkah Boeng": "पोक्का बोईंग",
+    "RedRot": "लाल कुज (रेडरॉट)",
+    "Rust": "तांबेरा रोग",
+    "Sett Rot": "बेणे कुज",
+    "Yellow Leaf": "पिवळी पाने रोग"
+  },
+  "scientific_names": {
+    "Banded Chlorosis": "Magnesium/Iron Deficiency",
+    "Brown Spot": "Bipolaris sacchari",
+    "BrownRust": "Puccinia melanocephala",
+    "Dried Leaves": "Water Stress Syndrome",
+    "Grassy shoot": "Candidatus Phytoplasma sacchari",
+    "Healthy": "Normal Plant",
+    "Mosaic": "Sugarcane Mosaic Virus (SCMV)",
+    "Pokkah Boeng": "Fusarium moniliforme",
+    "RedRot": "Colletotrichum falcatum",
+    "Rust": "Puccinia melanocephala",
+    "Sett Rot": "Ceratocystis paradoxa",
+    "Yellow Leaf": "Sugarcane Yellow Leaf Virus (SCYLV)"
+  },
+  "disease_solutions": {
+    "Banded Chlorosis": {
+      "symptoms": "पानांवर पिवळे पट्टे, वाढ मंदावणे",
+      "detailed_symptoms": [
+        "पानांवर पिवळे आणि हिरवे आंतर्वाषिक पट्टे",
+        "जुनी पाने प्रथम प्रभावित होणे",
+        "पानांची वाढ मंद होणे",
+        "फोटोसिंथेसिस कमी होणे",
+        "उत्पादनात 15-25% घट"
+      ],
+      "solution": "• फेरस सल्फेट 5 ग्रॅम प्रति लिटर फवारणी\n• मल्टिमायक्रो न्यूट्रिएंट मिश्रण\n• नत्राची मात्रा वाढवा\n• मॅग्नेशियम सल्फेट 2% स्प्रे करा\n• चेलेटेड आयर्न 0.5% वापरा"
+    },
+    "Brown Spot": {
+      "symptoms": "पानांवर तपकिरी ठिपके, काळे डाग",
+      "detailed_symptoms": [
+        "पानांवर छोटे तपकिरी गोल ठिपके",
+        "ठिपक्यांभोवती पिवळी पट्टी",
+        "ठिपके वाढून मोठे डाग बनणे",
+        "पाने पिवळी होऊन सुकणे",
+        "फोटोसिंथेसिसमध्ये घट"
+      ],
+      "solution": "• प्रॉपिनेब 0.25% फवारणी\n• मॅंकोझेब 0.3% फवारणी\n• स्टिकरसह 10 दिवसांनी फवारणी\n• कॉपर ऑक्सिक्लोराइड 0.3% स्प्रे\n• संक्रमित पाने काढून टाका"
+    },
+    "BrownRust": {
+      "symptoms": "पानांवर तपकिरी-नारिंगी ठिपके, रस्ट पावडर",
+      "detailed_symptoms": [
+        "पानांच्या खालच्या भागावर लहान नारिंगी ठिपके",
+        "ठिपके फुटून तपकिरी पावडर बाहेर पडणे",
+        "पाने वाळून भुरभुरीत होणे",
+        "संपूर्ण पानावर प्रसार",
+        "गंभीर प्रकरणात संपूर्ण पीक प्रभावित"
+      ],
+      "solution": "• ट्रायकोनाझोल 1 मिली प्रति लिटर\n• हेक्साकोनाझोल 2 मिली प्रति लिटर\n• 7 दिवसांनी पुन्हा फवारणी\n• प्रोपिकोनाझोल 0.1% स्प्रे\n• तत्काळ संगरोधन करा"
+    },
+    "Dried Leaves": {
+      "symptoms": "पाने सुकून तपकिरी होणे, पाण्याची कमतरता",
+      "detailed_symptoms": [
+        "पानांचे टोक सुकून तपकिरी होणे",
+        "पानांची लांबी कमी होणे",
+        "पिवळसरपणा दिसणे",
+        "वाढ मंदावणे",
+        "पाण्याच्या तणावाची चिन्हे"
+      ],
+      "solution": "• योग्य पाणी व्यवस्थापन\n• ड्रिप इरिगेशन वापरा\n• मल्चिंग करा\n• आर्द्रता राखण्यासाठी उपाययोजना\n• पाण्याची वारंवारता वाढवा"
+    },
+    "Grassy shoot": {
+      "symptoms": "पातळ गवतासारखी पाने, बहुविभाजन",
+      "detailed_symptoms": [
+        "असंख्य पातळ कोंबा निकळणे",
+        "गवतासारखे पाने",
+        "सामान्य वाढ पूर्णपणे बंद",
+        "इंटरनोड्स अत्यंत लहान",
+        "साखर निर्मिती पूर्णपणे बंद",
+        "संपूर्ण रोप नष्ट"
+      ],
+      "solution": "• ऑक्सीटेट्रासायक्लिन 3 ग्रॅम प्रति लिटर\n• स्ट्रेप्टोमायसिन 1 ग्रॅम प्रति लिटर\n• इमिडाक्लोप्रिड कीटकांसाठी\n• रोगग्रस्त रोपे तत्काळ नष्ट करा\n• संगरोधन क्षेत्र स्थापन करा"
+    },
+    "Healthy": {
+      "symptoms": "पान हिरवी, स्वस्थ आणि चांगल्या वाढीत",
+      "detailed_symptoms": [
+        "पाने चमकदार हिरवी",
+        "एकसमान वाढ",
+        "कोणतीही रोगाची चिन्हे नाहीत",
+        "चांगली कंद निर्मिती",
+        "इष्टतम फोटोसिंथेसिस"
+      ],
+      "solution": "नियमित देखभाल चालू ठेवा\n• संतुलित खत कार्यक्रम\n• योग्य पाणी व्यवस्थापन\n• नियमित निरीक्षण\n• प्रतिबंधक फवारणी"
+    },
+    "Mosaic": {
+      "symptoms": "पानांवर मोझेक पॅटर्न, पिवळे-हिरवे ठिपके",
+      "detailed_symptoms": [
+        "पानांवर पिवळे आणि हिरवे डाग",
+        "मोझेकसारखा पॅटर्न",
+        "पानांची वाढ अनियमित",
+        "रोगाचा प्रसार मंद",
+        "उत्पादनात हळूहळू घट"
+      ],
+      "solution": "• व्हायरस प्रतिबंधी स्प्रे\n• कीटक नियंत्रण करा\n• रोगप्रतिकारक जाती वापरा\n• संक्रमित रोपे काढा\n• व्हेक्टर कीटक नियंत्रण"
+    },
+    "Pokkah Boeng": {
+      "symptoms": "शेंड्या विकृत होणे, पाने चिरडलेली",
+      "detailed_symptoms": [
+        "नवीन पाने चिरडलेली आणि विकृत",
+        "शेंड्यावर काळे डाग",
+        "वाढ मंदावणे",
+        "पानांवर छिद्रे दिसणे",
+        "इंटरनोड्स लहान होणे"
+      ],
+      "solution": "• कार्बेन्डाझिम 0.1% स्प्रे\n• मॅंकोझेब 0.3% फवारणी\n• संक्रमित भाग काढा\n• फंगीसाइड ट्रीटमेंट\n• योग्य निचरा व्यवस्था"
+    },
+    "RedRot": {
+      "symptoms": "कांड्याचा आतला भाग लाल होणे, आडवे पांढरे पट्टे",
+      "detailed_symptoms": [
+        "ऊसाच्या आतील भागाला चमकदार लाल रंग",
+        "आडवे पांढरे पट्टे दिसणे",
+        "तीव्र आंबट दुर्गंध येणे",
+        "ऊस मऊ होऊन कुजणे",
+        "पाने पिवळी होऊन सुकणे",
+        "साखरेचे प्रमाण लक्षणीयरीत्या कमी होणे"
+      ],
+      "solution": "• कार्बेन्डाझिम 50% WP फवारणी\n• मैनकोझेब 75% WP फवारणी\n• रोगग्रस्त ऊस तोडून जाळा\n• बोर्डो मिश्रण 1% स्प्रे\n• संक्रमित क्षेत्राचे सोलारायझेशन"
+    },
+    "Rust": {
+      "symptoms": "पानांवर तांबेरी रंगाचे ठिपके आणि पावडर",
+      "detailed_symptoms": [
+        "पानांच्या दोन्ही बाजूंना तांबेरी ठिपके",
+        "ठिपके फुटून पावडर येणे",
+        "पाने पिवळी होऊन सुकणे",
+        "प्रसार वेगवान",
+        "फोटोसिंथेसिसमध्ये व्यत्यय"
+      ],
+      "solution": "• मॅंकोझेब 0.25% स्प्रे\n• प्रोपिकोनाझोल 0.1% फवारणी\n• 10-15 दिवसांनी पुनरावृत्ती\n• तांबेयुक्त फंगीसाइड\n• हवेची चांगली वाहतूक"
+    },
+    "Sett Rot": {
+      "symptoms": "बेण्यांचे कुजणे, अंकुरण नसणे",
+      "detailed_symptoms": [
+        "लावणीच्या वेळी बेणे कुजणे",
+        "अंकुरण होत नसणे",
+        "काळसर दुर्गंधी",
+        "मऊ आणि पाणावणे",
+        "मातीत फंगल ग्रोथ",
+        "स्टँड घटणे"
+      ],
+      "solution": "• बावस्तिन (कार्बेन्डाझिम) से बीज उपचार\n• ट्रायकोडर्मा से मिट्टी का उपचार\n• बेणे बुडवून कार्बेन्डाझिम ट्रीटमेंट\n• योग्य निचरा व्यवस्था\n• आर्द्रता नियंत्रण"
+    },
+    "Yellow Leaf": {
+      "symptoms": "पाने पिवळी होणे, वाढ मंदावणे",
+      "detailed_symptoms": [
+        "जुनी पाने प्रथम पिवळी होणे",
+        "पानांच्या काठावरून पिवळसरपणा सुरू",
+        "हळूहळू संपूर्ण पानावर प्रसार",
+        "वाढ मंदावणे",
+        "नवीन पाने लहान",
+        "उत्पादनक्षमतेत घट"
+      ],
+      "solution": "• पोटॅशियम सल्फेट स्प्रे\n• 19:19:19 NPK फर्टिलायझर\n• मायक्रो न्यूट्रिएंट स्प्रे\n• मॅग्नेशियम सप्लिमेंट\n• संतुलित खत व्यवस्थापन"
+    }
+  },
+  "disease_metadata": {
+    "Banded Chlorosis": {
+      "risk_level": "मध्यम",
+      "urgency": "कमी",
+      "treatment_difficulty": "सोपे",
+      "economic_impact": "मध्यम",
+      "affected_parts": ["पाने"],
+      "transmission": "पोषक तत्वांची कमतरता",
+      "recovery_time": "2-4 आठवडे"
+    },
+    "Brown Spot": {
+      "risk_level": "मध्यम",
+      "urgency": "मध्यम",
+      "treatment_difficulty": "मध्यम",
+      "economic_impact": "मध्यम",
+      "affected_parts": ["पाने"],
+      "transmission": "बुरशीजन्य संसर्ग",
+      "recovery_time": "3-6 आठवडे"
+    },
+    "BrownRust": {
+      "risk_level": "उच्च",
+      "urgency": "उच्च",
+      "treatment_difficulty": "मध्यम",
+      "economic_impact": "उच्च",
+      "affected_parts": ["पाने"],
+      "transmission": "हवेतून बीजाणू",
+      "recovery_time": "4-8 आठवडे"
+    },
+    "Dried Leaves": {
+      "risk_level": "मध्यम",
+      "urgency": "मध्यम",
+      "treatment_difficulty": "सोपे",
+      "economic_impact": "मध्यम",
+      "affected_parts": ["पाने"],
+      "transmission": "पर्यावरणीय ताण",
+      "recovery_time": "1-3 आठवडे"
+    },
+    "Grassy shoot": {
+      "risk_level": "अत्युच्च",
+      "urgency": "अत्यावश्यक",
+      "treatment_difficulty": "अत्यंत कठीण",
+      "economic_impact": "अत्युच्च",
+      "affected_parts": ["संपूर्ण रोप"],
+      "transmission": "कीटकांद्वारे",
+      "recovery_time": "अशक्य"
+    },
+    "Healthy": {
+      "risk_level": "नाही",
+      "urgency": "नाही",
+      "treatment_difficulty": "नाही",
+      "economic_impact": "सकारात्मक",
+      "affected_parts": ["कोणतेही नाही"],
+      "transmission": "लागू नाही",
+      "recovery_time": "लागू नाही"
+    },
+    "Mosaic": {
+      "risk_level": "उच्च",
+      "urgency": "उच्च",
+      "treatment_difficulty": "कठीण",
+      "economic_impact": "उच्च",
+      "affected_parts": ["पाने", "वाढ"],
+      "transmission": "व्हायरल संसर्ग",
+      "recovery_time": "6-12 आठवडे"
+    },
+    "Pokkah Boeng": {
+      "risk_level": "उच्च",
+      "urgency": "उच्च",
+      "treatment_difficulty": "मध्यम",
+      "economic_impact": "उच्च",
+      "affected_parts": ["शेंड्या", "पाने"],
+      "transmission": "बुरशीजन्य संसर्ग",
+      "recovery_time": "4-8 आठवडे"
+    },
+    "RedRot": {
+      "risk_level": "अत्युच्च",
+      "urgency": "अत्यावश्यक",
+      "treatment_difficulty": "अत्यंत कठीण",
+      "economic_impact": "अत्युच्च",
+      "affected_parts": ["कांडा", "मूळ"],
+      "transmission": "बुरशीजन्य संसर्ग",
+      "recovery_time": "8-16 आठवडे"
+    },
+    "Rust": {
+      "risk_level": "उच्च",
+      "urgency": "उच्च",
+      "treatment_difficulty": "मध्यम",
+      "economic_impact": "उच्च",
+      "affected_parts": ["पाने"],
+      "transmission": "हवेतून बीजाणू",
+      "recovery_time": "3-6 आठवडे"
+    },
+    "Sett Rot": {
+      "risk_level": "अत्युच्च",
+      "urgency": "अत्यावश्यक",
+      "treatment_difficulty": "कठीण",
+      "economic_impact": "अत्युच्च",
+      "affected_parts": ["बेणे", "मूळ"],
+      "transmission": "बुरशीजन्य संसर्ग",
+      "recovery_time": "संपूर्ण पीक नष्ट"
+    },
+    "Yellow Leaf": {
+      "risk_level": "मध्यम",
+      "urgency": "मध्यम",
+      "treatment_difficulty": "मध्यम",
+      "economic_impact": "मध्यम",
+      "affected_parts": ["पाने"],
+      "transmission": "व्हायरल/पोषक कमतरता",
+      "recovery_time": "4-8 आठवडे"
+    }
+  }
+}

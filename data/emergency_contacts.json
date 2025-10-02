@@ -1,0 +1,203 @@
+{
+  "emergency_contacts": {
+    "national_helplines": {
+      "kisan_call_center": {
+        "number": "1800-180-1551",
+        "name": "किसान कॉल सेंटर",
+        "availability": "24x7",
+        "languages": ["हिंदी", "English", "Regional Languages"],
+        "services": [
+          "कृषी तांत्रिक सल्ला",
+          "रोग निदान सहाय्य",
+          "योजना माहिती",
+          "बाजार भाव माहिती"
+        ]
+      },
+      "plant_protection_helpline": {
+        "number": "1800-270-0323", 
+        "name": "प्लांट प्रोटेक्शन हेल्पलाइन",
+        "availability": "9 AM - 6 PM",
+        "languages": ["हिंदी", "English"],
+        "specialization": "रोग आणि कीड नियंत्रण"
+      },
+      "agriculture_marketing": {
+        "number": "1800-270-0224",
+        "name": "कृषी विपणन हेल्पलाइन",
+        "availability": "9 AM - 5 PM",
+        "services": ["बाजार भाव", "विक्री सल्ला", "गुणवत्ता मानदंड"]
+      }
+    },
+    "regional_contacts": {
+      "maharashtra": {
+        "state_agriculture_dept": {
+          "number": "022-22629259",
+          "name": "महाराष्ट्र कृषी विभाग",
+          "email": "agri.mah@gov.in",
+          "website": "krishi.maharashtra.gov.in"
+        },
+        "sugar_commission": {
+          "number": "020-26128080",
+          "name": "साखर आयुक्त कार्यालय",
+          "address": "पुणे, महाराष्ट्र",
+          "services": ["ऊस विकास योजना", "दर निर्धारण", "तांत्रिक सहाय्य"]
+        },
+        "krishi_vigyan_kendras": [
+          {
+            "district": "पुणे",
+            "contact": "020-25654321",
+            "address": "कृषी महाविद्यालय, पुणे"
+          },
+          {
+            "district": "सांगली", 
+            "contact": "0233-2654789",
+            "address": "कृषी विज्ञान केंद्र, सांगली"
+          },
+          {
+            "district": "कोल्हापूर",
+            "contact": "0231-2987654",
+            "address": "कृषी विज्ञान केंद्र, कोल्हापूर"
+          }
+        ]
+      },
+      "karnataka": {
+        "state_agriculture_dept": {
+          "number": "080-22212121",
+          "name": "Karnataka Agriculture Department", 
+          "email": "agri.kar@gov.in",
+          "website": "agriculture.karnataka.gov.in"
+        },
+        "sugar_development": {
+          "number": "080-25588899",
+          "name": "Sugar Development Office",
+          "services": ["ಕಬ್ಬಿನ ಬೆಳವಣಿಗೆ", "Technical Support"]
+        }
+      },
+      "uttar_pradesh": {
+        "state_agriculture_dept": {
+          "number": "0522-2286001",
+          "name": "उत्तर प्रदेश कृषि विभाग",
+          "email": "agri.up@gov.in"
+        },
+        "cane_development": {
+          "number": "0522-2237777",
+          "name": "गन्ना विकास विभाग",
+          "services": ["गन्ना अनुसंधान", "किस्म विकास", "रोग प्रबंधन"]
+        }
+      }
+    }
+    },
+    "research_institutes": {
+      "icar_sugarcane": {
+        "name": "ICAR-Sugarcane Breeding Institute",
+        "location": "Coimbatore",
+        "contact": "0422-2458243",
+        "email": "director.sbi@icar.gov.in",
+        "expertise": [
+          "ऊस जातींचा विकास",
+          "रोग प्रतिकारक्षमता संशोधन",
+          "कृषी तंत्र सुधारणा",
+          "तज्ञ सल्ला"
+        ],
+        "consultation_hours": "10 AM - 5 PM (Mon-Fri)"
+      },
+      "sugar_research_stations": [
+        {
+          "name": "Vasantdada Sugar Institute",
+          "location": "Pune, Maharashtra",
+          "contact": "020-24537192",
+          "specialization": "ऊस संशोधन आणि साखर तंत्रज्ञान"
+        },
+        {
+          "name": "UP Cane Research Institute", 
+          "location": "Shahjahanpur, UP",
+          "contact": "05842-221111",
+          "specialization": "गन्ना किस्म विकास"
+        }
+        ]       
+    },
+    "emergency_protocols": {
+      "severe_disease_outbreak": {
+        "immediate_steps": [
+          "संक्रमित क्षेत्र वेगळे करा",
+          "तत्काळ कृषी अधिकाऱ्यांना कळवा",
+          "अन्य शेतकऱ्यांना सावध करा",
+          "नमुना संकलनासाठी तयार रहा"
+        ],
+        "contacts": [
+          "जिल्हा कृषी अधिकारी",
+          "प्लांट प्रोटेक्शन ऑफिसर",
+          "स्थानिक कृषी तज्ञ"
+        ],
+        "documentation": [
+          "रोगाचे फोटो काढा",
+          "प्रभावित क्षेत्र नोंदवा",
+          "लक्षणांची यादी तयार करा"
+        ]
+      },
+      "crop_loss_insurance": {
+        "claim_process": [
+          "72 तासांत नुकसानाची माहिती द्या",
+          "स्थानिक अधिकाऱ्यांकडे तक्रार नोंदवा",
+          "आवश्यक कागदपत्रे तयार करा",
+          "सर्व्हेअरची वाट पहा"
+        ],
+        "required_documents": [
+          "Crop Insurance Policy",
+          "Land Records", 
+          "Sowing Certificate",
+          "Damage Assessment Photos"
+        ],
+        "insurance_companies": [
+          {
+            "name": "Agriculture Insurance Company of India",
+            "toll_free": "1800-116-515",
+            "website": "www.aicofindia.com"
+          },
+          {
+            "name": "HDFC ERGO General Insurance",
+            "toll_free": "1800-266-9173", 
+            "website": "www.hdfcergo.com"
+          }
+        ]
+      }
+    },
+    "whatsapp_groups": {
+      "farmer_support_groups": [
+        {
+          "name": "Maharashtra Sugarcane Farmers",
+          "link": "https://chat.whatsapp.com/XXXXXXX",
+          "members": "2500+",
+          "language": "Marathi",
+          "focus": "तांत्रिक सल्ला, बाजारभाव, योजना माहिती"
+        },
+        {
+          "name": "Karnataka Cane Growers",
+          "link": "https://chat.whatsapp.com/XXXXXXX", 
+          "members": "1800+",
+          "language": "Kannada/English",
+          "focus": "ಕಬ್ಬಿನ ಬೆಳೆ ತಂತ್ರಜ್ಞಾನ"
+        },
+        {
+          "name": "UP Ganna Kisan Samuh",
+          "link": "https://chat.whatsapp.com/XXXXXXX",
+          "members": "3200+", 
+          "language": "Hindi",
+          "focus": "गन्ना खेती, रोग प्रबंधन"
+        }
+      ]
+    },
+    "mobile_apps": {
+      "government_apps": [
+        {
+          "name": "Kisan Suvidha",
+          "download_link": "https://play.google.com/store/apps/details?id=com.gov.kisansuvidha",
+          "features": ["मौसम माहिती", "बाजारभाव", "तज्ञ सल्ला"]
+        },
+        {
+          "name": "Crop Doctor",
+          "download_link": "https://play.google.com/store/apps/details?id=com.cropdoctor",
+          "features": ["रोग निदान", "उपचार सुचना", "तज्ञ संपर्क"]
+        }
+      ]
+    }
+  }

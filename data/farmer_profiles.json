@@ -1,0 +1,181 @@
+{
+  "farmer_profiles": {
+    "beginner": {
+      "marathi_name": "नवीन शेतकरी",
+      "english_name": "Beginner Farmer",
+      "experience_years": "0-2",
+      "characteristics": {
+        "farm_size_range": "0.5-2",
+        "tech_comfort": "low",
+        "language_preference": "marathi",
+        "needs_detailed_guidance": true,
+        "prefers_visual_instructions": true
+      },
+      "response_customization": {
+        "language_complexity": "simple",
+        "include_basic_definitions": true,
+        "step_by_step_instructions": true,
+        "include_preventive_measures": true,
+        "show_cost_breakdown": true
+      },
+      "common_concerns": [
+        "पहिल्यांदा ऊस लागवड",
+        "रोगांची पहिली ओळख", 
+        "किफायतशीर उपचार",
+        "तज्ञांची मदत कधी घ्यावी"
+      ],
+      "support_needs": [
+        "व्हिज्युअल गाइड",
+        "स्टेप-बाय-स्टेप सूचना",
+        "स्थानिक भाषेत स्पष्टीकरण",
+        "बेसिक रोग माहिती"
+      ]
+    },
+    "experienced": {
+      "marathi_name": "अनुभवी शेतकरी",
+      "english_name": "Experienced Farmer",
+      "experience_years": "3-10",
+      "characteristics": {
+        "farm_size_range": "2-10",
+        "tech_comfort": "medium",
+        "language_preference": "marathi_english",
+        "needs_detailed_guidance": false,
+        "prefers_quick_solutions": true
+      },
+      "response_customization": {
+        "language_complexity": "moderate",
+        "include_basic_definitions": false,
+        "focus_on_solutions": true,
+        "include_alternative_methods": true,
+        "show_advanced_techniques": true
+      },
+      "common_concerns": [
+        "नवीन रोगांची ओळख",
+        "प्रतिकार व्यवस्थापन",
+        "उत्पादन वाढवणे",
+        "नुकसान कमी करणे"
+      ],
+      "support_needs": [
+        "द्रुत निदान",
+        "पर्यायी उपचार",
+        "कॉस्ट-बेनिफिट विश्लेषण",
+        "प्रगत तंत्रे"
+      ]
+    },
+    "expert": {
+      "marathi_name": "तज्ञ शेतकरी",
+      "english_name": "Expert Farmer",
+      "experience_years": "10+",
+      "characteristics": {
+        "farm_size_range": "10+",
+        "tech_comfort": "high",
+        "language_preference": "bilingual",
+        "needs_detailed_guidance": false,
+        "prefers_technical_details": true
+      },
+      "response_customization": {
+        "language_complexity": "advanced",
+        "include_scientific_names": true,
+        "focus_on_precision": true,
+        "include_research_insights": true,
+        "show_technical_parameters": true
+      },
+      "common_concerns": [
+        "नवीन रोग व्यूह",
+        "संशोधन-आधारित उपचार",
+        "इंटिग्रेटेड मॅनेजमेंट",
+        "प्रोडक्टिव्हिटी ऑप्टिमायझेशन"
+      ],
+      "support_needs": [
+        "तांत्रिक डेटा",
+        "संशोधन अहवाल",
+        "इनोव्हेटिव्ह सोल्युशन्स",
+        "प्रेसिजन एग्रिकल्चर"
+      ]
+    }
+  },
+  "regional_profiles": {
+    "maharashtra": {
+      "common_varieties": ["Co-86032", "Co-94012", "Co-8021", "Co-94008"],
+      "typical_farm_size": "2-5 acres",
+      "common_diseases": ["RedRot", "Brown Spot", "Yellow Leaf"],
+      "climate_challenges": ["अनियमित पर्जन्य", "उच्च तापमान", "ओलावा कमतरता"],
+      "local_language": "marathi",
+      "government_schemes": [
+        "राष्ट्रीय ऊस विकास योजना",
+        "प्रधानमंत्री फसल बीमा योजना",
+        "मृदा आरोग्य कार्ड योजना"
+      ]
+    },
+    "karnataka": {
+      "common_varieties": ["Co-419", "Co-62175", "Co-86032"],
+      "typical_farm_size": "3-7 acres",
+      "common_diseases": ["Sett Rot", "RedRot", "Grassy Shoot"],
+      "climate_challenges": ["ಅಕಾಲಿಕ ಮಳೆ", "ಬರಗಾಲ", "ತಾಪಮಾನ ವ್ಯತ್ಯಾಸ"],
+      "local_language": "kannada",
+      "government_schemes": [
+        "Karnataka Sugarcane Development Scheme",
+        "Raitha Samparka Kendra",
+        "Bhoochetana Scheme"
+      ]
+    },
+    "uttar_pradesh": {
+      "common_varieties": ["Co-0238", "Co-05009", "Co-0118"],
+      "typical_farm_size": "1-3 acres",
+      "common_diseases": ["Yellow Leaf", "Brown Spot", "Mosaic"],
+      "climate_challenges": ["अनियमित बारिश", "ठंड की लहर", "गर्म हवा"],
+      "local_language": "hindi",
+      "government_schemes": [
+        "उत्तर प्रदेश गन्ना विकास योजना",
+        "किसान क्रेडिट कार्ड",
+        "मुख्यमंत्री किसान एवं सर्वहित बीमा योजना"
+      ]
+    }
+  },
+  "seasonal_profiles": {
+    "kharif": {
+      "marathi_name": "खरीप हंगाम",
+      "planting_months": ["March", "April", "May"],
+      "critical_periods": {
+        "establishment": "मार्च-एप्रिल",
+        "tillering": "मे-जून", 
+        "grand_growth": "जुलै-सप्टेंबर",
+        "maturity": "डिसेंबर-फेब्रुवारी"
+      },
+      "common_diseases_by_period": {
+        "establishment": ["Sett Rot", "Germination Issues"],
+        "tillering": ["Brown Spot", "Red Rot"],
+        "grand_growth": ["Yellow Leaf", "Mosaic"],
+        "maturity": ["Harvest Issues", "Storage Problems"]
+      },
+      "management_focus": [
+        "पाणी व्यवस्थापन",
+        "खत व्यवस्थापन", 
+        "रोग नियंत्रण",
+        "कीड नियंत्रण"
+      ]
+    },
+    "rabi": {
+      "marathi_name": "रबी हंगाम", 
+      "planting_months": ["October", "November"],
+      "critical_periods": {
+        "establishment": "ऑक्टोबर-नोव्हेंबर",
+        "tillering": "डिसेंबर-जानेवारी",
+        "grand_growth": "फेब्रुवारी-एप्रिल",
+        "maturity": "जुलै-सप्टेंबर"
+      },
+      "common_diseases_by_period": {
+        "establishment": ["Cold Damage", "Poor Germination"],
+        "tillering": ["Frost Damage", "Slow Growth"],
+        "grand_growth": ["Drought Stress", "Heat Stress"],
+        "maturity": ["Pre-harvest Issues"]
+      },
+      "management_focus": [
+        "थंडी संरक्षण",
+        "पाण्याचा वापर",
+        "उष्णता व्यवस्थापन",
+        "वेळेवर कापणी"
+      ]
+    }
+  }
+}

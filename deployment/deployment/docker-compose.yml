@@ -1,0 +1,216 @@
+# ऊस एकरी १०० टन - Production Deployment
+# Professional Docker Compose for Chordz Technologies
+# Scalable, secure, and farmer-friendly deployment
+
+version: '3.8'
+
+services:
+  # Main Application
+  sugarcane-app:
+    build:
+      context: ..
+      dockerfile: deployment/Dockerfile
+      target: production
+    container_name: sugarcane-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      - ENVIRONMENT=production
+      - DATABASE_URL=${DATABASE_URL:-postgresql://postgres:password@postgres:5432/sugarcane_db}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - MODEL_PATH=/app/models/sugarcane_model.h5
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - MAX_WORKERS=${MAX_WORKERS:-4}
+      - SECRET_KEY=${SECRET_KEY}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost,127.0.0.1}
+      - SENTRY_DSN=${SENTRY_DSN}
+      - ENABLE_TELEMETRY=${ENABLE_TELEMETRY:-true}
+    volumes:
+      - ./models:/app/models:ro
+      - ./data:/app/data:ro
+      - ./logs:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - sugarcane-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+        reservations:
+          cpus: '1.0'
+          memory: 2G
+
+  # Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: sugarcane-postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-sugarcane_db}
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-password}
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8 --locale=C
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - sugarcane-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: sugarcane-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD:-}
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/etc/redis/redis.conf:ro
+    networks:
+      - sugarcane-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: sugarcane-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./static:/var/www/static:ro
+      - nginx_logs:/var/log/nginx
+    depends_on:
+      - sugarcane-app
+    networks:
+      - sugarcane-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Monitoring - Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: sugarcane-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    networks:
+      - sugarcane-network
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+
+  # Monitoring - Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: sugarcane-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    networks:
+      - sugarcane-network
+
+  # Log Management - ELK Stack (Optional)
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.8.0
+    container_name: sugarcane-elasticsearch
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - xpack.security.enabled=false
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    networks:
+      - sugarcane-network
+    profiles:
+      - logging
+
+  # Backup Service
+  backup:
+    image: alpine:latest
+    container_name: sugarcane-backup
+    restart: "no"
+    volumes:
+      - postgres_data:/data/postgres:ro
+      - redis_data:/data/redis:ro
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh:ro
+    command: ["/backup.sh"]
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - sugarcane-network
+    profiles:
+      - backup
+
+# Networks
+networks:
+  sugarcane-network:
+    driver: bridge
+    name: sugarcane-network
+
+# Volumes
+volumes:
+  postgres_data:
+    name: sugarcane-postgres-data
+  redis_data:
+    name: sugarcane-redis-data
+  prometheus_data:
+    name: sugarcane-prometheus-data
+  grafana_data:
+    name: sugarcane-grafana-data
+  elasticsearch_data:
+    name: sugarcane-elasticsearch-data
+  nginx_logs:
+    name: sugarcane-nginx-logs

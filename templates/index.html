@@ -1,0 +1,221 @@
+{% extends "base.html" %} {% block title %}मुख्य पेज - ऊसाच्या रोगांची ओळख{%
+endblock %} {% block extra_head %}
+<!-- Camera access permission -->
+<meta name="camera" content="camera" />
+{% endblock %} {% block content %}
+<!-- Welcome Section -->
+<section class="welcome-section">
+  <div class="welcome-card">
+    <div class="welcome-header">
+      <div class="welcome-icon">🌾</div>
+      <h2 class="welcome-title">आपल्या ऊसाच्या आजारची ओळख करा</h2>
+      <p class="welcome-subtitle">फक्त छायाचित्र काढा आणि तत्काळ निदान मिळवा</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3 class="feature-title">AI तंत्रज्ञान</h3>
+        <p class="feature-desc">अत्याधुनिक कृत्रिम बुद्धिमत्ता</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3 class="feature-title">तत्काळ निकाल</h3>
+        <p class="feature-desc">काही सेकंदात निदान</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💊</div>
+        <h3 class="feature-title">उपचार सल्ला</h3>
+        <p class="feature-desc">तज्ञांसारखी माहिती</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3 class="feature-title">खर्चाचा अंदाज</h3>
+        <p class="feature-desc">उपचाराची किंमत</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Image Input Section -->
+<section class="input-section">
+  <div class="input-card">
+    <h3 class="input-title">
+      <span class="title-icon">📸</span>
+      ऊसाच्या पानाचे छायाचित्र घ्या
+    </h3>
+    <p class="input-subtitle">स्पष्ट आणि जवळून काढलेले छायाचित्र वापरा</p>
+
+    <!-- Camera and Upload Options -->
+    <div class="input-options">
+      <!-- Camera Option -->
+      <div class="input-option camera-option">
+        <button type="button" class="option-btn camera-btn" id="camera-btn">
+          <div class="btn-content">
+            <span class="btn-icon">📷</span>
+            <span class="btn-text">कॅमेरा उघडा</span>
+            <span class="btn-subtext">छायाचित्र काढा</span>
+          </div>
+        </button>
+      </div>
+
+      <!-- Upload Option -->
+      <div class="input-option upload-option">
+        <label for="file-input" class="option-btn upload-btn">
+          <div class="btn-content">
+            <span class="btn-icon">📁</span>
+            <span class="btn-text">गॅलरी उघडा</span>
+            <span class="btn-subtext">छायाचित्र निवडा</span>
+          </div>
+        </label>
+        <input type="file" id="file-input" accept="image/*" hidden />
+      </div>
+    </div>
+
+    <!-- Camera Feed -->
+    <div class="camera-container hidden" id="camera-container">
+      <div class="camera-header">
+        <h4>कॅमेरा</h4>
+        <button class="close-camera" id="close-camera">✕</button>
+      </div>
+      <div class="camera-body">
+        <video id="camera-video" autoplay playsinline></video>
+        <canvas id="camera-canvas" hidden></canvas>
+        <div class="camera-overlay">
+          <div class="capture-guide">
+            <div class="guide-frame"></div>
+            <p class="guide-text">पानाला फ्रेममध्ये ठेवा</p>
+          </div>
+        </div>
+      </div>
+      <div class="camera-controls">
+        <button class="camera-control-btn" id="capture-btn">
+          <span class="control-icon">📸</span>
+          <span class="control-text">छायाचित्र काढा</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Image Preview -->
+    <div class="preview-container hidden" id="preview-container">
+      <div class="preview-header">
+        <h4>निवडलेले छायाचित्र</h4>
+        <button class="preview-close" id="preview-close">✕</button>
+      </div>
+      <div class="preview-body">
+        <img id="preview-image" alt="निवडलेले छायाचित्र" class="preview-img" />
+        <div class="preview-info">
+          <div class="info-item">
+            <span class="info-label">आकार:</span>
+            <span class="info-value" id="image-size">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">प्रकार:</span>
+            <span class="info-value" id="image-type">--</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">गुणवत्ता:</span>
+            <span class="info-value" id="image-quality">चांगली</span>
+          </div>
+        </div>
+      </div>
+      <div class="preview-actions">
+        <button class="action-btn secondary-btn" id="retake-btn">
+          <span class="btn-icon">🔄</span>
+          <span class="btn-text">नवीन छायाचित्र</span>
+        </button>
+        <button class="action-btn primary-btn" id="analyze-btn">
+          <span class="btn-icon">🔍</span>
+          <span class="btn-text">आजार ओळखा</span>
+        </button>
+      </div>
+    </div>
+
+<!-- Instructions Section -->
+<section class="instructions-section">
+  <div class="instructions-card">
+    <h3 class="instructions-title">
+      <span class="title-icon">💡</span>
+      चांगल्या परिणामासाठी सूचना
+    </h3>
+    <div class="instructions-grid">
+      <div class="instruction-item">
+        <div class="instruction-icon good">✅</div>
+        <div class="instruction-content">
+          <h4>चांगले छायाचित्र</h4>
+          <ul>
+            <li>स्पष्ट आणि तीक्ष्ण प्रतिमा</li>
+            <li>भरपूर प्रकाश</li>
+            <li>जवळून काढलेले</li>
+            <li>फक्त पान दिसावे</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instruction-item">
+        <div class="instruction-icon bad">❌</div>
+        <div class="instruction-content">
+          <h4>टाळावे</h4>
+          <ul>
+            <li>धुसर किंवा अंधुक प्रतिमा</li>
+            <li>खूप दूरून काढलेले</li>
+            <li>अनेक पाने एकत्र</li>
+            <li>हात किंवा सावली दिसणे</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Recent Diseases Section -->
+<section class="recent-diseases-section">
+  <div class="diseases-card">
+    <h3 class="diseases-title">
+      <span class="title-icon">📊</span>
+      सामान्य ऊस रोग
+    </h3>
+    <div class="diseases-grid" id="common-diseases">
+      <!-- Updated with short info for each disease -->
+      <div class="disease-item">
+          <div class="disease-icon">🔴</div>
+        <div class="disease-info">
+          <h4 class="disease-name">लाल कुजणे</h4>
+          <div class="disease-en">Red Rot</div>
+          <div class="disease-short">खोडाच्या आतील भाग लालसर, पिवळसर पट्टे, दुर्गंधी, झाड वाळते.</div>
+          <span class="disease-severity critical">गंभीर</span>
+        </div>
+      </div>
+      <div class="disease-item">
+          <div class="disease-icon">🟤</div>
+        <div class="disease-info">
+          <h4 class="disease-name">तपकिरी ठिपके</h4>
+          <div class="disease-en">Brown Spot</div>
+          <div class="disease-short">पानांवर तपकिरी गोलाकार ठिपके, पान सुकते.</div>
+          <span class="disease-severity moderate">मध्यम</span>
+        </div>
+      </div>
+      <div class="disease-item">
+        <div class="disease-icon">🟡</div>
+        <div class="disease-info">
+          <h4 class="disease-name">पिवळी पाने</h4>
+          <div class="disease-en">Yellow Leaf</div>
+          <div class="disease-short">पानांवर पिवळसर रंग, वाढ खुंटते, पोषक तत्वांची कमतरता.</div>
+          <span class="disease-severity mild">सामान्य</span>
+        </div>
+      </div>
+      <div class="disease-item">
+        <div class="disease-icon">🌱</div>
+        <div class="disease-info">
+          <h4 class="disease-name">निरोगी पान</h4>
+          <div class="disease-en">Healthy</div>
+          <div class="disease-short">कोणताही रोग नाही, पिक निरोगी आहे.</div>
+          <span class="disease-severity healthy">निरोगी</span>
+        </div>
+      </div>
+    </div>
+    <!-- close diseases-grid -->
+  </div>
+  <!-- close diseases-card -->
+</section>
+<!-- close recent-diseases-section -->
+{% endblock %}

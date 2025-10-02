@@ -1,0 +1,307 @@
+{% extends "base.html" %}
+
+{% block title %}परिणाम - {{ result.diagnosis.disease_name if result else 'निदान' }}{% endblock %}
+
+{% block content %}
+    {% if result and result.success %}
+        <!-- Success Result -->
+        <div class="result-container">
+            <!-- Diagnosis Header -->
+            <section class="diagnosis-header">
+                <div class="diagnosis-card" style="border-left: 6px solid {{ result.display_settings.primary_color or '#4CAF50' }};">
+                    <div class="diagnosis-main">
+                        <div class="diagnosis-icon" style="background-color: {{ result.display_settings.primary_color or '#4CAF50' }};">
+                            {% if result.diagnosis.disease_name_english == 'Healthy' %}🌱
+                            {% elif 'RedRot' in result.diagnosis.disease_name_english %}🔴
+                            {% elif 'Brown' in result.diagnosis.disease_name_english %}🟤
+                            {% elif 'Yellow' in result.diagnosis.disease_name_english %}🟡
+                            {% else %}🦠{% endif %}
+                        </div>
+                        <div class="diagnosis-content">
+                            <h1 class="disease-name">{{ result.diagnosis.disease_name }}</h1>
+                            <h2 class="disease-name-english">{{ result.diagnosis.disease_name_english }}</h2>
+                            <div class="confidence-section">
+                                <span class="confidence-badge" style="background-color: {{ result.display_settings.primary_color }};">
+                                    {{ result.diagnosis.confidence_text }}
+                                </span>
+                                <span class="confidence-level">{{ result.diagnosis.confidence_level }}</span>
+                            </div>
+                            <div class="severity-section">
+                                <span class="severity-badge severity-{{ result.diagnosis.severity.lower() }}">
+                                    {{ result.diagnosis.severity }}
+                                </span>
+                                {% if result.expert_guidance.urgency_required %}
+                                    <span class="urgency-badge urgent">तत्काळ लक्ष द्या!</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Information Grid -->
+            <section class="information-grid">
+                <div class="info-card symptoms-card">
+                    <div class="card-header">
+                        <span class="card-icon">{{ result.farmer_info.symptoms.icon }}</span>
+                        <h3 class="card-title">{{ result.farmer_info.symptoms.title }}</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="basic-info">{{ result.farmer_info.symptoms.basic }}</p>
+                        {% if result.farmer_info.symptoms.detailed %}
+                            <div class="detailed-list">
+                                <h4>तपशीलवार लक्षणे:</h4>
+                                <ul>
+                                    {% for symptom in result.farmer_info.symptoms.detailed %}
+                                        <li>{{ symptom }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-card treatment-card">
+                    <div class="card-header">
+                        <span class="card-icon">{{ result.farmer_info.treatment.icon }}</span>
+                        <h3 class="card-title">{{ result.farmer_info.treatment.title }}</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="treatment-main">{{ result.farmer_info.treatment.content }}</p>
+                        {% if result.farmer_info.treatment.immediate_actions %}
+                            <div class="immediate-actions">
+                                <h4>तत्काळ करावयाचे:</h4>
+                                <ul class="action-list">
+                                    {% for action in result.farmer_info.treatment.immediate_actions %}
+                                        <li class="action-item">{{ action }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-card prevention-card">
+                    <div class="card-header">
+                        <span class="card-icon">{{ result.farmer_info.prevention.icon }}</span>
+                        <h3 class="card-title">{{ result.farmer_info.prevention.title }}</h3>
+                    </div>
+                    <div class="card-content">
+                        <p class="prevention-main">{{ result.farmer_info.prevention.content }}</p>
+                        {% if result.farmer_info.prevention.long_term_care %}
+                            <div class="long-term-care">
+                                <h4>दीर्घकालीन काळजी:</h4>
+                                <ul>
+                                    {% for care in result.farmer_info.prevention.long_term_care %}
+                                        <li>{{ care }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="info-card cost-card">
+                    <div class="card-header">
+                        <span class="card-icon">{{ result.farmer_info.cost_info.icon }}</span>
+                        <h3 class="card-title">{{ result.farmer_info.cost_info.title }}</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="cost-main">{{ result.farmer_info.cost_info.total }}</div>
+                        {% if result.farmer_info.cost_info.breakdown %}
+                            <div class="cost-breakdown">
+                                <h4>खर्चाचा तपशील:</h4>
+                                <div class="breakdown-items">
+                                    {% for key, value in result.farmer_info.cost_info.breakdown.items() %}
+                                        <div class="breakdown-item">
+                                            <span class="item-label">{{ key }}:</span>
+                                            <span class="item-value">{{ value }}</span>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if result.farmer_info.cost_info.timeline %}
+                            <div class="timeline-info">
+                                <h4>वेळेचे नियोजन:</h4>
+                                {% for phase, time in result.farmer_info.cost_info.timeline.items() %}
+                                    <div class="timeline-item">
+                                        <span class="phase">{{ phase }}:</span>
+                                        <span class="time">{{ time }}</span>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </section>
+
+            <section class="action-plan-section">
+                <h2 class="section-title">
+                    <span class="title-icon">📋</span>
+                    कृती योजना
+                </h2>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <div class="action-header">
+                            <span class="action-icon">{{ result.action_plan.next_steps.icon }}</span>
+                            <h3 class="action-title">{{ result.action_plan.next_steps.title }}</h3>
+                        </div>
+                        <ul class="action-list">
+                            {% for step in result.action_plan.next_steps.steps %}
+                                <li class="action-item">{{ step }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="action-card warning-card">
+                        <div class="action-header">
+                            <span class="action-icon">{{ result.action_plan.warning_signs.icon }}</span>
+                            <h3 class="action-title">{{ result.action_plan.warning_signs.title }}</h3>
+                        </div>
+                        <ul class="warning-list">
+                            {% for sign in result.action_plan.warning_signs.signs %}
+                                <li class="warning-item">{{ sign }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <div class="action-card success-card">
+                        <div class="action-header">
+                            <span class="action-icon">{{ result.action_plan.success_indicators.icon }}</span>
+                            <h3 class="action-title">{{ result.action_plan.success_indicators.title }}</h3>
+                        </div>
+                        <ul class="success-list">
+                            {% for indicator in result.action_plan.success_indicators.indicators %}
+                                <li class="success-item">{{ indicator }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            {% if result.expert_guidance.consultation_needed %}
+                <section class="expert-section">
+                    <div class="expert-card urgent">
+                        <div class="expert-header">
+                            <span class="expert-icon">👨‍🌾</span>
+                            <h3 class="expert-title">तज्ञ सल्ला आवश्यक</h3>
+                            <span class="urgency-level">{{ result.expert_guidance.urgency_level }}</span>
+                        </div>
+                        <div class="expert-content">
+                            <p class="expert-advice">{{ result.expert_guidance.when_to_consult }}</p>
+                            <div class="expert-actions">
+                                <a href="tel:1800-XXX-XXXX" class="expert-btn primary">
+                                    <span class="btn-icon">📞</span>
+                                    <span class="btn-text">तत्काळ कॉल करा</span>
+                                </a>
+                                <a href="#local-experts" class="expert-btn secondary">
+                                    <span class="btn-icon">🏥</span>
+                                    <span class="btn-text">स्थानिक तज्ञ</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            {% endif %}
+
+            {% if result.additional_info.alternative_diagnoses %}
+                <section class="alternatives-section">
+                    <h3 class="section-title">
+                        <span class="title-icon">🔍</span>
+                        इतर संभाव्य रोग
+                    </h3>
+                    <div class="alternatives-grid">
+                        {% for alt in result.additional_info.alternative_diagnoses %}
+                            <div class="alternative-item">
+                                <div class="alt-rank">{{ alt.rank }}</div>
+                                <div class="alt-content">
+                                    <h4 class="alt-disease">{{ alt.disease_marathi }}</h4>
+                                    <p class="alt-english">{{ alt.disease_english }}</p>
+                                    <span class="alt-confidence">{{ alt.confidence }}%</span>
+                                    <span class="alt-note">{{ alt.note_marathi }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+
+            <section class="result-actions">
+                <div class="actions-grid">
+                    <button class="action-btn primary-btn" onclick="window.print()">
+                        <span class="btn-icon">🖨️</span>
+                        <span class="btn-text">परिणाम छापा</span>
+                    </button>
+                    <button class="action-btn secondary-btn" onclick="shareResult()">
+                        <span class="btn-icon">📤</span>
+                        <span class="btn-text">शेअर करा</span>
+                    </button>
+                    <a href="{{ url_for('main.home') }}" class="action-btn accent-btn">
+                        <span class="btn-icon">🔄</span>
+                        <span class="btn-text">नवीन तपासणी</span>
+                    </a>
+                    <button class="action-btn info-btn" onclick="saveResult()">
+                        <span class="btn-icon">💾</span>
+                        <span class="btn-text">जतन करा</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    {% else %}
+        <!-- Error State -->
+        <div class="error-container">
+            <div class="error-card">
+                <div class="error-icon">❌</div>
+                <h2 class="error-title">परिणाम उपलब्ध नाहीत</h2>
+                <p class="error-message">
+                    {% if result and result.error %}
+                        {{ result.error.message_marathi }}
+                    {% else %}
+                        कृपया पहिले छायाचित्र अपलोड करा आणि निदान करा
+                    {% endif %}
+                </p>
+                <div class="error-actions">
+                    <a href="{{ url_for('main.home') }}" class="error-btn primary">
+                        <span class="btn-icon">🏠</span>
+                        <span class="btn-text">मुख्य पेजावर जा</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    function shareResult() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'ऊस रोग निदान परिणाम',
+                text: 'माझ्या ऊसाच्या रोगाचे AI निदान पहा',
+                url: window.location.href
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert('परिणामाचा लिंक कॉपी केला!');
+        }
+    }
+
+    function saveResult() {
+        const resultData = JSON.parse('{{ result|tojson|safe if result else "{}" }}');
+        localStorage.setItem('lastSugarcaneResult', JSON.stringify({
+            ...resultData,
+            savedAt: new Date().toISOString()
+        }));
+        alert('परिणाम जतन केले!');
+    }
+
+    window.addEventListener('beforeprint', function() {
+        document.body.classList.add('printing');
+    });
+
+    window.addEventListener('afterprint', function() {
+        document.body.classList.remove('printing');
+    });
+</script>
+{% endblock %}
