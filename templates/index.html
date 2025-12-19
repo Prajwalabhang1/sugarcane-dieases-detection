@@ -3,7 +3,8 @@ endblock %} {% block extra_head %}
 <!-- Camera access permission -->
 <meta name="camera" content="camera" />
 {% endblock %} {% block content %}
-<!-- Welcome Section -->
+<!-- HIDDEN: Welcome Section -->
+<!--
 <section class="welcome-section">
   <div class="welcome-card">
     <div class="welcome-header">
@@ -12,6 +13,8 @@ endblock %} {% block extra_head %}
       <p class="welcome-subtitle">फक्त छायाचित्र काढा आणि तत्काळ निदान मिळवा</p>
     </div>
 
+    <!-- HIDDEN: Features Grid Cards -->
+<!--
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🤖</div>
@@ -41,10 +44,11 @@ endblock %} {% block extra_head %}
 <section class="input-section">
   <div class="input-card">
     <h3 class="input-title">
-      <span class="title-icon">📸</span>
-      ऊसाच्या पानाचे छायाचित्र घ्या
+      <span class="title-icon">🌾</span>
+      ऊस पिकातील आजार ओळखा
     </h3>
-    <p class="input-subtitle">स्पष्ट आणि जवळून काढलेले छायाचित्र वापरा</p>
+    <p class="input-subtitle">पानाचा फोटो अपलोड करा आणि आजाराची माहिती मिळवा</p>
+    <!-- <p class="input-subtitle">✨ स्पष्ट आणि जवळून काढलेले छायाचित्र वापरा ✨</p> -->
 
     <!-- Camera and Upload Options -->
     <div class="input-options">
@@ -54,7 +58,7 @@ endblock %} {% block extra_head %}
           <div class="btn-content">
             <span class="btn-icon">📷</span>
             <span class="btn-text">कॅमेरा उघडा</span>
-            <span class="btn-subtext">छायाचित्र काढा</span>
+            <span class="btn-subtext">🌾 आत्ताच छायाचित्र काढा</span>
           </div>
         </button>
       </div>
@@ -65,7 +69,7 @@ endblock %} {% block extra_head %}
           <div class="btn-content">
             <span class="btn-icon">📁</span>
             <span class="btn-text">गॅलरी उघडा</span>
-            <span class="btn-subtext">छायाचित्र निवडा</span>
+            <span class="btn-subtext">📱 जतन केलेले फोटो निवडा</span>
           </div>
         </label>
         <input type="file" id="file-input" accept="image/*" capture="environment" hidden />
@@ -142,24 +146,24 @@ endblock %} {% block extra_head %}
           <div class="instruction-item">
             <div class="instruction-icon good">✅</div>
             <div class="instruction-content">
-              <h4>चांगले छायाचित्र</h4>
+              <h4>✨ चांगले छायाचित्र</h4>
               <ul>
-                <li>स्पष्ट आणि तीक्ष्ण प्रतिमा</li>
-                <li>भरपूर प्रकाश</li>
-                <li>जवळून काढलेले</li>
-                <li>फक्त पान दिसावे</li>
+                <li>📸 स्पष्ट आणि तीक्ष्ण प्रतिमा</li>
+                <li>💡 भरपूर प्रकाश</li>
+                <li>🔍 जवळून काढलेले</li>
+                <li>🌿 फक्त पान दिसावे</li>
               </ul>
             </div>
           </div>
           <div class="instruction-item">
             <div class="instruction-icon bad">❌</div>
             <div class="instruction-content">
-              <h4>टाळावे</h4>
+              <h4>⚠️ टाळावे</h4>
               <ul>
-                <li>धुसर किंवा अंधुक प्रतिमा</li>
-                <li>खूप दूरून काढलेले</li>
-                <li>अनेक पाने एकत्र</li>
-                <li>हात किंवा सावली दिसणे</li>
+                <li>🌫️ धुसर किंवा अंधुक प्रतिमा</li>
+                <li>📏 खूप दूरून काढलेले</li>
+                <li>🍃 अनेक पाने एकत्र</li>
+                <li>🖐️ हात किंवा सावली दिसणे</li>
               </ul>
             </div>
           </div>
@@ -167,7 +171,8 @@ endblock %} {% block extra_head %}
       </div>
     </section>
 
-    <!-- Recent Diseases Section -->
+    <!-- HIDDEN: Recent Diseases Section -->
+    <!-- 
     <section class="recent-diseases-section">
       <div class="diseases-card">
         <h3 class="diseases-title">
@@ -175,7 +180,6 @@ endblock %} {% block extra_head %}
           सामान्य ऊस रोग
         </h3>
         <div class="diseases-grid" id="common-diseases">
-          <!-- Updated with short info for each disease -->
           <div class="disease-item">
             <div class="disease-icon">🔴</div>
             <div class="disease-info">
@@ -213,9 +217,7 @@ endblock %} {% block extra_head %}
             </div>
           </div>
         </div>
-        <!-- close diseases-grid -->
       </div>
-      <!-- close diseases-card -->
     </section>
-    <!-- close recent-diseases-section -->
+    -->
     {% endblock %}

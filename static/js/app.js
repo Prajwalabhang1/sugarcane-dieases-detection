@@ -1040,47 +1040,39 @@ const SugarcaneApp = {
         <div class="result-container">
             <!-- Main Diagnosis Card -->
             <div class="diagnosis-header">
-                <div class="diagnosis-card" style="border-left-color: ${
-                  result.display_settings?.primary_color || "#4CAF50"
-                }">
+                <div class="diagnosis-card" style="border-left-color: ${result.display_settings?.primary_color || "#4CAF50"
+      }">
                     <div class="diagnosis-main">
-                        <div class="diagnosis-icon" style="background-color: ${
-                          result.display_settings?.primary_color || "#4CAF50"
-                        }20">
+                        <div class="diagnosis-icon" style="background-color: ${result.display_settings?.primary_color || "#4CAF50"
+      }20">
                             ${this.getDiseaseIcon(diagnosis.diseasenameenglish)}
                         </div>
                         <div class="diagnosis-content">
-                            <h2 class="disease-name">${
-                              diagnosis.diseasename || "अज्ञात रोग"
-                            }</h2>
-                            <h3 class="disease-name-english">${
-                              diagnosis.diseasenameenglish || "Unknown"
-                            }</h3>
+                            <h2 class="disease-name">${diagnosis.diseasename || "अज्ञात रोग"
+      }</h2>
+                            <h3 class="disease-name-english">${diagnosis.diseasenameenglish || "Unknown"
+      }</h3>
                             <div class="confidence-section">
-                                <span class="confidence-badge" style="background-color: ${
-                                  result.display_settings?.primary_color ||
-                                  "#4CAF50"
-                                }">
-                                    ${
-                                      diagnosis.confidencetext ||
-                                      diagnosis.confidence + "%"
-                                    }
+                                <span class="confidence-badge" style="background-color: ${result.display_settings?.primary_color ||
+      "#4CAF50"
+      }">
+                                    ${diagnosis.confidencetext ||
+      diagnosis.confidence + "%"
+      }
                                 </span>
-                                <span class="confidence-level">${
-                                  diagnosis.confidencelevel
-                                }</span>
+                                <span class="confidence-level">${diagnosis.confidencelevel
+      }</span>
                             </div>
-                            ${
-                              diagnosis.severity
-                                ? `
+                            ${diagnosis.severity
+        ? `
                                 <div class="severity-section">
                                     <span class="severity-badge severity-${diagnosis.severity.toLowerCase()}">
                                         ${diagnosis.severity}
                                     </span>
                                 </div>
                             `
-                                : ""
-                            }
+        : ""
+      }
                         </div>
                     </div>
                 </div>
@@ -1100,11 +1092,10 @@ const SugarcaneApp = {
             ${this.generateActionPlan(actionPlan)}
 
             <!-- Expert Guidance -->
-            ${
-              result.expert_guidance?.consultation_needed
-                ? this.generateExpertGuidance(result.expert_guidance)
-                : ""
-            }
+            ${result.expert_guidance?.consultation_needed
+        ? this.generateExpertGuidance(result.expert_guidance)
+        : ""
+      }
 
             <!-- Action Buttons -->
             <div class="result-actions">
@@ -1131,26 +1122,26 @@ const SugarcaneApp = {
     `;
   },
 
- // Enhanced Generate Info Card HTML - Replace existing function
-generateInfoCard(type, info, icon, title) {
-  if (!info) return '';
+  // Enhanced Generate Info Card HTML - Replace existing function
+  generateInfoCard(type, info, icon, title) {
+    if (!info) return '';
 
-  // Check for new fields
-  const hasValidBasic = info.basic && info.basic !== "Not available" && info.basic.trim() !== "";
-  const hasValidContent = info.content && info.content !== "Not available" && info.content.trim() !== "";
-  const hasValidTotal = info.total && info.total !== "Not available" && info.total.trim() !== "";
-  const hasValidDetailed = info.detailed && info.detailed.length > 0 && 
-               info.detailed.some(item => item && item !== "Not available" && item.trim() !== "");
-  const hasValidBreakdown = info.breakdown && Object.keys(info.breakdown).length > 0;
-  const hasOrganicSolutions = info.organic_solutions && Array.isArray(info.organic_solutions) && info.organic_solutions.length > 0;
-  const hasImmediateCare = info.immediate_care && Array.isArray(info.immediate_care) && info.immediate_care.length > 0;
-  const hasSolution = info.solution && info.solution !== "Not available" && info.solution.trim() !== "";
-  const hasCostEstimate = info.cost_estimate && info.cost_estimate !== "Not available" && info.cost_estimate.trim() !== "";
-  const hasRecoveryTime = info.recovery_time && info.recovery_time !== "Not available" && info.recovery_time.trim() !== "";
+    // Check for new fields
+    const hasValidBasic = info.basic && info.basic !== "Not available" && info.basic.trim() !== "";
+    const hasValidContent = info.content && info.content !== "Not available" && info.content.trim() !== "";
+    const hasValidTotal = info.total && info.total !== "Not available" && info.total.trim() !== "";
+    const hasValidDetailed = info.detailed && info.detailed.length > 0 &&
+      info.detailed.some(item => item && item !== "Not available" && item.trim() !== "");
+    const hasValidBreakdown = info.breakdown && Object.keys(info.breakdown).length > 0;
+    const hasOrganicSolutions = info.organic_solutions && Array.isArray(info.organic_solutions) && info.organic_solutions.length > 0;
+    const hasImmediateCare = info.immediate_care && Array.isArray(info.immediate_care) && info.immediate_care.length > 0;
+    const hasSolution = info.solution && info.solution !== "Not available" && info.solution.trim() !== "";
+    const hasCostEstimate = info.cost_estimate && info.cost_estimate !== "Not available" && info.cost_estimate.trim() !== "";
+    const hasRecoveryTime = info.recovery_time && info.recovery_time !== "Not available" && info.recovery_time.trim() !== "";
 
-  // If no valid content exists, don't show the card
-  if (!hasValidBasic && !hasValidContent && !hasValidTotal && !hasValidDetailed && !hasValidBreakdown && !hasOrganicSolutions && !hasImmediateCare && !hasSolution && !hasCostEstimate && !hasRecoveryTime) {
-    return `
+    // If no valid content exists, don't show the card
+    if (!hasValidBasic && !hasValidContent && !hasValidTotal && !hasValidDetailed && !hasValidBreakdown && !hasOrganicSolutions && !hasImmediateCare && !hasSolution && !hasCostEstimate && !hasRecoveryTime) {
+      return `
       <div class="info-card ${type}-card no-data">
         <div class="card-header">
           <span class="card-icon">${icon}</span>
@@ -1164,11 +1155,11 @@ generateInfoCard(type, info, icon, title) {
         </div>
       </div>
     `;
-  }
+    }
 
-  // Treatment card: show solution and organic_solutions
-  if (type === 'treatment') {
-    return `
+    // Treatment card: show solution and organic_solutions
+    if (type === 'treatment') {
+      return `
       <div class="info-card ${type}-card">
         <div class="card-header">
           <span class="card-icon">${icon}</span>
@@ -1181,21 +1172,21 @@ generateInfoCard(type, info, icon, title) {
               <h4 class="detail-heading">सेंद्रिय उपाय:</h4>
               <ul class="detail-list">
                 ${info.organic_solutions
-                  .filter(item => item && item !== "Not available" && item.trim() !== "")
-                  .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
-                  .join('')
-                }
+            .filter(item => item && item !== "Not available" && item.trim() !== "")
+            .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
+            .join('')
+          }
               </ul>
             </div>
           ` : ''}
         </div>
       </div>
     `;
-  }
+    }
 
-  // Prevention card: show immediate_care
-  if (type === 'prevention') {
-    return `
+    // Prevention card: show immediate_care
+    if (type === 'prevention') {
+      return `
       <div class="info-card ${type}-card">
         <div class="card-header">
           <span class="card-icon">${icon}</span>
@@ -1207,20 +1198,20 @@ generateInfoCard(type, info, icon, title) {
               <h4 class="detail-heading">तातडीची काळजी:</h4>
               <ul class="detail-list">
                 ${info.immediate_care
-                  .filter(item => item && item !== "Not available" && item.trim() !== "")
-                  .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
-                  .join('')
-                }
+            .filter(item => item && item !== "Not available" && item.trim() !== "")
+            .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
+            .join('')
+          }
               </ul>
             </div>
           ` : ''}
         </div>
       </div>
     `;
-  }
+    }
 
-  // Default rendering for other cards
-  return `
+    // Default rendering for other cards
+    return `
     <div class="info-card ${type}-card">
       <div class="card-header">
         <span class="card-icon">${icon}</span>
@@ -1242,10 +1233,10 @@ generateInfoCard(type, info, icon, title) {
             <h4 class="detail-heading">तपशील:</h4>
             <ul class="detail-list">
               ${info.detailed
-                .filter(item => item && item !== "Not available" && item.trim() !== "")
-                .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
-                .join('')
-              }
+          .filter(item => item && item !== "Not available" && item.trim() !== "")
+          .map(item => `<li class="detail-item">${item.replace(/\n/g, '<br>')}</li>`)
+          .join('')
+        }
             </ul>
           </div>
         ` : ''}
@@ -1256,21 +1247,21 @@ generateInfoCard(type, info, icon, title) {
             <h4 class="breakdown-heading">खर्चाचा तपशील:</h4>
             <div class="breakdown-items">
               ${Object.entries(info.breakdown)
-                .filter(([key, value]) => value && value !== "Not available")
-                .map(([key, value]) => `
+          .filter(([key, value]) => value && value !== "Not available")
+          .map(([key, value]) => `
                   <div class="breakdown-item">
                     <span class="item-label">${key}:</span>
                     <span class="item-value">${value}</span>
                   </div>
                 `).join('')
-              }
+        }
             </div>
           </div>
         ` : ''}
       </div>
     </div>
   `;
-},
+  },
 
 
 
@@ -1285,54 +1276,50 @@ generateInfoCard(type, info, icon, title) {
                 कृती आराखडा
             </h2>
             <div class="action-grid">
-                ${
-                  actionPlan.nextsteps
-                    ? `
+                ${actionPlan.nextsteps
+        ? `
                     <div class="action-card">
                         <div class="action-header">
                             <span class="action-icon">➡️</span>
                             <h3 class="action-title">पुढील पावले</h3>
                         </div>
                         <ul class="action-list">
-                            ${
-                              actionPlan.nextsteps.steps
-                                ? actionPlan.nextsteps.steps
-                                    .map(
-                                      (step) =>
-                                        `<li class="action-item">${step}</li>`
-                                    )
-                                    .join("")
-                                : ""
-                            }
+                            ${actionPlan.nextsteps.steps
+          ? actionPlan.nextsteps.steps
+            .map(
+              (step) =>
+                `<li class="action-item">${step}</li>`
+            )
+            .join("")
+          : ""
+        }
                         </ul>
                     </div>
                 `
-                    : ""
-                }
-                ${
-                  actionPlan.warning_signs
-                    ? `
+        : ""
+      }
+                ${actionPlan.warning_signs
+        ? `
                     <div class="action-card warning-card">
                         <div class="action-header">
                             <span class="action-icon">⚠️</span>
                             <h3 class="action-title">चेतावणी चिन्हे</h3>
                         </div>
                         <ul class="warning-list">
-                            ${
-                              actionPlan.warning_signs.signs
-                                ? actionPlan.warning_signs.signs
-                                    .map(
-                                      (sign) =>
-                                        `<li class="warning-item">${sign}</li>`
-                                    )
-                                    .join("")
-                                : ""
-                            }
+                            ${actionPlan.warning_signs.signs
+          ? actionPlan.warning_signs.signs
+            .map(
+              (sign) =>
+                `<li class="warning-item">${sign}</li>`
+            )
+            .join("")
+          : ""
+        }
                         </ul>
                     </div>
                 `
-                    : ""
-                }
+        : ""
+      }
             </div>
         </div>
     `;
@@ -1342,25 +1329,21 @@ generateInfoCard(type, info, icon, title) {
   generateExpertGuidance(expertGuidance) {
     return `
             <div class="expert-section">
-                <div class="expert-card ${
-                  expertGuidance.urgency_required ? "urgent" : ""
-                }">
+                <div class="expert-card ${expertGuidance.urgency_required ? "urgent" : ""
+      }">
                     <div class="expert-header">
                         <span class="expert-icon">👨‍🌾</span>
-                        <h3 class="expert-title">तज्ञ सल्ला ${
-                          expertGuidance.urgency_required
-                            ? "(तत्काळ आवश्यक)"
-                            : ""
-                        }</h3>
-                        <span class="urgency-level">${
-                          expertGuidance.urgency_level || ""
-                        }</span>
+                        <h3 class="expert-title">तज्ञ सल्ला ${expertGuidance.urgency_required
+        ? "(तत्काळ आवश्यक)"
+        : ""
+      }</h3>
+                        <span class="urgency-level">${expertGuidance.urgency_level || ""
+      }</span>
                     </div>
                     <div class="expert-content">
-                        <p class="expert-advice">${
-                          expertGuidance.when_to_consult ||
-                          "तज्ञांचा सल्ला घेण्याची शिफारस"
-                        }</p>
+                        <p class="expert-advice">${expertGuidance.when_to_consult ||
+      "तज्ञांचा सल्ला घेण्याची शिफारस"
+      }</p>
                         <div class="expert-actions">
                             <a href="tel:1800-XXX-XXXX" class="expert-btn primary">
                                 <span class="btn-icon">📞</span>
@@ -1535,7 +1518,7 @@ generateInfoCard(type, info, icon, title) {
     }
   },
 
-  // Share Result
+  // Enhanced Share Result with Detailed Information
   async shareResult() {
     if (!this.state.currentPrediction) {
       this.showToast("शेअर करण्यासाठी कोणताही परिणाम नाही", "warning");
@@ -1543,35 +1526,94 @@ generateInfoCard(type, info, icon, title) {
     }
 
     const result = this.state.currentPrediction;
-    const shareData = {
-      title: "ऊस एकरी १०० टन - रोग निदान परिणाम",
-      text: `माझ्या ऊसाच्या रोगाचे AI निदान: ${
-        result.diagnosis?.disease_name || "अज्ञात रोग"
-      } (${result.diagnosis?.confidence || 0}% विश्वास)`,
-      url: window.location.href,
-    };
+    const diagnosis = result.diagnosis || {};
+    const farmerInfo = result.farmerinfo || {};
+
+    // Create detailed share text
+    const shareText = this.createDetailedShareText(result);
 
     try {
-      if (
-        navigator.share &&
-        navigator.canShare &&
-        navigator.canShare(shareData)
-      ) {
-        await navigator.share(shareData);
-        this.showToast("परिणाम यशस्वीरित्या शेअर केले!", "success");
-      } else {
-        // Fallback: Copy to clipboard
-        const shareText = `${shareData.title}\n\n${shareData.text}\n\n${shareData.url}`;
-        await this.copyToClipboard(shareText);
-        this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले!", "success");
+      // Try to share with Web Share API (modern mobile browsers)
+      if (navigator.share) {
+        const shareData = {
+          title: "🌾 ऊस एकरी १०० टन - रोग निदान परिणाम",
+          text: shareText,
+        };
+
+        // Check if we can share files (for PDF)
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+          this.showToast("परिणाम यशस्वीरित्या शेअर केले!", "success");
+          return;
+        }
       }
+
+      // Fallback: Copy detailed text to clipboard
+      await this.copyToClipboard(shareText);
+      this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले! आता कुठेही पेस्ट करा", "success");
+
     } catch (error) {
       console.error("Share error:", error);
-      this.showToast("शेअर करण्यात त्रुटी", "error");
+      // Final fallback: copy to clipboard
+      try {
+        await this.copyToClipboard(shareText);
+        this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले!", "info");
+      } catch (clipError) {
+        this.showToast("शेअर करण्यात त्रुटी", "error");
+      }
     }
   },
 
-  // Save Result to PDF
+  // Create Detailed Share Text
+  createDetailedShareText(result) {
+    const diagnosis = result.diagnosis || {};
+    const farmerInfo = result.farmerinfo || {};
+    const actionPlan = result.actionplan || {};
+
+    let shareText = `🌾 ऊस एकरी १०० टन - AI रोग निदान परिणाम\n`;
+    shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    // Disease Information
+    shareText += `📋 निदान:\n`;
+    shareText += `रोग: ${diagnosis.diseasename || "अज्ञात"}\n`;
+    if (diagnosis.diseasenameenglish) {
+      shareText += `English: ${diagnosis.diseasenameenglish}\n`;
+    }
+    shareText += `विश्वास: ${diagnosis.confidence || 0}%\n`;
+    shareText += `गंभीरता: ${diagnosis.severity || "मध्यम"}\n\n`;
+
+    // Key Symptoms
+    if (farmerInfo.symptoms?.symptoms) {
+      shareText += `🔍 मुख्य लक्षणे:\n${farmerInfo.symptoms.symptoms}\n\n`;
+    }
+
+    // Treatment Summary
+    if (farmerInfo.treatment?.solution) {
+      shareText += `💊 उपचार:\n${farmerInfo.treatment.solution.substring(0, 150)}...\n\n`;
+    }
+
+    // Cost Information
+    if (farmerInfo.costinfo?.cost_estimate) {
+      shareText += `💰 अंदाजित खर्च: ${farmerInfo.costinfo.cost_estimate}\n`;
+    }
+    if (farmerInfo.costinfo?.recovery_time) {
+      shareText += `⏱️ सुधारण्याचा कालावधी: ${farmerInfo.costinfo.recovery_time}\n`;
+    }
+
+    // Important Note
+    shareText += `\n⚠️ महत्वाची सूचना:\n`;
+    shareText += `हे निदान AI तंत्रज्ञानावर आधारित आहे.\n`;
+    shareText += `कृपया कृषी तज्ञांचा सल्ला घ्या.\n\n`;
+
+    // Footer
+    shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+    shareText += `🤖 Powered by Chordz Technologies\n`;
+    shareText += `📅 ${new Date().toLocaleDateString('mr-IN')}\n`;
+
+    return shareText;
+  },
+
+  // Save Result to PDF - HTML-Based for Marathi Support
   async saveResultToPDF() {
     if (!this.state.currentPrediction) {
       this.showToast("PDF साठवण्यासाठी कोणताही परिणाम नाही", "warning");
@@ -1581,41 +1623,22 @@ generateInfoCard(type, info, icon, title) {
     try {
       this.showLoadingOverlay("PDF तयार करत आहे...");
 
-      // Create printable version
-      const printContent = this.createPrintableContent(
-        this.state.currentPrediction
-      );
+      // Create HTML content with proper Marathi font support
+      const printContent = this.createPrintableContent(this.state.currentPrediction);
 
-      // Open print dialog
-      const printWindow = window.open("", "_blank");
-      printWindow.document.write(`
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <title>ऊस रोग निदान परिणाम</title>
-                    <meta charset="UTF-8">
-                    <style>
-                        body { font-family: 'Noto Sans Devanagari', Arial, sans-serif; margin: 20px; }
-                        .header { text-align: center; border-bottom: 2px solid #4CAF50; padding-bottom: 20px; margin-bottom: 30px; }
-                        .diagnosis { background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0; }
-                        .info-section { margin: 20px 0; padding: 15px; border-left: 4px solid #4CAF50; }
-                        .footer { margin-top: 50px; text-align: center; color: #666; font-size: 12px; }
-                        @media print { body { margin: 0; } }
-                    </style>
-                </head>
-                <body>${printContent}</body>
-                </html>
-            `);
+      // Check if mobile device
+      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
-      printWindow.document.close();
-      printWindow.focus();
+      if (isMobile) {
+        // Mobile: Show HTML preview in modal with print option
+        this.showHTMLPDFPreview(printContent);
+      } else {
+        // Desktop: Open in new window and print
+        this.openPrintWindow(printContent);
+      }
 
-      setTimeout(() => {
-        printWindow.print();
-        printWindow.close();
-        this.hideLoadingOverlay();
-        this.showToast("PDF साठवण्यासाठी तयार!", "success");
-      }, 1000);
+      this.hideLoadingOverlay();
+
     } catch (error) {
       console.error("PDF creation error:", error);
       this.hideLoadingOverlay();
@@ -1623,42 +1646,329 @@ generateInfoCard(type, info, icon, title) {
     }
   },
 
+  // Show HTML PDF Preview (Mobile) - Supports Marathi properly
+  showHTMLPDFPreview(htmlContent) {
+    const fileName = this.generatePDFFilename();
+
+    // Create full HTML document
+    const fullHTML = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ऊस रोग निदान परिणाम</title>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+          body { 
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            margin: 0;
+            padding: 20px;
+            background: white;
+          }
+          .header { 
+            text-align: center; 
+            border-bottom: 2px solid #4CAF50; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+          }
+          .header h1 { color: #4CAF50; margin-bottom: 10px; }
+          .header h2 { color: #666; margin-bottom: 15px; }
+          .diagnosis-section { 
+            background: #f8f9fa; 
+            padding: 20px; 
+            border-radius: 8px; 
+            margin-bottom: 25px; 
+          }
+          .info-section { 
+            margin-bottom: 25px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid #eee; 
+          }
+          .info-section h3 { 
+            color: #2c3e50; 
+            border-left: 4px solid #4CAF50; 
+            padding-left: 10px; 
+            margin-bottom: 15px; 
+          }
+          .detail-content { margin-left: 20px; color: #555; }
+          .recommendations ul { padding-left: 20px; }
+          .recommendations li { margin-bottom: 8px; }
+          .footer { 
+            margin-top: 40px; 
+            padding-top: 20px; 
+            border-top: 2px solid #4CAF50; 
+            text-align: center; 
+            color: #666; 
+          }
+          .contact-info { margin-bottom: 20px; }
+          @media print {
+            body { margin: 0; padding: 15px; }
+            .no-print { display: none; }
+          }
+        </style>
+      </head>
+      <body>
+        ${htmlContent}
+      </body>
+      </html>
+    `;
+
+    // Create blob URL
+    const blob = new Blob([fullHTML], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'pdf-preview-modal';
+    modal.innerHTML = `
+      <div class="pdf-preview-content">
+        <div class="pdf-preview-header">
+          <h3>📄 PDF पूर्वावलोकन</h3>
+          <button class="pdf-close-btn" onclick="this.closest('.pdf-preview-modal').remove(); URL.revokeObjectURL('${url}');">
+            ✕
+          </button>
+        </div>
+        <div class="pdf-preview-body">
+          <iframe src="${url}" class="pdf-viewer" frameborder="0"></iframe>
+        </div>
+        <div class="pdf-preview-actions">
+          <button class="pdf-action-btn download-btn" id="html-pdf-print-btn">
+            <span class="btn-icon">📥</span>
+            <span class="btn-text">PDF साठवा</span>
+          </button>
+          <button class="pdf-action-btn share-btn" id="html-pdf-share-btn">
+            <span class="btn-icon">📤</span>
+            <span class="btn-text">शेअर करा</span>
+          </button>
+        </div>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    // Add event listeners
+    document.getElementById('html-pdf-print-btn').onclick = () => {
+      // Get iframe and trigger print
+      const iframe = modal.querySelector('.pdf-viewer');
+      if (iframe && iframe.contentWindow) {
+        iframe.contentWindow.print();
+        this.showToast('PDF साठवण्यासाठी Print ते Save as PDF निवडा', 'info', 4000);
+      }
+    };
+
+    document.getElementById('html-pdf-share-btn').onclick = async () => {
+      // Create comprehensive share message from current prediction
+      const result = this.state.currentPrediction;
+      const diagnosis = result?.diagnosis || {};
+      const farmerInfo = result?.farmerinfo || {};
+      const actionPlan = result?.actionplan || {};
+
+      // Build detailed share text
+      let shareText = `🌾 *ऊस एकरी १०० टन - रोग निदान रिपोर्ट*\n`;
+      shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+      // Diagnosis
+      shareText += `📋 *निदान परिणाम:*\n`;
+      shareText += `रोग: ${diagnosis.diseasename || 'अज्ञात'}\n`;
+      if (diagnosis.diseasenameenglish) {
+        shareText += `English: ${diagnosis.diseasenameenglish}\n`;
+      }
+      shareText += `विश्वास: ${diagnosis.confidence || 0}%\n`;
+      shareText += `गंभीरता: ${diagnosis.severity || 'मध्यम'}\n\n`;
+
+      // Symptoms
+      if (farmerInfo.symptoms?.symptoms) {
+        shareText += `🔍 *मुख्य लक्षणे:*\n${farmerInfo.symptoms.symptoms}\n\n`;
+      }
+
+      // Treatment
+      if (farmerInfo.treatment?.solution) {
+        const treatmentSummary = farmerInfo.treatment.solution.length > 200
+          ? farmerInfo.treatment.solution.substring(0, 200) + '...'
+          : farmerInfo.treatment.solution;
+        shareText += `💊 *उपचार:*\n${treatmentSummary}\n\n`;
+      }
+
+      // Cost Info
+      if (farmerInfo.costinfo?.cost_estimate) {
+        shareText += `💰 *अंदाजित खर्च:* ${farmerInfo.costinfo.cost_estimate}\n`;
+      }
+      if (farmerInfo.costinfo?.recovery_time) {
+        shareText += `⏱️ *सुधारण्याचा कालावधी:* ${farmerInfo.costinfo.recovery_time}\n`;
+      }
+      if (farmerInfo.costinfo?.cost_estimate || farmerInfo.costinfo?.recovery_time) {
+        shareText += `\n`;
+      }
+
+      // Action Plan
+      if (actionPlan.nextsteps?.steps && actionPlan.nextsteps.steps.length > 0) {
+        shareText += `📋 *पुढील पावले:*\n`;
+        actionPlan.nextsteps.steps.slice(0, 3).forEach((step, idx) => {
+          shareText += `${idx + 1}. ${step}\n`;
+        });
+        shareText += `\n`;
+      }
+
+      // Important Notes
+      shareText += `⚠️ *महत्वाची सूचना:*\n`;
+      shareText += `• हे निदान AI तंत्रज्ञानावर आधारित आहे\n`;
+      shareText += `• कृपया कृषी तज्ञांचा सल्ला घ्या\n`;
+      if (diagnosis.confidence && diagnosis.confidence < 60) {
+        shareText += `• विश्वासार्हता कमी आहे - तज्ञ सल्ला आवश्यक\n`;
+      }
+      shareText += `\n`;
+
+      // Contact Info
+      shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+      shareText += `📞 *संपर्क:*\n`;
+      shareText += `📧 chordzconnect@gmail.com\n`;
+      shareText += `📱 +91 7517311326\n\n`;
+      shareText += `🤖 Powered by Chordz Technologies\n`;
+      shareText += `📅 ${new Date().toLocaleDateString('mr-IN')}\n`;
+
+      // Try to share
+      try {
+        if (navigator.share) {
+          await navigator.share({
+            title: '🌾 ऊस रोग निदान रिपोर्ट',
+            text: shareText
+          });
+          this.showToast('परिणाम यशस्वीरित्या शेअर केले!', 'success');
+        } else {
+          // Fallback to clipboard
+          await this.copyToClipboard(shareText);
+          this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता कुठेही पेस्ट करा', 'success', 3500);
+        }
+      } catch (error) {
+        console.error('Share error:', error);
+        // Try clipboard as final fallback
+        try {
+          await this.copyToClipboard(shareText);
+          this.showToast('माहिती कॉपी केली', 'info');
+        } catch (clipError) {
+          this.showToast('शेअर करण्यात त्रुटी', 'error');
+        }
+      }
+    };
+    // Show success message
+    this.showToast('PDF पूर्वावलोकन तयार!', 'success');
+  },
+
+  // Open Print Window (Desktop)
+  openPrintWindow(htmlContent) {
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>ऊस रोग निदान परिणाम</title>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+        <style>
+          body { 
+            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
+            margin: 20px; 
+          }
+          .header { 
+            text-align: center; 
+            border-bottom: 2px solid #4CAF50; 
+            padding-bottom: 20px; 
+            margin-bottom: 30px; 
+          }
+          .diagnosis { 
+            background: #f5f5f5; 
+            padding: 20px; 
+            border-radius: 10px; 
+            margin: 20px 0; 
+          }
+          .info-section { 
+            margin: 20px 0; 
+            padding: 15px; 
+            border-left: 4px solid #4CAF50; 
+          }
+          .footer { 
+            margin-top: 50px; 
+            text-align: center; 
+            color: #666; 
+            font-size: 12px; 
+          }
+          @media print { 
+            body { margin: 0; } 
+          }
+        </style>
+      </head>
+      <body>${htmlContent}</body>
+      </html>
+    `);
+
+    printWindow.document.close();
+    printWindow.focus();
+
+    setTimeout(() => {
+      printWindow.print();
+      this.showToast("PDF साठवण्यासाठी Save as PDF निवडा", "info", 3500);
+    }, 500);
+  },
+
+  // Download PDF
+  downloadPDF(blob, fileName) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  },
+
+  // Generate PDF Filename
+  generatePDFFilename() {
+    const result = this.state.currentPrediction;
+    const diagnosis = result?.diagnosis || {};
+    const diseaseName = (diagnosis.diseasenameenglish || diagnosis.diseasename || 'Report')
+      .replace(/[^a-zA-Z0-9]/g, '_');
+    const date = new Date().toISOString().split('T')[0];
+    return `Sugarcane_Disease_${diseaseName}_${date}.pdf`;
+  },
+
   // Create Printable Content - Updated Version
-createPrintableContent(result) {
+  createPrintableContent(result) {
     const diagnosis = result.diagnosis || {};
     const farmerInfo = result.farmerinfo || {}; // Note: 'farmerinfo' not 'farmer_info'
     const actionPlan = result.actionplan || {};
 
-  // Helper function to check if content is valid
-  const isValidContent = (content) => {
-    return content && content !== "Not available" && content.trim() !== "";
-  };
+    // Helper function to check if content is valid
+    const isValidContent = (content) => {
+      return content && content !== "Not available" && content.trim() !== "";
+    };
 
-  // Helper function to format detailed list
-  const formatDetailedList = (detailed) => {
-    if (!detailed || !Array.isArray(detailed)) return "";
-    const validItems = detailed.filter(item => isValidContent(item));
-    if (validItems.length === 0) return "";
-    return validItems.map(item => `• ${item}`).join('<br>');
-  };
+    // Helper function to format detailed list
+    const formatDetailedList = (detailed) => {
+      if (!detailed || !Array.isArray(detailed)) return "";
+      const validItems = detailed.filter(item => isValidContent(item));
+      if (validItems.length === 0) return "";
+      return validItems.map(item => `• ${item}`).join('<br>');
+    };
 
-  // Helper for organic solutions
-  const formatOrganicSolutions = (organic) => {
-    if (!organic || !Array.isArray(organic)) return "";
-    const validItems = organic.filter(item => isValidContent(item));
-    if (validItems.length === 0) return "";
-    return `<div class="organic-solutions"><strong>सेंद्रिय उपाय:</strong><br>${validItems.map(item => `• ${item}`).join('<br>')}</div>`;
-  };
+    // Helper for organic solutions
+    const formatOrganicSolutions = (organic) => {
+      if (!organic || !Array.isArray(organic)) return "";
+      const validItems = organic.filter(item => isValidContent(item));
+      if (validItems.length === 0) return "";
+      return `<div class="organic-solutions"><strong>सेंद्रिय उपाय:</strong><br>${validItems.map(item => `• ${item}`).join('<br>')}</div>`;
+    };
 
-  // Helper for immediate care
-  const formatImmediateCare = (care) => {
-    if (!care || !Array.isArray(care)) return "";
-    const validItems = care.filter(item => isValidContent(item));
-    if (validItems.length === 0) return "";
-    return `<div class="immediate-care"><strong>तातडीची काळजी:</strong><br>${validItems.map(item => `• ${item}`).join('<br>')}</div>`;
-  };
+    // Helper for immediate care
+    const formatImmediateCare = (care) => {
+      if (!care || !Array.isArray(care)) return "";
+      const validItems = care.filter(item => isValidContent(item));
+      if (validItems.length === 0) return "";
+      return `<div class="immediate-care"><strong>तातडीची काळजी:</strong><br>${validItems.map(item => `• ${item}`).join('<br>')}</div>`;
+    };
 
-  return `
+    return `
     <div class="printable-content">
       <div class="header">
         <h1>🌾 ऊस एकरी १०० टन</h1>
@@ -1681,22 +1991,22 @@ createPrintableContent(result) {
             
       <div class="info-section symptoms-section">
         <h3>🔍 रोगाची लक्षणे</h3>
-        ${isValidContent(farmerInfo.symptoms?.symptoms) ? 
-          `<p><strong>मुख्य लक्षणे:</strong> ${farmerInfo.symptoms.symptoms}</p>` : ''
-        }
-        ${formatDetailedList(farmerInfo.symptoms?.detailed) ? 
-          `<div class="detailed-info">
+        ${isValidContent(farmerInfo.symptoms?.symptoms) ?
+        `<p><strong>मुख्य लक्षणे:</strong> ${farmerInfo.symptoms.symptoms}</p>` : ''
+      }
+        ${formatDetailedList(farmerInfo.symptoms?.detailed) ?
+        `<div class="detailed-info">
             <p><strong>तपशीलवार लक्षणे:</strong></p>
             <div class="detail-content">${formatDetailedList(farmerInfo.symptoms.detailed)}</div>
           </div>` : ''
-        }
+      }
       </div>
             
       <div class="info-section treatment-section">
         <h3>💊 उपचार पद्धती</h3>
-        ${isValidContent(farmerInfo.treatment?.solution) ? 
-          `<div class="treatment-content"><strong>मुख्य उपाय:</strong><br>${farmerInfo.treatment.solution.replace(/\n/g, '<br>')}</div>` : ''
-        }
+        ${isValidContent(farmerInfo.treatment?.solution) ?
+        `<div class="treatment-content"><strong>मुख्य उपाय:</strong><br>${farmerInfo.treatment.solution.replace(/\n/g, '<br>')}</div>` : ''
+      }
         ${formatOrganicSolutions(farmerInfo.treatment?.organic_solutions)}
       </div>
             
@@ -1707,12 +2017,12 @@ createPrintableContent(result) {
             
       <div class="info-section cost-section">
         <h3>💰 अंदाजित खर्च</h3>
-        ${isValidContent(farmerInfo.costinfo?.cost_estimate) ? 
-          `<p><strong>खर्चाचा अंदाज:</strong> ${farmerInfo.costinfo.cost_estimate}</p>` : ''
-        }
-        ${isValidContent(farmerInfo.costinfo?.recovery_time) ? 
-          `<p><strong>सुधारण्याचा कालावधी:</strong> ${farmerInfo.costinfo.recovery_time}</p>` : ''
-        }
+        ${isValidContent(farmerInfo.costinfo?.cost_estimate) ?
+        `<p><strong>खर्चाचा अंदाज:</strong> ${farmerInfo.costinfo.cost_estimate}</p>` : ''
+      }
+        ${isValidContent(farmerInfo.costinfo?.recovery_time) ?
+        `<p><strong>सुधारण्याचा कालावधी:</strong> ${farmerInfo.costinfo.recovery_time}</p>` : ''
+      }
       </div>
             
       ${actionPlan.nextsteps?.steps && actionPlan.nextsteps.steps.length > 0 ? `
@@ -1732,17 +2042,17 @@ createPrintableContent(result) {
           <li>कृपया कृषी तज्ञांचा सल्ला घ्या</li>
           <li>उपचार सुरू करण्यापूर्वी स्थानिक कृषी सल्लागारांशी संपर्क करा</li>
           <li>नियमित तपासणी करत राहा</li>
-          ${diagnosis.confidence && diagnosis.confidence < 50 ? 
-            '<li style="color: #ff6b35;"><strong>विश्वासार्हता कमी आहे - तज्ञांचा सल्ला आवश्यक</strong></li>' : ''
-          }
+          ${diagnosis.confidence && diagnosis.confidence < 50 ?
+        '<li style="color: #ff6b35;"><strong>विश्वासार्हता कमी आहे - तज्ञांचा सल्ला आवश्यक</strong></li>' : ''
+      }
         </ul>
       </div>
             
       <div class="footer">
         <div class="contact-info">
           <p><strong>संपर्क माहिती:</strong></p>
-          <p>📧 Email: support@chordztechnologies.com</p>
-          <p>📱 Phone: +91 XXXXX XXXXX</p>
+          <p>📧 Email: chordzconnect@gmail.com</p>
+          <p>📱 Phone: +91 7517311326</p>
         </div>
         <div class="copyright">
           <p>© 2025 Chordz Technologies | ऊस एकरी १०० टन</p>
@@ -1831,8 +2141,8 @@ createPrintableContent(result) {
       }
     </style>
   `;
-}
-,
+  }
+  ,
 
   // Get Expert Help
   getExpertHelp() {
@@ -2111,13 +2421,11 @@ createPrintableContent(result) {
 
     // Update tooltip with more details
     if (health.system_status) {
-      const tooltip = `AI मॉडेल: ${
-        health.system_status.model_loaded ? "तयार" : "लोड नाही"
-      }\nरोग डेटा: ${
-        health.system_status.diseases_available || 0
-      }\nशेवटची तपासणी: ${new Date(
-        this.state.lastHealthCheck
-      ).toLocaleTimeString("mr-IN")}`;
+      const tooltip = `AI मॉडेल: ${health.system_status.model_loaded ? "तयार" : "लोड नाही"
+        }\nरोग डेटा: ${health.system_status.diseases_available || 0
+        }\nशेवटची तपासणी: ${new Date(
+          this.state.lastHealthCheck
+        ).toLocaleTimeString("mr-IN")}`;
       statusIndicator.title = tooltip;
     }
   },
@@ -2158,14 +2466,14 @@ createPrintableContent(result) {
       diseaseElement.className = "disease-item";
       diseaseElement.innerHTML = `
                 <div class="disease-icon">${this.getDiseaseIcon(
-                  disease.english_name
-                )}</div>
+        disease.english_name
+      )}</div>
                 <div class="disease-info">
                     <h4 class="disease-name">${disease.marathi_name}</h4>
                     <p class="disease-desc">${disease.english_name}</p>
                     <span class="disease-severity ${this.getSeverityClass(
-                      disease
-                    )}">
+        disease
+      )}">
                         ${this.getSeverityText(disease)}
                     </span>
                 </div>
@@ -2207,14 +2515,13 @@ createPrintableContent(result) {
       diseaseElement.className = "disease-item";
       diseaseElement.innerHTML = `
                 <div class="disease-icon">${this.getDiseaseIcon(
-                  disease.english_name
-                )}</div>
+        disease.english_name
+      )}</div>
                 <div class="disease-info">
                     <h4 class="disease-name">${disease.marathi_name}</h4>
                     <p class="disease-desc">${disease.english_name}</p>
-                    <span class="disease-severity ${
-                      disease.emergency ? "critical" : "moderate"
-                    }">
+                    <span class="disease-severity ${disease.emergency ? "critical" : "moderate"
+        }">
                         ${disease.emergency ? "गंभीर" : "मध्यम"}
                     </span>
                 </div>
@@ -2250,21 +2557,17 @@ createPrintableContent(result) {
                 </div>
                 <div class="disease-modal-body">
                     <p><strong>English:</strong> ${disease.english_name}</p>
-                    <p><strong>वैज्ञानिक नाव:</strong> ${
-                      disease.scientific_name || "माहिती नाही"
-                    }</p>
+                    <p><strong>वैज्ञानिक नाव:</strong> ${disease.scientific_name || "माहिती नाही"
+      }</p>
                     <p><strong>गंभीरता:</strong> ${this.getSeverityText(
-                      disease
-                    )}</p>
-                    <p><strong>सामान्यता:</strong> ${
-                      disease.common ? "सामान्य" : "दुर्मिळ"
-                    }</p>
-                    <p><strong>प्रतिबंधक:</strong> ${
-                      disease.preventable ? "होय" : "नाही"
-                    }</p>
-                    <p><strong>उपचार शक्य:</strong> ${
-                      disease.treatable ? "होय" : "नाही"
-                    }</p>
+        disease
+      )}</p>
+                    <p><strong>सामान्यता:</strong> ${disease.common ? "सामान्य" : "दुर्मिळ"
+      }</p>
+                    <p><strong>प्रतिबंधक:</strong> ${disease.preventable ? "होय" : "नाही"
+      }</p>
+                    <p><strong>उपचार शक्य:</strong> ${disease.treatable ? "होय" : "नाही"
+      }</p>
                 </div>
                 <div class="disease-modal-footer">
                     <button class="btn btn-primary" onclick="this.closest('.disease-modal').remove()">
@@ -2308,18 +2611,30 @@ createPrintableContent(result) {
     }
   },
 
-  // Toast Notifications
-  showToast(message, type = "info", duration = 5000) {
-    // Create toast element
-    const toast = document.createElement("div");
-    toast.className = `flash-message flash-${type}`;
-    toast.innerHTML = `
-            <span class="flash-icon">${this.getToastIcon(type)}</span>
-            <span class="flash-text">${message}</span>
-            <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
-        `;
+  // Smart Toast Notification System - Farmer Friendly (Max 2)
+  showToast(message, type = "info", duration = 2500) {
+    // Priority system: error (4) > warning (3) > success (2) > info (1)
+    const priorityMap = {
+      'error': 4,
+      'warning': 3,
+      'success': 2,
+      'info': 1
+    };
 
-    // Add to container
+    const priority = priorityMap[type] || 1;
+
+    // Check for duplicate recent message (within last 2 seconds)
+    const now = Date.now();
+    if (this._lastToast &&
+      this._lastToast.message === message &&
+      now - this._lastToast.timestamp < 2000) {
+      return; // Skip duplicate
+    }
+
+    // Update last toast tracker
+    this._lastToast = { message, timestamp: now };
+
+    // Get or create container
     let container = document.querySelector(".flash-messages");
     if (!container) {
       container = document.createElement("div");
@@ -2327,23 +2642,60 @@ createPrintableContent(result) {
       document.body.appendChild(container);
     }
 
-    container.appendChild(toast);
+    // STRICT LIMIT: Maximum 2 notifications at a time
+    const existingToasts = container.querySelectorAll('.flash-message');
 
-    // Auto remove
+    if (existingToasts.length >= 2) {
+      // Always remove the oldest (first) notification when we have 2
+      const oldestToast = existingToasts[0];
+      oldestToast.style.opacity = "0";
+      oldestToast.style.transform = "translateX(100%)";
+      setTimeout(() => oldestToast.remove(), 150);
+    } else if (existingToasts.length === 1) {
+      // If there's 1 notification, check if we should replace it
+      const currentToast = existingToasts[0];
+      const currentPriority = parseInt(currentToast.dataset.priority || '1');
+
+      // Only replace single notification if new one is much more important (error)
+      if (priority === 4 && currentPriority < 4) {
+        currentToast.style.opacity = "0";
+        currentToast.style.transform = "translateX(100%)";
+        setTimeout(() => currentToast.remove(), 150);
+      }
+    }
+
+    // Create toast element
+    const toast = document.createElement("div");
+    toast.className = `flash-message flash-${type}`;
+    toast.dataset.priority = priority.toString();
+    toast.innerHTML = `
+          <span class="flash-icon">${this.getToastIcon(type)}</span>
+          <span class="flash-text">${message}</span>
+          <button class="flash-close" onclick="this.parentElement.remove()">✕</button>
+      `;
+
+    // Add to container with small delay for smooth transition
+    setTimeout(() => {
+      container.appendChild(toast);
+    }, 200);
+
+    // Auto remove - shorter for info, longer for errors
+    const autoRemoveDelay = priority === 4 ? 3500 : (priority >= 3 ? 3000 : 2000);
     const timeoutId = setTimeout(() => {
       if (toast.parentElement) {
         toast.style.opacity = "0";
         toast.style.transform = "translateX(100%)";
         setTimeout(() => toast.remove(), 300);
       }
-    }, duration);
+    }, autoRemoveDelay);
 
-    // Cancel auto-remove on hover
-    toast.addEventListener("mouseenter", () => clearTimeout(timeoutId));
+    // Cancel auto-remove on hover (for important messages)
+    if (priority >= 3) {
+      toast.addEventListener("mouseenter", () => clearTimeout(timeoutId));
+    }
 
     return toast;
   },
-
   getToastIcon(type) {
     const icons = {
       success: "✅",
@@ -2730,32 +3082,32 @@ createPrintableContent(result) {
   },
 
   // Enhance the toggleScrollToTop function
-toggleScrollToTop(show) {
+  toggleScrollToTop(show) {
     let scrollBtn = document.getElementById("scroll-to-top");
 
     if (show && !scrollBtn) {
-        // Create the button
-        scrollBtn = document.createElement("button");
-        scrollBtn.id = "scroll-to-top";
-        scrollBtn.className = "scroll-to-top-btn";
-        scrollBtn.setAttribute("aria-label", "वर जा");
-        scrollBtn.innerHTML = `
+      // Create the button
+      scrollBtn = document.createElement("button");
+      scrollBtn.id = "scroll-to-top";
+      scrollBtn.className = "scroll-to-top-btn";
+      scrollBtn.setAttribute("aria-label", "वर जा");
+      scrollBtn.innerHTML = `
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M12 19V5M5 12l7-7 7 7"/>
             </svg>
         `;
-        
-        // Add click handler
-        scrollBtn.onclick = () => {
-            window.scrollTo({ 
-                top: 0, 
-                behavior: "smooth" 
-            });
-        };
-        
-        // Add styles
-        const style = document.createElement('style');
-        style.textContent = `
+
+      // Add click handler
+      scrollBtn.onclick = () => {
+        window.scrollTo({
+          top: 0,
+          behavior: "smooth"
+        });
+      };
+
+      // Add styles
+      const style = document.createElement('style');
+      style.textContent = `
             .scroll-to-top-btn {
                 position: fixed;
                 bottom: 30px;
@@ -2801,18 +3153,18 @@ toggleScrollToTop(show) {
                 }
             }
         `;
-        document.head.appendChild(style);
-        document.body.appendChild(scrollBtn);
-        
-        // Add visible class after a small delay to trigger animation
-        setTimeout(() => scrollBtn.classList.add('visible'), 100);
+      document.head.appendChild(style);
+      document.body.appendChild(scrollBtn);
+
+      // Add visible class after a small delay to trigger animation
+      setTimeout(() => scrollBtn.classList.add('visible'), 100);
     } else if (!show && scrollBtn) {
-        // Remove visible class first to trigger fade out animation
-        scrollBtn.classList.remove('visible');
-        // Remove button after animation completes
-        setTimeout(() => scrollBtn.remove(), 300);
+      // Remove visible class first to trigger fade out animation
+      scrollBtn.classList.remove('visible');
+      // Remove button after animation completes
+      setTimeout(() => scrollBtn.remove(), 300);
     }
-},
+  },
 
   // Page Visibility Handling
   handleVisibilityChange() {
@@ -3024,31 +3376,31 @@ window.addEventListener("unhandledrejection", (e) => {
 
 // Footer Quick Links Functions
 const FooterActions = {
-    // Scroll to sections on the same page
-    scrollToSection(sectionId) {
-        const section = document.getElementById(sectionId);
-        if (section) {
-            section.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'start'
-            });
-        } else {
-            // If section doesn't exist, scroll to common diseases
-            const diseasesSection = document.querySelector('.recent-diseases-section');
-            if (diseasesSection) {
-                diseasesSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
-        }
-    },
+  // Scroll to sections on the same page
+  scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    } else {
+      // If section doesn't exist, scroll to common diseases
+      const diseasesSection = document.querySelector('.recent-diseases-section');
+      if (diseasesSection) {
+        diseasesSection.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    }
+  },
 
-    // Show help modal
-    showHelpModal() {
-        const helpModal = document.createElement('div');
-        helpModal.className = 'modal-overlay';
-        helpModal.innerHTML = `
+  // Show help modal
+  showHelpModal() {
+    const helpModal = document.createElement('div');
+    helpModal.className = 'modal-overlay';
+    helpModal.innerHTML = `
             <div class="modal-content help-modal">
                 <div class="modal-header">
                     <h3><span class="modal-icon">🆘</span>सहाय्य आणि मार्गदर्शन</h3>
@@ -3081,14 +3433,14 @@ const FooterActions = {
                 </div>
             </div>
         `;
-        document.body.appendChild(helpModal);
-    },
+    document.body.appendChild(helpModal);
+  },
 
-    // Show privacy modal
-    showPrivacyModal() {
-        const privacyModal = document.createElement('div');
-        privacyModal.className = 'modal-overlay';
-        privacyModal.innerHTML = `
+  // Show privacy modal
+  showPrivacyModal() {
+    const privacyModal = document.createElement('div');
+    privacyModal.className = 'modal-overlay';
+    privacyModal.innerHTML = `
             <div class="modal-content privacy-modal">
                 <div class="modal-header">
                     <h3><span class="modal-icon">🔒</span>गोपनीयता धोरण</h3>
@@ -3116,14 +3468,14 @@ const FooterActions = {
                 </div>
             </div>
         `;
-        document.body.appendChild(privacyModal);
-    },
+    document.body.appendChild(privacyModal);
+  },
 
-    // Show about modal
-    showAboutModal() {
-        const aboutModal = document.createElement('div');
-        aboutModal.className = 'modal-overlay';
-        aboutModal.innerHTML = `
+  // Show about modal
+  showAboutModal() {
+    const aboutModal = document.createElement('div');
+    aboutModal.className = 'modal-overlay';
+    aboutModal.innerHTML = `
             <div class="modal-content about-modal">
                 <div class="modal-header">
                     <h3><span class="modal-icon">ℹ️</span>आमच्याबद्दल</h3>
@@ -3159,19 +3511,19 @@ const FooterActions = {
                 </div>
             </div>
         `;
-        document.body.appendChild(aboutModal);
-    },
+    document.body.appendChild(aboutModal);
+  },
 
-    // Download app function
-    downloadApp() {
-        // Check if it's a mobile device
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-        
-        if (isMobile) {
-            // Show app download options
-            const downloadModal = document.createElement('div');
-            downloadModal.className = 'modal-overlay';
-            downloadModal.innerHTML = `
+  // Download app function
+  downloadApp() {
+    // Check if it's a mobile device
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+    if (isMobile) {
+      // Show app download options
+      const downloadModal = document.createElement('div');
+      downloadModal.className = 'modal-overlay';
+      downloadModal.innerHTML = `
                 <div class="modal-content download-modal">
                     <div class="modal-header">
                         <h3><span class="modal-icon">📱</span>अॅप डाउनलोड करा</h3>
@@ -3206,11 +3558,11 @@ const FooterActions = {
                     </div>
                 </div>
             `;
-            document.body.appendChild(downloadModal);
-        } else {
-            UIHandler.showToast('या सेवा मोबाईल डिव्हाइसवर उपलब्ध आहे', 'info');
-        }
+      document.body.appendChild(downloadModal);
+    } else {
+      UIHandler.showToast('या सेवा मोबाईल डिव्हाइसवर उपलब्ध आहे', 'info');
     }
+  }
 };
 
 // Make functions globally available
