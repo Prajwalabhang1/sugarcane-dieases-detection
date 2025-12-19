@@ -68,7 +68,7 @@ endblock %} {% block extra_head %}
             <span class="btn-subtext">छायाचित्र निवडा</span>
           </div>
         </label>
-        <input type="file" id="file-input" accept="image/*" hidden />
+        <input type="file" id="file-input" accept="image/*" capture="environment" hidden />
       </div>
     </div>
 
@@ -131,91 +131,91 @@ endblock %} {% block extra_head %}
       </div>
     </div>
 
-<!-- Instructions Section -->
-<section class="instructions-section">
-  <div class="instructions-card">
-    <h3 class="instructions-title">
-      <span class="title-icon">💡</span>
-      चांगल्या परिणामासाठी सूचना
-    </h3>
-    <div class="instructions-grid">
-      <div class="instruction-item">
-        <div class="instruction-icon good">✅</div>
-        <div class="instruction-content">
-          <h4>चांगले छायाचित्र</h4>
-          <ul>
-            <li>स्पष्ट आणि तीक्ष्ण प्रतिमा</li>
-            <li>भरपूर प्रकाश</li>
-            <li>जवळून काढलेले</li>
-            <li>फक्त पान दिसावे</li>
-          </ul>
+    <!-- Instructions Section -->
+    <section class="instructions-section">
+      <div class="instructions-card">
+        <h3 class="instructions-title">
+          <span class="title-icon">💡</span>
+          चांगल्या परिणामासाठी सूचना
+        </h3>
+        <div class="instructions-grid">
+          <div class="instruction-item">
+            <div class="instruction-icon good">✅</div>
+            <div class="instruction-content">
+              <h4>चांगले छायाचित्र</h4>
+              <ul>
+                <li>स्पष्ट आणि तीक्ष्ण प्रतिमा</li>
+                <li>भरपूर प्रकाश</li>
+                <li>जवळून काढलेले</li>
+                <li>फक्त पान दिसावे</li>
+              </ul>
+            </div>
+          </div>
+          <div class="instruction-item">
+            <div class="instruction-icon bad">❌</div>
+            <div class="instruction-content">
+              <h4>टाळावे</h4>
+              <ul>
+                <li>धुसर किंवा अंधुक प्रतिमा</li>
+                <li>खूप दूरून काढलेले</li>
+                <li>अनेक पाने एकत्र</li>
+                <li>हात किंवा सावली दिसणे</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="instruction-item">
-        <div class="instruction-icon bad">❌</div>
-        <div class="instruction-content">
-          <h4>टाळावे</h4>
-          <ul>
-            <li>धुसर किंवा अंधुक प्रतिमा</li>
-            <li>खूप दूरून काढलेले</li>
-            <li>अनेक पाने एकत्र</li>
-            <li>हात किंवा सावली दिसणे</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+    </section>
 
-<!-- Recent Diseases Section -->
-<section class="recent-diseases-section">
-  <div class="diseases-card">
-    <h3 class="diseases-title">
-      <span class="title-icon">📊</span>
-      सामान्य ऊस रोग
-    </h3>
-    <div class="diseases-grid" id="common-diseases">
-      <!-- Updated with short info for each disease -->
-      <div class="disease-item">
-          <div class="disease-icon">🔴</div>
-        <div class="disease-info">
-          <h4 class="disease-name">लाल कुजणे</h4>
-          <div class="disease-en">Red Rot</div>
-          <div class="disease-short">खोडाच्या आतील भाग लालसर, पिवळसर पट्टे, दुर्गंधी, झाड वाळते.</div>
-          <span class="disease-severity critical">गंभीर</span>
+    <!-- Recent Diseases Section -->
+    <section class="recent-diseases-section">
+      <div class="diseases-card">
+        <h3 class="diseases-title">
+          <span class="title-icon">📊</span>
+          सामान्य ऊस रोग
+        </h3>
+        <div class="diseases-grid" id="common-diseases">
+          <!-- Updated with short info for each disease -->
+          <div class="disease-item">
+            <div class="disease-icon">🔴</div>
+            <div class="disease-info">
+              <h4 class="disease-name">लाल कुजणे</h4>
+              <div class="disease-en">Red Rot</div>
+              <div class="disease-short">खोडाच्या आतील भाग लालसर, पिवळसर पट्टे, दुर्गंधी, झाड वाळते.</div>
+              <span class="disease-severity critical">गंभीर</span>
+            </div>
+          </div>
+          <div class="disease-item">
+            <div class="disease-icon">🟤</div>
+            <div class="disease-info">
+              <h4 class="disease-name">तपकिरी ठिपके</h4>
+              <div class="disease-en">Brown Spot</div>
+              <div class="disease-short">पानांवर तपकिरी गोलाकार ठिपके, पान सुकते.</div>
+              <span class="disease-severity moderate">मध्यम</span>
+            </div>
+          </div>
+          <div class="disease-item">
+            <div class="disease-icon">🟡</div>
+            <div class="disease-info">
+              <h4 class="disease-name">पिवळी पाने</h4>
+              <div class="disease-en">Yellow Leaf</div>
+              <div class="disease-short">पानांवर पिवळसर रंग, वाढ खुंटते, पोषक तत्वांची कमतरता.</div>
+              <span class="disease-severity mild">सामान्य</span>
+            </div>
+          </div>
+          <div class="disease-item">
+            <div class="disease-icon">🌱</div>
+            <div class="disease-info">
+              <h4 class="disease-name">निरोगी पान</h4>
+              <div class="disease-en">Healthy</div>
+              <div class="disease-short">कोणताही रोग नाही, पिक निरोगी आहे.</div>
+              <span class="disease-severity healthy">निरोगी</span>
+            </div>
+          </div>
         </div>
+        <!-- close diseases-grid -->
       </div>
-      <div class="disease-item">
-          <div class="disease-icon">🟤</div>
-        <div class="disease-info">
-          <h4 class="disease-name">तपकिरी ठिपके</h4>
-          <div class="disease-en">Brown Spot</div>
-          <div class="disease-short">पानांवर तपकिरी गोलाकार ठिपके, पान सुकते.</div>
-          <span class="disease-severity moderate">मध्यम</span>
-        </div>
-      </div>
-      <div class="disease-item">
-        <div class="disease-icon">🟡</div>
-        <div class="disease-info">
-          <h4 class="disease-name">पिवळी पाने</h4>
-          <div class="disease-en">Yellow Leaf</div>
-          <div class="disease-short">पानांवर पिवळसर रंग, वाढ खुंटते, पोषक तत्वांची कमतरता.</div>
-          <span class="disease-severity mild">सामान्य</span>
-        </div>
-      </div>
-      <div class="disease-item">
-        <div class="disease-icon">🌱</div>
-        <div class="disease-info">
-          <h4 class="disease-name">निरोगी पान</h4>
-          <div class="disease-en">Healthy</div>
-          <div class="disease-short">कोणताही रोग नाही, पिक निरोगी आहे.</div>
-          <span class="disease-severity healthy">निरोगी</span>
-        </div>
-      </div>
-    </div>
-    <!-- close diseases-grid -->
-  </div>
-  <!-- close diseases-card -->
-</section>
-<!-- close recent-diseases-section -->
-{% endblock %}
+      <!-- close diseases-card -->
+    </section>
+    <!-- close recent-diseases-section -->
+    {% endblock %}
