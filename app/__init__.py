@@ -95,6 +95,41 @@ def register_blueprints(app):
         from app.routes import main_bp
         app.register_blueprint(main_bp)
         app.logger.info("Routes registered successfully")
+        
+        # Add response headers for iframe embedding
+        @app.after_request
+        def add_security_headers(response):
+            """Add security headers for iframe embedding and production"""
+            # Get allowed iframe parents from config
+            allowed_parents = app.config.get('ALLOWED_IFRAME_PARENTS', ['*'])
+            
+            # Configure X-Frame-Options for iframe embedding
+            if '*' in allowed_parents:
+                # Allow embedding from any domain (development/testing)
+                response.headers.pop('X-Frame-Options', None)  # Remove restrictive header
+            else:
+                # In production, you might want to be more specific
+                # Note: X-Frame-Options doesn't support multiple domains
+                # Use Content-Security-Policy instead for multiple domains
+                response.headers['X-Frame-Options'] = 'SAMEORIGIN'
+            
+            # Content-Security-Policy for iframe embedding
+            if '*' not in allowed_parents and allowed_parents:
+                frame_ancestors = ' '.join(allowed_parents)
+                response.headers['Content-Security-Policy'] = f"frame-ancestors {frame_ancestors}"
+            
+            # Other security headers
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            response.headers['X-XSS-Protection'] = '1; mode=block'
+            
+            # CORS headers (already handled by Flask-CORS, but ensure they're present)
+            if 'Access-Control-Allow-Origin' not in response.headers:
+                response.headers['Access-Control-Allow-Origin'] = '*'
+            
+            return response
+        
+        app.logger.info("Security headers configured for iframe embedding")
+        
     except ImportError as import_error:
         app.logger.error(f"Failed to import routes: {import_error}")
 

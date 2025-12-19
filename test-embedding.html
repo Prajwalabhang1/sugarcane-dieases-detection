@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Iframe Embedding - Sugarcane Disease Detection</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .iframe-wrapper {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .iframe-header {
+            background: #2c5f2d;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .iframe-header h3 {
+            font-size: 1.2rem;
+        }
+        
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background: #4CAF50;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        iframe {
+            width: 100%;
+            height: 850px;
+            border: none;
+            display: block;
+            background: white;
+        }
+        
+        .info-panel {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+        
+        .info-panel h3 {
+            color: #2c5f2d;
+            margin-bottom: 15px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .info-item {
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .info-item strong {
+            display: block;
+            color: #2c5f2d;
+            margin-bottom: 5px;
+        }
+        
+        .info-item code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            iframe {
+                height: 700px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌾 Sugarcane Disease Detection</h1>
+            <p>Testing Iframe Embedding Integration</p>
+        </header>
+        
+        <div class="iframe-wrapper">
+            <div class="iframe-header">
+                <h3>Embedded Disease Detection Interface</h3>
+                <div class="status">
+                    <span class="status-dot"></span>
+                    <span>Live</span>
+                </div>
+            </div>
+            <iframe 
+                id="disease-detector" 
+                src="http://localhost:5000" 
+                allow="camera; microphone"
+                title="Sugarcane Disease Detection">
+            </iframe>
+        </div>
+        
+        <div class="info-panel">
+            <h3>📋 Integration Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Iframe Source:</strong>
+                    <code>http://localhost:5000</code>
+                </div>
+                <div class="info-item">
+                    <strong>Embedding Method:</strong>
+                    <code>&lt;iframe&gt;</code>
+                </div>
+                <div class="info-item">
+                    <strong>Permissions:</strong>
+                    <code>camera, microphone</code>
+                </div>
+                <div class="info-item">
+                    <strong>Status:</strong>
+                    <code id="connection-status">Checking...</code>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Check if iframe loaded successfully
+        const iframe = document.getElementById('disease-detector');
+        const statusElement = document.getElementById('connection-status');
+        
+        iframe.onload = function() {
+            statusElement.textContent = 'Connected ✅';
+            statusElement.style.color = '#4CAF50';
+        };
+        
+        iframe.onerror = function() {
+            statusElement.textContent = 'Connection Failed ❌';
+            statusElement.style.color = '#f44336';
+        };
+        
+        // Timeout check
+        setTimeout(() => {
+            if (statusElement.textContent === 'Checking...') {
+                statusElement.textContent = 'Loading...';
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

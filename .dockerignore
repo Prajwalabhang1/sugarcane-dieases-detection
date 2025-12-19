@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.qodo/
+
+# Testing
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Docker
+Dockerfile
+docker-compose*.yml
+.dockerignore
+
+# Deployment
+deployment/
+
+# Logs and temporary files
+logs/*.log
+*.log
+uploads/*
+!uploads/.gitkeep
+
+# Environment files (will be set via docker-compose)
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large files that should be volume mounted
+# models/*.keras (commented - we need the model in the image)

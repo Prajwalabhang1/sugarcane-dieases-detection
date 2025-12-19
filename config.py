@@ -66,6 +66,30 @@ class ProductionConfig(Config):
     """Production configuration"""
     DEBUG = False
     TESTING = False
+    
+    # Override SECRET_KEY with environment variable (required for production)
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+    
+    # Validate SECRET_KEY
+    if not SECRET_KEY or SECRET_KEY == 'dev-key-change-in-production':
+        import sys
+        print("WARNING: SECRET_KEY not set or using default value!")
+        print("Set a secure SECRET_KEY in your .env file")
+        # In strict production, you might want to exit here
+        # sys.exit(1)
+    
+    # Production server settings
+    SERVER_NAME = os.environ.get('SERVER_NAME')  # e.g., 'api.yourdomain.com'
+    PREFERRED_URL_SCHEME = 'https'  # Use HTTPS in production
+    
+    # Session security
+    SESSION_COOKIE_SECURE = True  # Only send cookies over HTTPS
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    
+    # Iframe embedding configuration
+    ALLOWED_IFRAME_PARENTS = os.environ.get('ALLOWED_IFRAME_PARENTS', '*').split(',')
+
 
 
 class TestingConfig(Config):
