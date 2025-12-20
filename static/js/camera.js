@@ -828,7 +828,7 @@ const CameraHandler = {
         // Determine error type and appropriate response
         if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
             errorMessage = this.messages.noPermission;
-            // this.showPermissionHelp(); // Temporarily disabled
+            this.showPermissionHelp(); // Show permission help modal
         } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
             errorMessage = this.messages.noCamera;
         } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
@@ -870,36 +870,211 @@ const CameraHandler = {
         });
     },
 
-    // Show permission help
+    // Show permission help modal with improved styling
     showPermissionHelp() {
+        // Remove existing modal if any
+        const existing = document.querySelector('.permission-help-modal');
+        if (existing) existing.remove();
+
         const helpModal = document.createElement('div');
         helpModal.className = 'permission-help-modal';
         helpModal.innerHTML = `
+            <div class="permission-help-overlay"></div>
             <div class="permission-help-content">
                 <div class="permission-help-header">
-                    <h3>कॅमेरा परवानगी आवश्यक</h3>
+                    <div class="permission-icon">📷</div>
+                    <h3>कॅमेरा परवानगी आवश्यक आहे</h3>
+                    <p class="subtitle">Camera Permission Required</p>
                 </div>
                 <div class="permission-help-body">
-                    <p>छायाचित्र काढण्यासाठी कॅमेरा परवानगी द्या:</p>
-                    <ol>
-                        <li>ब्राउझर address bar मधील 🔒 आयकन क्लिक करा</li>
-                        <li>"Camera" परवानगी "Allow" करा</li>
-                        <li>पेज रीलोड करा</li>
-                    </ol>
-                    <p><strong>Alternative:</strong> Settings → Privacy → Camera मधून परवानगी द्या</p>
+                    <div class="help-section">
+                        <h4>📱 मोबाईल ब्राउझरसाठी (For Mobile Browser):</h4>
+                        <ol>
+                            <li>ब्राउझर address bar मधील <strong>🔒 lock</strong> आयकन टॅप करा</li>
+                            <li><strong>"Camera"</strong> किंवा <strong>"कॅमेरा"</strong> परवानगी शोधा</li>
+                            <li><strong>"Allow"</strong> किंवा <strong>"परवानगी द्या"</strong> निवडा</li>
+                            <li>पेज रीलोड करा आणि पुन्हा प्रयत्न करा</li>
+                        </ol>
+                    </div>
+                    <div class="help-section">
+                        <h4>⚙️ डिव्हाइस सेटिंग्जमधून (From Device Settings):</h4>
+                        <ol>
+                            <li><strong>Settings</strong> → <strong>Privacy</strong> → <strong>Camera</strong> वर जा</li>
+                            <li>आपला ब्राउझर शोधा (Chrome/Safari/etc.)</li>
+                            <li>कॅमेरा परवानगी <strong>"On"</strong> करा</li>
+                            <li>ॲप वर परत या आणि पुन्हा प्रयत्न करा</li>
+                        </ol>
+                    </div>
+                    <div class="help-tip">
+                        <strong>💡 सूचना:</strong> कॅमेरा काम करत नसल्यास, आपण <strong>"गॅलरी उघडा"</strong> बटण वापरून जतन केलेले फोटो अपलोड करू शकता.
+                    </div>
                 </div>
                 <div class="permission-help-footer">
                     <button class="btn btn-primary" onclick="location.reload()">
-                        पेज रीलोड करा
+                        <span>🔄</span> पेज रीलोड करा
                     </button>
                     <button class="btn btn-secondary" onclick="this.closest('.permission-help-modal').remove()">
-                        बंद करा
+                        बंद करा ✕
                     </button>
                 </div>
             </div>
         `;
 
+        // Add inline styles for the modal
+        const style = document.createElement('style');
+        style.textContent = `
+            .permission-help-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: modalFadeIn 0.3s ease-out;
+            }
+            .permission-help-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.7);
+                backdrop-filter: blur(4px);
+            }
+            .permission-help-content {
+                position: relative;
+                background: white;
+                border-radius: 16px;
+                max-width: 90%;
+                max-height: 85vh;
+                overflow-y: auto;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+                animation: modalSlideUp 0.3s ease-out;
+            }
+            .permission-help-header {
+                background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+                color: white;
+                padding: 24px;
+                text-align: center;
+                border-radius: 16px 16px 0 0;
+            }
+            .permission-icon {
+                font-size: 48px;
+                margin-bottom: 12px;
+                animation: pulse 2s infinite;
+            }
+            .permission-help-header h3 {
+                margin: 0 0 8px 0;
+                font-size: 22px;
+                font-weight: 700;
+            }
+            .permission-help-header .subtitle {
+                margin: 0;
+                opacity: 0.9;
+                font-size: 14px;
+            }
+            .permission-help-body {
+                padding: 24px;
+            }
+            .help-section {
+                margin-bottom: 20px;
+                padding: 16px;
+                background: #f5f5f5;
+                border-radius: 12px;
+                border-left: 4px solid #4CAF50;
+            }
+            .help-section h4 {
+                margin: 0 0 12px 0;
+                color: #2e7d32;
+                font-size: 16px;
+            }
+            .help-section ol {
+                margin: 0;
+                padding-left: 20px;
+            }
+            .help-section li {
+                margin: 8px 0;
+                line-height: 1.6;
+            }
+            .help-tip {
+                padding: 16px;
+                background: #fff3cd;
+                border-radius: 12px;
+                border-left: 4px solid #ffc107;
+                color: #856404;
+            }
+            .permission-help-footer {
+                padding: 16px 24px;
+                background: #fafafa;
+                border-radius: 0 0 16px 16px;
+                display: flex;
+                gap: 12px;
+                justify-content: center;
+            }
+            .permission-help-footer .btn {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.2s;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+            .permission-help-footer .btn-primary {
+                background: #4CAF50;
+                color: white;
+            }
+            .permission-help-footer .btn-primary:hover {
+                background: #45a049;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            }
+            .permission-help-footer .btn-secondary {
+                background: #e0e0e0;
+                color: #333;
+            }
+            .permission-help-footer .btn-secondary:hover {
+                background: #d0d0d0;
+            }
+            @keyframes modalFadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes modalSlideUp {
+                from { transform: translateY(50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+            @keyframes pulse {
+                0%, 100% { transform: scale(1); }
+                50% { transform: scale(1.1); }
+            }
+            @media (max-width: 640px) {
+                .permission-help-content {
+                    max-width: 95%;
+                    margin: 10px;
+                }
+                .permission-help-body {
+                    padding: 16px;
+                }
+                .help-section {
+                    padding: 12px;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
         document.body.appendChild(helpModal);
+
+        // Close on overlay click
+        helpModal.querySelector('.permission-help-overlay').addEventListener('click', () => {
+            helpModal.remove();
+        });
     },
 
     // Show camera alternatives
