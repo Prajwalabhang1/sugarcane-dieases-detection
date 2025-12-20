@@ -298,8 +298,8 @@
 /* Mobile Input Section - REDESIGNED FOR LIGHT MODE */
 @media screen and (max-width: 768px) {
     .input-section {
-        margin: var(--spacing-6) 0 var(--spacing-4) 0;
-        /* Added small bottom margin */
+        margin: var(--spacing-6) 0 0 0;
+        /* Remove bottom margin to close gap */
         padding: 0 var(--spacing-2);
     }
 
@@ -790,9 +790,10 @@
 /* Mobile Footer */
 @media screen and (max-width: 768px) {
     .main-footer {
-        padding: var(--spacing-1) var(--spacing-1) calc(var(--spacing-3) + env(safe-area-inset-bottom));
+        padding: var(--spacing-1) var(--spacing-1) var(--spacing-1);
+        /* Minimal padding, no bottom spacing */
         margin-top: 0 !important;
-        /* Remove top margin */
+        /* Remove gap between content and footer */
         background: linear-gradient(135deg, #83cd86 0%, #85ce86 100%) !important;
         color: var(--text-white) !important;
     }
@@ -823,19 +824,24 @@
 
     .footer-content {
         grid-template-columns: 1fr;
-        gap: var(--spacing-6);
+        gap: var(--spacing-3);
+        /* Reduced from spacing-6 */
         text-align: center;
     }
 
     .footer-section {
-        padding: var(--spacing-3) var(--spacing-2);
+        padding: var(--spacing-2) var(--spacing-2);
+        /* Reduced padding */
         background: rgba(27, 71, 22, 0.92);
-        border-radius: 12px;
-        box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.18), 0 1.5px 6px 0 rgba(56, 142, 60, 0.10);
-        border: 1.5px solid rgba(34, 130, 39, 0.18);
+        border-radius: 10px;
+        /* Slightly smaller radius */
+        box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.15), 0 1px 4px 0 rgba(56, 142, 60, 0.08);
+        border: 1px solid rgba(34, 130, 39, 0.15);
+        /* Thinner border */
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
-        margin-bottom: var(--spacing-3);
+        margin-bottom: var(--spacing-2);
+        /* Reduced from spacing-3 */
         transition: box-shadow 0.2s, background 0.2s;
     }
 
@@ -850,9 +856,10 @@
 
     /* MOBILE OPTIMIZED: Company Section - Compact Card */
     .company-section {
-        padding: var(--spacing-3) var(--spacing-3) !important;
-        /* Reduced padding */
-        margin-bottom: var(--spacing-2) !important;
+        padding: var(--spacing-2) var(--spacing-2) !important;
+        /* More compact */
+        margin-bottom: var(--spacing-1) !important;
+        /* Minimal bottom margin */
     }
 
     .logo-container {
@@ -860,15 +867,17 @@
         flex-direction: row;
         /* Horizontal layout - logo left */
         align-items: center;
-        gap: var(--spacing-3);
-        margin-bottom: var(--spacing-3);
+        gap: 8px;
+        /* Minimal gap */
+        margin-bottom: 4px;
+        /* Minimal bottom margin */
     }
 
     .company-logo {
-        width: 80px !important;
-        /* Keep logo visible but slightly smaller */
-        height: 80px !important;
-        border-radius: 12px;
+        width: 50px !important;
+        /* Much smaller logo for compact footer */
+        height: 50px !important;
+        border-radius: 8px;
         object-fit: cover;
         flex-shrink: 0;
     }
@@ -880,29 +889,30 @@
     }
 
     .company-name {
-        font-size: 1rem !important;
-        /* Smaller for compact card */
+        font-size: 0.875rem !important;
+        /* Even smaller for compact card */
         font-weight: 700;
-        margin-bottom: var(--spacing-1);
+        margin-bottom: 2px;
         color: white !important;
-        line-height: 1.3;
+        line-height: 1.2;
     }
 
     .company-tagline {
-        font-size: 0.7rem !important;
-        /* Smaller tagline */
+        font-size: 0.625rem !important;
+        /* Very small tagline */
         color: rgba(255, 255, 255, 0.85) !important;
         margin-bottom: 0;
         font-weight: 500;
-        line-height: 1.4;
+        line-height: 1.3;
     }
 
     .company-description {
-        font-size: 0.9rem !important;
-        line-height: 1.5;
+        font-size: 0.75rem !important;
+        /* Much smaller description */
+        line-height: 1.4;
         color: rgba(255, 255, 255, 0.9) !important;
-        margin-top: var(--spacing-2);
-        /* Reduced spacing */
+        margin-top: 4px;
+        /* Minimal spacing */
         padding: 0;
         text-align: left;
     }

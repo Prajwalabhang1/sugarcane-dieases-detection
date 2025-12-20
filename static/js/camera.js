@@ -828,7 +828,7 @@ const CameraHandler = {
         // Determine error type and appropriate response
         if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
             errorMessage = this.messages.noPermission;
-            this.showPermissionHelp();
+            // this.showPermissionHelp(); // Temporarily disabled
         } else if (error.name === 'NotFoundError' || error.name === 'DevicesNotFoundError') {
             errorMessage = this.messages.noCamera;
         } else if (error.name === 'NotReadableError' || error.name === 'TrackStartError') {
