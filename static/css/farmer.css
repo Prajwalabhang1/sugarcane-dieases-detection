@@ -2,20 +2,20 @@
    Farmer-Friendly Styles
    Optimized for rural users and touch interfaces
    ================================================ */
-   :root {
+:root {
     --bg-card: #fcfdfc;
-   }
+}
 
 /* Farmer-Specific Overrides */
 body.farmer-friendly {
     /* Larger text for better readability */
     font-size: 18px;
     line-height: 1.8;
-    
+
     /* Better contrast for outdoor viewing */
     --text-primary: #2f7b34;
     --text-secondary: #2E7D32;
-    
+
     /* Reduced motion sensitivity */
     --transition-fast: 0.2s ease;
     --transition-base: 0.4s ease;
@@ -75,8 +75,13 @@ body.farmer-friendly {
 }
 
 @keyframes float {
-    0% { transform: translateY(0) rotate(0deg); }
-    100% { transform: translateY(-20px) rotate(1deg); }
+    0% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-20px) rotate(1deg);
+    }
 }
 
 .welcome-card {
@@ -98,9 +103,22 @@ body.farmer-friendly {
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-10px); }
-    60% { transform: translateY(-5px); }
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
 }
 
 .welcome-title {
@@ -385,8 +403,15 @@ body.farmer-friendly {
 }
 
 @keyframes pulse-frame {
-    0%, 100% { opacity: 0.8; }
-    50% { opacity: 0.4; }
+
+    0%,
+    100% {
+        opacity: 0.8;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
 }
 
 .guide-text {
@@ -479,12 +504,14 @@ body.farmer-friendly {
 
 .preview-img {
     width: 100%;
-    max-width: 400px;
+    max-width: 250px;
+    max-height: 300px;
     height: auto;
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-md);
     margin: 0 auto var(--spacing-6);
     display: block;
+    object-fit: contain;
 }
 
 .preview-info {
@@ -645,8 +672,17 @@ body.farmer-friendly {
 }
 
 @keyframes flash {
-    0%, 50%, 100% { opacity: 1; }
-    25%, 75% { opacity: 0.7; }
+
+    0%,
+    50%,
+    100% {
+        opacity: 1;
+    }
+
+    25%,
+    75% {
+        opacity: 0.7;
+    }
 }
 
 .emergency-title {
@@ -707,37 +743,37 @@ body.farmer-friendly {
     .farmer-friendly {
         font-size: 17px;
     }
-    
+
     .features-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-4);
     }
-    
+
     .input-options {
         grid-template-columns: 1fr;
         gap: var(--spacing-4);
     }
-    
+
     .instructions-grid {
         grid-template-columns: 1fr;
         gap: var(--spacing-6);
     }
-    
+
     .emergency-actions {
         flex-direction: column;
         align-items: center;
     }
-    
+
     .emergency-btn {
         width: 100%;
         max-width: 280px;
         justify-content: center;
     }
-    
+
     .welcome-title {
         font-size: var(--fs-2xl);
     }
-    
+
     .input-title {
         font-size: var(--fs-xl);
     }
@@ -747,15 +783,15 @@ body.farmer-friendly {
     .farmer-friendly {
         font-size: 16px;
     }
-    
+
     .welcome-icon {
         font-size: 3rem;
     }
-    
+
     .feature-icon {
         font-size: 2.5rem;
     }
-    
+
     .btn-icon {
         font-size: 2.5rem;
     }
@@ -771,7 +807,7 @@ body.farmer-friendly {
 .info-card {
     background: white;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
 }
 
