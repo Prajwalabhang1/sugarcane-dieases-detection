@@ -1749,9 +1749,16 @@ const SugarcaneApp = {
               // 2. FORCE Open in external browser/system viewer
               // This is the key "breakout" move: Direct navigation to a file URL
               // Android WebViews usually treat this as an Intent to view the file
-              window.location.href = result.url;
+              // Create download link
+              const link = document.createElement('a');
+              link.href = result.url;
+              link.download = result.filename || 'report.html';
+              link.style.display = 'none';
+              document.body.appendChild(link);
+              link.click();
+              setTimeout(() => document.body.removeChild(link), 100);
 
-              this.showToast('PDF उघडत आहे...', 'success');
+              this.showToast('रिपोर्ट डाउनलोड सुरू झाले!', 'success');
 
               // Also try window.open as backup (some iOS WebViews prefer this)
               setTimeout(() => {
