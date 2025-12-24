@@ -347,6 +347,8 @@ body.farmer-friendly {
     margin: 0;
     font-size: var(--fs-lg);
     font-weight: 600;
+    color: var(--text-white);
+    /* FIXED: Override global h4 color for visibility on green background */
 }
 
 .close-camera {
@@ -481,6 +483,8 @@ body.farmer-friendly {
     margin: 0;
     font-size: var(--fs-lg);
     font-weight: 600;
+    color: var(--text-white);
+    /* FIXED: Override global h4 color for visibility on green background */
 }
 
 .preview-close {

@@ -640,6 +640,69 @@ a:focus {
     padding: var(--spacing-8) 0;
 }
 
+/* Information Cards - Result Page */
+.info-card {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    transition: all var(--transition-base);
+}
+
+.info-card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+}
+
+.info-card .card-header {
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-3);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.info-card .card-title {
+    font-size: var(--fs-xl);
+    font-weight: 700;
+    color: #0d4b10;
+    /* FIXED: Very dark green for high visibility */
+    margin: 0;
+}
+
+.info-card .card-content {
+    color: #1a5e20;
+    /* FIXED: Dark green for body text - high contrast */
+    line-height: 1.8;
+    font-size: var(--fs-base);
+}
+
+.info-card p {
+    margin-bottom: var(--spacing-3);
+    color: #1a5e20;
+    /* FIXED: Dark green - matches card-content */
+}
+
+.info-card ul,
+.info-card ol {
+    margin-left: var(--spacing-5);
+    color: #1a5e20;
+    /* FIXED: Dark green for lists */
+}
+
+.info-card li {
+    margin-bottom: var(--spacing-2);
+    color: #1a5e20;
+    /* FIXED: Dark green for list items */
+}
+
+.info-card h4 {
+    color: #0d4b10;
+    /* FIXED: Very dark green for subheadings */
+    font-weight: 600;
+    margin-top: var(--spacing-4);
+    margin-bottom: var(--spacing-2);
+}
+
 /* Card Components */
 .card {
     background: var(--bg-card);
@@ -736,9 +799,12 @@ a:focus {
 /* Secondary Button */
 .btn-secondary,
 .secondary-btn {
-    background: var(--bg-card);
-    color: var(--primary-green);
-    border-color: var(--primary-green);
+    background: #ffffff;
+    /* FIXED: Explicit white background */
+    color: #1b5e20;
+    /* FIXED: Dark green text for high contrast */
+    border: 2px solid var(--primary-green);
+    /* Green border */
 }
 
 .btn-secondary:hover,
