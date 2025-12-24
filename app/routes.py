@@ -253,51 +253,183 @@ def generate_pdf():
             from reportlab.lib import colors
             from reportlab.lib.pagesizes import A4
             from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
+            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
+            from reportlab.pdfbase import pdfmetrics
+            from reportlab.pdfbase.ttfonts import TTFont
+            import requests
+
+            # 1. Setup Fonts (Critical for Marathi)
+            font_dir = os.path.join(current_app.static_folder, 'fonts')
+            os.makedirs(font_dir, exist_ok=True)
+            font_path = os.path.join(font_dir, 'NotoSansDevanagari-Regular.ttf')
             
-            # Create PDF directly to file
-            doc = SimpleDocTemplate(filepath, pagesize=A4, topMargin=30, bottomMargin=30)
+            # Download font if not exists
+            if not os.path.exists(font_path):
+                try:
+                    logger.info("Downloading Marathi font...")
+                    # URL for NotoSansDevanagari-Regular.ttf
+                    font_url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Regular.ttf"
+                    response = requests.get(font_url)
+                    with open(font_path, 'wb') as f:
+                        f.write(response.content)
+                    logger.info("Font downloaded successfully")
+                except Exception as e:
+                    logger.error(f"Failed to download font: {e}")
+                    # Fallback to standard font (will not support Marathi properly but avoids crash)
+                    font_path = None
+
+            # Register Font
+            if font_path and os.path.exists(font_path):
+                pdfmetrics.registerFont(TTFont('MarathiFont', font_path))
+                font_name = 'MarathiFont'
+            else:
+                font_name = 'Helvetica' # Fallback
+            
+            # 2. Setup Document
+            doc = SimpleDocTemplate(filepath, pagesize=A4, 
+                                   rightMargin=40, leftMargin=40, 
+                                   topMargin=40, bottomMargin=40)
             elements = []
+            
+            # 3. Professional Styling
             styles = getSampleStyleSheet()
             
-            # Title
-            title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=18, spaceAfter=20, alignment=1)
-            elements.append(Paragraph("Sugarcane Disease Detection Report", title_style))
-            elements.append(Spacer(1, 20))
+            # Custom Styles
+            style_title = ParagraphStyle(
+                'CustomTitle',
+                parent=styles['Heading1'],
+                fontName=font_name,
+                fontSize=26,
+                leading=32,
+                alignment=1, # Center
+                textColor=colors.HexColor('#2e7d32'), # Green
+                spaceAfter=20
+            )
             
-            # Disease Info Table
-            table_data = [
-                ['Disease (Marathi)', disease_name],
-                ['Disease (English)', disease_english],
-                ['Confidence', f"{confidence}%"],
-                ['Severity', severity],
-                ['Date', datetime.now().strftime('%Y-%m-%d %H:%M')]
+            style_subtitle = ParagraphStyle(
+                'CustomSubtitle',
+                parent=styles['Heading2'],
+                fontName=font_name,
+                fontSize=14,
+                leading=18,
+                alignment=1, # Center
+                textColor=colors.HexColor('#555555'),
+                spaceAfter=30
+            )
+            
+            style_heading = ParagraphStyle(
+                'CustomHeading',
+                parent=styles['Heading2'],
+                fontName=font_name,
+                fontSize=16,
+                leading=20,
+                textColor=colors.HexColor('#1976d2'), # Blue
+                spaceBefore=15,
+                spaceAfter=10,
+                borderPadding=5,
+                borderWidth=0,
+                borderColor=colors.white,
+                borderRadius=5,
+                backColor=colors.HexColor('#e3f2fd')
+            )
+            
+            style_normal = ParagraphStyle(
+                'CustomNormal',
+                parent=styles['Normal'],
+                fontName=font_name,
+                fontSize=11,
+                leading=16,
+                spaceAfter=6
+            )
+            
+            style_label = ParagraphStyle(
+                'CustomLabel',
+                parent=styles['Normal'],
+                fontName=font_name,
+                fontSize=11,
+                leading=16,
+                textColor=colors.HexColor('#666666')
+            )
+
+            # 4. Build Content
+            
+            # -- Header --
+            elements.append(Paragraph("🌾 ऊस रोग निदान अहवाल", style_title))
+            elements.append(Paragraph(f"Sugarcane Disease Diagnosis Report", style_subtitle))
+            
+            # -- Diagnosis Table --
+            elements.append(Paragraph("🔍 निदान (Diagnosis)", style_heading))
+            
+            diagnosis_data = [
+                [Paragraph("रोग (मराठी)", style_label), Paragraph(f"<b>{disease_name}</b>", style_normal)],
+                [Paragraph("इंग्रजी नाव", style_label), Paragraph(disease_english, style_normal)],
+                [Paragraph("खात्री (Confidence)", style_label), Paragraph(f"{confidence}%", style_normal)],
+                [Paragraph("तीव्रता (Severity)", style_label), Paragraph(severity, style_normal)],
+                [Paragraph("दिनांक", style_label), Paragraph(datetime.now().strftime('%d-%m-%Y %I:%M %p'), style_normal)]
             ]
             
-            table = Table(table_data, colWidths=[150, 300])
-            table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (0, -1), colors.lightgreen),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                ('PADDING', (0, 0), (-1, -1), 10),
+            t = Table(diagnosis_data, colWidths=[150, 350])
+            t.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (0,-1), colors.HexColor('#f5f5f5')), # Light gray label col
+                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
+                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e0e0e0')),
+                ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cccccc')),
+                ('TOPPADDING', (0,0), (-1,-1), 12),
+                ('BOTTOMPADDING', (0,0), (-1,-1), 12),
+                ('LEFTPADDING', (0,0), (-1,-1), 15),
             ]))
-            elements.append(table)
-            elements.append(Spacer(1, 20))
+            elements.append(t)
+            elements.append(Spacer(1, 15))
             
-            # Dynamic content...
+            # -- Symptoms --
             if farmerinfo.get('symptoms', {}).get('detailed'):
-                elements.append(Paragraph("Symptoms:", styles['Heading2']))
+                elements.append(Paragraph("⚠️ लक्षणे (Symptoms)", style_heading))
                 for s in farmerinfo['symptoms']['detailed']:
-                    elements.append(Paragraph(f"• {s}", styles['Normal']))
+                    elements.append(Paragraph(f"• {s}", style_normal))
                 elements.append(Spacer(1, 10))
 
+            # -- Treatment --
             if farmerinfo.get('treatment', {}).get('solution'):
-                elements.append(Paragraph("Treatment:", styles['Heading2']))
-                elements.append(Paragraph(farmerinfo['treatment']['solution'], styles['Normal']))
+                elements.append(Paragraph("💊 उपाय / उपचार (Treatment)", style_heading))
+                treatment_text = farmerinfo['treatment']['solution']
+                # Create a box for treatment
+                t_data = [[Paragraph(treatment_text, style_normal)]]
+                t_box = Table(t_data, colWidths=[500])
+                t_box.setStyle(TableStyle([
+                    ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f1f8e9')), # Light green
+                    ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#c5e1a5')),
+                    ('PADDING', (0,0), (-1,-1), 15),
+                ]))
+                elements.append(t_box)
+                elements.append(Spacer(1, 15))
+            
+            # -- Prevention --
+            prevention = farmerinfo.get('prevention', {})
+            if prevention.get('immediate_care'):
+                 elements.append(Paragraph("🛡️ प्रतिबंधात्मक उपाय (Prevention)", style_heading))
+                 for p in prevention['immediate_care']:
+                     elements.append(Paragraph(f"• {p}", style_normal))
+                 elements.append(Spacer(1, 15))
+
+            # -- Action Plan --
+            action_steps = actionplan.get('nextsteps', {}).get('steps', [])
+            if action_steps:
+                elements.append(Paragraph("📅 कृती आराखडा (Action Plan)", style_heading))
+                for idx, step in enumerate(action_steps, 1):
+                    elements.append(Paragraph(f"{idx}. {step}", style_normal))
                 elements.append(Spacer(1, 10))
-                
-            # Footer
-            elements.append(Spacer(1, 30))
-            elements.append(Paragraph("Powered by Chordz Technologies | +91 7517311326", styles['Normal']))
+
+            # -- Footer --
+            elements.append(Spacer(1, 40))
+            elements.append(Paragraph("_" * 60, style_normal))
+            elements.append(Spacer(1, 10))
+            
+            footer_style = ParagraphStyle('Footer', parent=style_normal, fontSize=9, textColor=colors.gray, alignment=1)
+            elements.append(Paragraph("हा अहवाल AI तंत्रज्ञानाद्वारे तयार केला आहे. अधिकृत सल्ल्यासाठी कृषी तज्ञाशी संपर्क साधा.", footer_style))
+            elements.append(Paragraph("Powered by Chordz Technologies | 📞 +91 7517311326", footer_style))
+            elements.append(Paragraph("📧 chordzconnect@gmail.com", footer_style))
             
             doc.build(elements)
             pdf_generated = True
