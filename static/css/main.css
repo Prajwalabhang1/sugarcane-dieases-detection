@@ -899,35 +899,35 @@ a:focus {
     transform: translateY(-1px);
 }
 
-/* Secondary Button - Soft Sage Green */
+/* Secondary Button - Soft Blue */
 .btn-secondary,
 .secondary-btn {
-    background: #81C784;
-    /* Soft Sage Green for Share button */
-    color: #1b5e20;
-    border: 2px solid #66BB6A;
+    background: #42A5F5;
+    /* Soft Blue for Share button */
+    color: #FFFFFF;
+    border: 2px solid #1E88E5;
     box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover,
 .secondary-btn:hover {
-    background: #66BB6A;
-    color: #1b5e20;
+    background: #1E88E5;
+    color: #FFFFFF;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
 
-/* Accent Button - Soft Peach/Coral */
+/* Accent Button - Soft Blue */
 .accent-btn {
-    background: #FFAB91;
-    /* Soft Peach for New Test button */
-    color: #bf360c;
+    background: #64B5F6;
+    /* Soft Blue for New Test button */
+    color: #0D47A1;
     box-shadow: var(--shadow-md);
 }
 
 .accent-btn:hover {
-    background: #FF8A65;
-    color: #bf360c;
+    background: #42A5F5;
+    color: #0D47A1;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
@@ -2544,40 +2544,41 @@ select.input-field {
 
 @media (prefers-color-scheme: dark) {
 
-    /* PDF Save Button - Earthy Brown */
+    /* PDF Save Button - Soft Blue */
     .action-btn.info-btn {
-        background: #795548 !important;
-        color: var(--text-white) !important;
-        border-color: #5d4037 !important;
+        background: #90CAF9 !important;
+        color: #0D47A1 !important;
+        border-color: #64B5F6 !important;
     }
 
     .action-btn.info-btn:hover {
-        background: #5d4037 !important;
-        border-color: #4e342e !important;
+        background: #64B5F6 !important;
+        border-color: #42A5F5 !important;
     }
 
-    /* Share Button - Warm Orange */
+    /* Share Button - Soft Blue */
     .action-btn.secondary-btn {
-        background: #e65100 !important;
-        color: var(--text-white) !important;
-        border-color: #bf360c !important;
+        background: #42A5F5 !important;
+        color: #FFFFFF !important;
+        border-color: #1E88E5 !important;
     }
 
     .action-btn.secondary-btn:hover {
-        background: #bf360c !important;
-        border-color: #a93205 !important;
+        background: #1E88E5 !important;
+        border-color: #1976D2 !important;
     }
 
-    /* New Test Button (Marathi) - Forest Green */
+    /* New Test Button (Marathi) - Soft Blue */
     .action-btn.accent-btn {
-        background: #2e7d32 !important;
-        color: var(--text-white) !important;
-        border-color: #1b5e20 !important;
+        background: #64B5F6 !important;
+        color: #0D47A1 !important;
+        border-color: #42A5F5 !important;
     }
 
     .action-btn.accent-btn:hover {
-        background: #1b5e20 !important;
-        border-color: #0d4a12 !important;
+        background: #42A5F5 !important;
+        border-color: #1E88E5 !important;
+
     }
 
 
