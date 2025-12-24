@@ -214,11 +214,9 @@ def predict_disease():
 def generate_pdf():
     """
     Server-side PDF generation for WebView compatibility.
-    Accepts JSON with disease report data and returns a downloadable PDF URL.
+    Generates HTML report that displays properly with Marathi content.
     """
     try:
-        from flask import make_response
-        from io import BytesIO
         import os
         
         # Handle both JSON and form-encoded data
@@ -233,236 +231,366 @@ def generate_pdf():
         
         diagnosis = data.get('diagnosis', {})
         farmerinfo = data.get('farmerinfo', {})
+        actionplan = data.get('actionplan', {})
         
         disease_name = diagnosis.get('diseasename', 'अज्ञात')
         disease_english = diagnosis.get('diseasenameenglish', 'Unknown')
         confidence = diagnosis.get('confidence', 0)
+        confidence_text = diagnosis.get('confidencetext', f"{confidence}%")
+        confidence_level = diagnosis.get('confidencelevel', 'मध्यम')
         severity = diagnosis.get('severity', 'मध्यम')
 
         # Ensure reports directory exists
         reports_dir = os.path.join(current_app.static_folder, 'reports')
         os.makedirs(reports_dir, exist_ok=True)
         
-        # Generate filename
-        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        # Generate HTML filename
+        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
         filepath = os.path.join(reports_dir, filename)
         
-        # Try generating PDF
-        pdf_generated = False
-        try:
-            from reportlab.lib import colors
-            from reportlab.lib.pagesizes import A4
-            from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-            from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage
-            from reportlab.pdfbase import pdfmetrics
-            from reportlab.pdfbase.ttfonts import TTFont
-            import requests
-
-            # 1. Setup Fonts (Critical for Marathi)
-            font_dir = os.path.join(current_app.static_folder, 'fonts')
-            os.makedirs(font_dir, exist_ok=True)
-            font_path = os.path.join(font_dir, 'NotoSansDevanagari-Regular.ttf')
+        # Helper functions
+        def is_valid(content):
+            return content and content != "Not available" and str(content).strip() != ""
+        
+        def format_list_items(items):
+            if not items or not isinstance(items, list):
+                return ""
+            valid = [item for item in items if is_valid(item)]
+            if not valid:
+                return ""
+            return "\\n".join([f"<li>{item}</li>" for item in valid])
+        
+        # Build sections
+        symptoms_html = ""
+        if farmerinfo.get('symptoms'):
+            symptoms = farmerinfo['symptoms']
+            symptoms_html = '<div class="info-section">'
+            symptoms_html += '<h3>🔍 रोगाची लक्षणे</h3>'
+            if is_valid(symptoms.get('symptoms')):
+                symptoms_html += f'<p><strong>मुख्य लक्षणे:</strong> {symptoms["symptoms"]}</p>'
+            if symptoms.get('detailed'):
+                detailed = format_list_items(symptoms['detailed'])
+                if detailed:
+                    symptoms_html += f'<p><strong>तपशीलवार लक्षणे:</strong></p><ul>{detailed}</ul>'
+            symptoms_html += '</div>'
+        
+        treatment_html = ""
+        if farmerinfo.get('treatment'):
+            treatment = farmerinfo['treatment']
+            treatment_html = '<div class="info-section">'
+            treatment_html += '<h3>💊 उपचार पद्धती</h3>'
+            if is_valid(treatment.get('solution')):
+                solution = treatment['solution'].replace('\\n', '<br>')
+                treatment_html += f'<div class="treatment-box"><strong>मुख्य उपाय:</strong><br>{solution}</div>'
+            if treatment.get('organic_solutions'):
+                organic = format_list_items(treatment['organic_solutions'])
+                if organic:
+                    treatment_html += f'<p><strong>सेंद्रिय उपाय:</strong></p><ul>{organic}</ul>'
+            treatment_html += '</div>'
+        
+        prevention_html = ""
+        if farmerinfo.get('prevention', {}).get('immediate_care'):
+            care = format_list_items(farmerinfo['prevention']['immediate_care'])
+            if care:
+                prevention_html = '<div class="info-section">'
+                prevention_html += '<h3>🛡️ प्रतिबंधक उपाय</h3>'
+                prevention_html += f'<ul>{care}</ul>'
+                prevention_html += '</div>'
+        
+        cost_html = ""
+        if farmerinfo.get('costinfo'):
+            costinfo = farmerinfo['costinfo']
+            if is_valid(costinfo.get('cost_estimate')) or is_valid(costinfo.get('recovery_time')):
+                cost_html = '<div class="info-section">'
+                cost_html += '<h3>💰 अंदाजित खर्च</h3>'
+                if is_valid(costinfo.get('cost_estimate')):
+                    cost_html += f'<p><strong>खर्चाचा अंदाज:</strong> {costinfo["cost_estimate"]}</p>'
+                if is_valid(costinfo.get('recovery_time')):
+                    cost_html += f'<p><strong>सुधारण्याचा कालावधी:</strong> {costinfo["recovery_time"]}</p>'
+                cost_html += '</div>'
+        
+        action_html = ""
+        if actionplan.get('nextsteps', {}).get('steps'):
+            steps = format_list_items(actionplan['nextsteps']['steps'])
+            if steps:
+                action_html = '<div class="info-section">'
+                action_html += '<h3>📋 कृती आराखडा</h3>'
+                action_html += f'<ul>{steps}</ul>'
+                action_html += '</div>'
+        
+        # Generate complete HTML
+        html_content = f"""<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ऊस रोग निदान रिपोर्ट - {disease_name}</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
+        
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        body {{
+            font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            line-height: 1.6;
+            color: #333;
+        }}
+        
+        .container {{
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }}
+        
+        .header {{
+            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }}
+        
+        .header h1 {{
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }}
+        
+        .header h2 {{
+            font-family: 'Roboto', sans-serif;
+            font-size: 18px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }}
+        
+        .header p {{
+            font-size: 14px;
+            opacity: 0.85;
+            margin: 3px 0;
+        }}
+        
+        .content {{
+            padding: 30px;
+        }}
+        
+        .diagnosis-box {{
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-left: 5px solid #4caf50;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }}
+        
+        .diagnosis-box h2 {{
+            color: #2e7d32;
+            font-size: 22px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4caf50;
+            padding-bottom: 10px;
+        }}
+        
+        .diagnosis-grid {{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }}
+        
+        .diagnosis-item {{
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #a5d6a7;
+        }}
+        
+        .diagnosis-item strong {{
+            color: #2e7d32;
+            display: block;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }}
+        
+        .diagnosis-item span {{
+            color: #1b5e20;
+            font-size: 16px;
+            font-weight: 600;
+        }}
+        
+        .info-section {{
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }}
+        
+        .info-section h3 {{
+            color: #1976d2;
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #42a5f5;
+            padding-bottom: 8px;
+        }}
+        
+        .info-section p {{
+            margin: 10px 0;
+            font-size: 15px;
+        }}
+        
+        .info-section strong {{
+            color: #0d47a1;
+        }}
+        
+        .info-section ul {{
+            margin: 10px 0;
+            padding-left: 25px;
+        }}
+        
+        .info-section li {{
+            margin: 8px 0;
+            font-size: 15px;
+            line-height: 1.6;
+        }}
+        
+        .treatment-box {{
+            background: #fff3e0;
+            border: 2px solid #ff9800;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }}
+        
+        .footer {{
+            background: #37474f;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }}
+        
+        .footer p {{
+            margin: 5px 0;
+            font-size: 14px;
+        }}
+        
+        .footer strong {{
+            color: #4caf50;
+        }}
+        
+        .badge {{
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+        }}
+        
+        .badge-high {{
+            background: #c8e6c9;
+            color: #1b5e20;
+        }}
+        
+        .badge-medium {{
+            background: #fff9c4;
+            color: #f57f17;
+        }}
+        
+        .badge-critical {{
+            background: #ffcdd2;
+            color: #b71c1c;
+        }}
+        
+        @media print {{
+            body {{
+                background: white;
+                padding: 0;
+            }}
             
-            # Download font if not exists
-            if not os.path.exists(font_path):
-                try:
-                    logger.info("Downloading Marathi font...")
-                    # URL for NotoSansDevanagari-Regular.ttf
-                    font_url = "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Regular.ttf"
-                    response = requests.get(font_url)
-                    with open(font_path, 'wb') as f:
-                        f.write(response.content)
-                    logger.info("Font downloaded successfully")
-                except Exception as e:
-                    logger.error(f"Failed to download font: {e}")
-                    # Fallback to standard font (will not support Marathi properly but avoids crash)
-                    font_path = None
-
-            # Register Font
-            if font_path and os.path.exists(font_path):
-                pdfmetrics.registerFont(TTFont('MarathiFont', font_path))
-                font_name = 'MarathiFont'
-            else:
-                font_name = 'Helvetica' # Fallback
+            .container {{
+                box-shadow: none;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌾 ऊस एकरी १०० टन</h1>
+            <h2>Chordz Technologies</h2>
+            <p>ऊसाच्या रोगाचे AI निदान परिणाम</p>
+            <p>दिनांक: {datetime.now().strftime('%d/%m/%Y')} | वेळ: {datetime.now().strftime('%I:%M %p')}</p>
+        </div>
+        
+        <div class="content">
+            <div class="diagnosis-box">
+                <h2>📋 निदान परिणाम</h2>
+                <div class="diagnosis-grid">
+                    <div class="diagnosis-item">
+                        <strong>रोग (मराठी)</strong>
+                        <span>{disease_name}</span>
+                    </div>
+                    <div class="diagnosis-item">
+                        <strong>Disease (English)</strong>
+                        <span>{disease_english}</span>
+                    </div>
+                    <div class="diagnosis-item">
+                        <strong>विश्वास पातळी</strong>
+                        <span>{confidence_text}</span>
+                    </div>
+                    <div class="diagnosis-item">
+                        <strong>विश्वासार्हता</strong>
+                        <span>{confidence_level}</span>
+                    </div>
+                    <div class="diagnosis-item">
+                        <strong>गंभीरता</strong>
+                        <span class="badge badge-medium">{severity}</span>
+                    </div>
+                </div>
+            </div>
             
-            # 2. Setup Document
-            doc = SimpleDocTemplate(filepath, pagesize=A4, 
-                                   rightMargin=40, leftMargin=40, 
-                                   topMargin=40, bottomMargin=40)
-            elements = []
+            {symptoms_html}
+            {treatment_html}
+            {prevention_html}
+            {cost_html}
+            {action_html}
             
-            # 3. Professional Styling
-            styles = getSampleStyleSheet()
-            
-            # Custom Styles
-            style_title = ParagraphStyle(
-                'CustomTitle',
-                parent=styles['Heading1'],
-                fontName=font_name,
-                fontSize=26,
-                leading=32,
-                alignment=1, # Center
-                textColor=colors.HexColor('#2e7d32'), # Green
-                spaceAfter=20
-            )
-            
-            style_subtitle = ParagraphStyle(
-                'CustomSubtitle',
-                parent=styles['Heading2'],
-                fontName=font_name,
-                fontSize=14,
-                leading=18,
-                alignment=1, # Center
-                textColor=colors.HexColor('#555555'),
-                spaceAfter=30
-            )
-            
-            style_heading = ParagraphStyle(
-                'CustomHeading',
-                parent=styles['Heading2'],
-                fontName=font_name,
-                fontSize=16,
-                leading=20,
-                textColor=colors.HexColor('#1976d2'), # Blue
-                spaceBefore=15,
-                spaceAfter=10,
-                borderPadding=5,
-                borderWidth=0,
-                borderColor=colors.white,
-                borderRadius=5,
-                backColor=colors.HexColor('#e3f2fd')
-            )
-            
-            style_normal = ParagraphStyle(
-                'CustomNormal',
-                parent=styles['Normal'],
-                fontName=font_name,
-                fontSize=11,
-                leading=16,
-                spaceAfter=6
-            )
-            
-            style_label = ParagraphStyle(
-                'CustomLabel',
-                parent=styles['Normal'],
-                fontName=font_name,
-                fontSize=11,
-                leading=16,
-                textColor=colors.HexColor('#666666')
-            )
-
-            # 4. Build Content
-            
-            # -- Header --
-            elements.append(Paragraph("🌾 ऊस रोग निदान अहवाल", style_title))
-            elements.append(Paragraph(f"Sugarcane Disease Diagnosis Report", style_subtitle))
-            
-            # -- Diagnosis Table --
-            elements.append(Paragraph("🔍 निदान (Diagnosis)", style_heading))
-            
-            diagnosis_data = [
-                [Paragraph("रोग (मराठी)", style_label), Paragraph(f"<b>{disease_name}</b>", style_normal)],
-                [Paragraph("इंग्रजी नाव", style_label), Paragraph(disease_english, style_normal)],
-                [Paragraph("खात्री (Confidence)", style_label), Paragraph(f"{confidence}%", style_normal)],
-                [Paragraph("तीव्रता (Severity)", style_label), Paragraph(severity, style_normal)],
-                [Paragraph("दिनांक", style_label), Paragraph(datetime.now().strftime('%d-%m-%Y %I:%M %p'), style_normal)]
-            ]
-            
-            t = Table(diagnosis_data, colWidths=[150, 350])
-            t.setStyle(TableStyle([
-                ('BACKGROUND', (0,0), (0,-1), colors.HexColor('#f5f5f5')), # Light gray label col
-                ('TEXTCOLOR', (0,0), (-1,-1), colors.black),
-                ('ALIGN', (0,0), (-1,-1), 'LEFT'),
-                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-                ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#e0e0e0')),
-                ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#cccccc')),
-                ('TOPPADDING', (0,0), (-1,-1), 12),
-                ('BOTTOMPADDING', (0,0), (-1,-1), 12),
-                ('LEFTPADDING', (0,0), (-1,-1), 15),
-            ]))
-            elements.append(t)
-            elements.append(Spacer(1, 15))
-            
-            # -- Symptoms --
-            if farmerinfo.get('symptoms', {}).get('detailed'):
-                elements.append(Paragraph("⚠️ लक्षणे (Symptoms)", style_heading))
-                for s in farmerinfo['symptoms']['detailed']:
-                    elements.append(Paragraph(f"• {s}", style_normal))
-                elements.append(Spacer(1, 10))
-
-            # -- Treatment --
-            if farmerinfo.get('treatment', {}).get('solution'):
-                elements.append(Paragraph("💊 उपाय / उपचार (Treatment)", style_heading))
-                treatment_text = farmerinfo['treatment']['solution']
-                # Create a box for treatment
-                t_data = [[Paragraph(treatment_text, style_normal)]]
-                t_box = Table(t_data, colWidths=[500])
-                t_box.setStyle(TableStyle([
-                    ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#f1f8e9')), # Light green
-                    ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#c5e1a5')),
-                    ('PADDING', (0,0), (-1,-1), 15),
-                ]))
-                elements.append(t_box)
-                elements.append(Spacer(1, 15))
-            
-            # -- Prevention --
-            prevention = farmerinfo.get('prevention', {})
-            if prevention.get('immediate_care'):
-                 elements.append(Paragraph("🛡️ प्रतिबंधात्मक उपाय (Prevention)", style_heading))
-                 for p in prevention['immediate_care']:
-                     elements.append(Paragraph(f"• {p}", style_normal))
-                 elements.append(Spacer(1, 15))
-
-            # -- Action Plan --
-            action_steps = actionplan.get('nextsteps', {}).get('steps', [])
-            if action_steps:
-                elements.append(Paragraph("📅 कृती आराखडा (Action Plan)", style_heading))
-                for idx, step in enumerate(action_steps, 1):
-                    elements.append(Paragraph(f"{idx}. {step}", style_normal))
-                elements.append(Spacer(1, 10))
-
-            # -- Footer --
-            elements.append(Spacer(1, 40))
-            elements.append(Paragraph("_" * 60, style_normal))
-            elements.append(Spacer(1, 10))
-            
-            footer_style = ParagraphStyle('Footer', parent=style_normal, fontSize=9, textColor=colors.gray, alignment=1)
-            elements.append(Paragraph("हा अहवाल AI तंत्रज्ञानाद्वारे तयार केला आहे. अधिकृत सल्ल्यासाठी कृषी तज्ञाशी संपर्क साधा.", footer_style))
-            elements.append(Paragraph("Powered by Chordz Technologies | 📞 +91 7517311326", footer_style))
-            elements.append(Paragraph("📧 chordzconnect@gmail.com", footer_style))
-            
-            doc.build(elements)
-            pdf_generated = True
-            
-        except ImportError:
-            logger.warning("reportlab not found, falling back to HTML")
-        except Exception as e:
-            logger.error(f"ReportLab error: {e}")
-            
-        # Fallback to HTML if PDF failed
-        if not pdf_generated:
-            # Change extension to .html
-            filename = filename.replace('.pdf', '.html')
-            filepath = os.path.join(reports_dir, filename)
-            
-            html_content = f"""
-            <html><body>
-                <h1>Report: {disease_name}</h1>
-                <p>Confidence: {confidence}%</p>
-                <p>Date: {datetime.now()}</p>
-                <hr>
-                <p>{farmerinfo.get('treatment', {}).get('solution', '')}</p>
-            </body></html>
-            """
-            with open(filepath, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-
+            <div class="info-section">
+                <h3>📞 संपर्क माहिती</h3>
+                <p><strong>ईमेल:</strong> chordzconnect@gmail.com</p>
+                <p><strong>फोन:</strong> +91 7517311326</p>
+                <p>तज्ञांशी सल्लामसलत करण्यासाठी कृपया संपर्क साधा</p>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>Powered by Chordz Technologies</strong></p>
+            <p>AI-Based Sugarcane Disease Detection System</p>
+            <p>© {datetime.now().year} - All Rights Reserved</p>
+        </div>
+    </div>
+</body>
+</html>"""
+        
+        # Save HTML file
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(html_content)
+        
         # Return public URL
         public_url = f"/static/reports/{filename}"
         full_url = request.url_root.rstrip('/') + public_url
         
+        logger.info(f"Report generated successfully: {filename}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
 
     except Exception as e:
-        logger.error(f"PDF generation error: {e}")
+        logger.error(f"Report generation error: {e}")
+        logger.error(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
