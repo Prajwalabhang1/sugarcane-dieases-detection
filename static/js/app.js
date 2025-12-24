@@ -1731,69 +1731,49 @@ const SugarcaneApp = {
         // Get the preview content
         const contentElement = document.getElementById('pdf-content-preview');
 
-        // Check if running in WebView - use server-side PDF generation
+        // Check if running in WebView - use 'Breakout Strategy'
         if (this.isRunningInWebView()) {
-          console.log('WebView detected - using server-side PDF generation');
+          console.log('WebView detected - using breakout strategy for PDF');
 
-          // Send data to server to generate PDF
           try {
+            // 1. Request server to generate PDF and give us a URL
             const response = await fetch('/api/generate-pdf', {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
+              headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify(this.state.currentPrediction)
             });
 
-            if (!response.ok) {
-              throw new Error('PDF generation failed');
+            const result = await response.json();
+
+            if (result.success && result.url) {
+              // 2. FORCE Open in external browser/system viewer
+              // This is the key "breakout" move: Direct navigation to a file URL
+              // Android WebViews usually treat this as an Intent to view the file
+              window.location.href = result.url;
+
+              this.showToast('PDF उघडत आहे...', 'success');
+
+              // Also try window.open as backup (some iOS WebViews prefer this)
+              setTimeout(() => {
+                window.open(result.url, '_system');
+              }, 500);
+
+            } else {
+              throw new Error(result.error || 'PDF creation failed');
             }
 
-            // Get the PDF blob from response
-            const pdfBlob = await response.blob();
-            const blobUrl = URL.createObjectURL(pdfBlob);
-
-            // Get filename from Content-Disposition header or generate one
-            const contentDisposition = response.headers.get('Content-Disposition');
-            let downloadFilename = fileName;
-            if (contentDisposition) {
-              const match = contentDisposition.match(/filename="(.+)"/);
-              if (match) downloadFilename = match[1];
-            }
-
-            // Create a download link and trigger it
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = downloadFilename;
-            link.style.display = 'none';
-            document.body.appendChild(link);
-
-            // Trigger the download
-            link.click();
-
-            // Cleanup
-            setTimeout(() => {
-              document.body.removeChild(link);
-              URL.revokeObjectURL(blobUrl);
-            }, 1000);
-
-            this.showToast('PDF डाउनलोड सुरू झाले!', 'success');
-
-            // Reset button
+            // Cleanup UI
             downloadBtn.innerHTML = originalHTML;
             downloadBtn.disabled = false;
-
-            // Close modal after download starts
-            setTimeout(() => {
-              modal.remove();
-            }, 1500);
-
+            setTimeout(() => modal.remove(), 1000);
             return;
 
-          } catch (serverError) {
-            console.error('Server PDF generation failed:', serverError);
-            // Fall through to client-side generation as backup
-            this.showToast('सर्व्हर PDF अयशस्वी, दुसरा मार्ग वापरत आहे...', 'info');
+          } catch (error) {
+            console.error('WebView PDF Error:', error);
+            this.showToast('PDF त्रुटी: ' + error.message, 'error');
+            downloadBtn.innerHTML = originalHTML;
+            downloadBtn.disabled = false;
+            return;
           }
         }
 

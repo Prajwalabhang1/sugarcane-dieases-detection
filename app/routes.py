@@ -220,7 +220,14 @@ def generate_pdf():
         from flask import make_response
         from io import BytesIO
         
-        data = request.get_json()
+        # Handle both JSON and form-encoded data
+        data = request.get_json(silent=True)
+        if not data:
+            # Try to get from form data
+            form_data = request.form.get('data')
+            if form_data:
+                data = json.loads(form_data)
+        
         if not data:
             return jsonify({'success': False, 'error': 'No data provided'}), 400
         
@@ -381,17 +388,42 @@ def generate_pdf():
             response.headers['Content-Disposition'] = f'attachment; filename="Disease_Report_{disease_english}_{datetime.now().strftime("%Y%m%d")}.html"'
             return response
         
-        # Create response with PDF
-        filename = f"Disease_Report_{disease_english.replace(' ', '_')}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        # Save PDF to static/reports folder
+        import os
         
-        response = make_response(pdf_data)
-        response.headers['Content-Type'] = 'application/pdf'
-        response.headers['Content-Disposition'] = f'attachment; filename="{filename}"'
-        response.headers['Content-Length'] = len(pdf_data)
-        response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+        # Ensure reports directory exists
+        reports_dir = os.path.join(current_app.static_folder, 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
         
-        logger.info(f"PDF generated successfully: {filename}")
-        return response
+        # Clean up old reports (optional) - remove files older than 1 hour
+        try:
+            import time
+            current_time = time.time()
+            for f in os.listdir(reports_dir):
+                f_path = os.path.join(reports_dir, f)
+                if os.path.isfile(f_path) and (current_time - os.path.getmtime(f_path) > 3600):
+                    os.remove(f_path)
+        except Exception:
+            pass
+
+        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        filepath = os.path.join(reports_dir, filename)
+        
+        doc.build(elements)
+        
+        # Save buffer to file
+        with open(filepath, 'wb') as f:
+            f.write(buffer.getvalue())
+            
+        buffer.close()
+        
+        # Return public URL
+        # For WebView 'breakout' strategy
+        public_url = f"/static/reports/{filename}"
+        full_url = request.url_root.rstrip('/') + public_url
+        
+        logger.info(f"PDF generated at: {filepath}")
+        return jsonify({'success': True, 'url': full_url, 'filename': filename})
         
     except Exception as e:
         logger.error(f"PDF generation error: {e}")
