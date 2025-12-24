@@ -718,6 +718,109 @@ a:focus {
     transform: translateY(-2px);
 }
 
+/* Action Plan Section - Card Styling */
+.action-plan-section {
+    background: #FFFFFF;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 24px 0;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.action-plan-section .section-title {
+    color: #1b5e20;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.action-card {
+    background: #f8faf8;
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 4px solid #4CAF50;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.action-card.warning-card {
+    border-left-color: #FF9800;
+    background: #fffbf5;
+}
+
+.action-card.success-card {
+    border-left-color: #2196F3;
+    background: #f5faff;
+}
+
+.action-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.action-icon {
+    font-size: 1.5rem;
+}
+
+.action-title {
+    color: #1b5e20;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.action-list,
+.warning-list,
+.success-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.action-item,
+.warning-item,
+.success-item {
+    color: #333333;
+    padding: 8px 0 8px 24px;
+    position: relative;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.action-item::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.warning-item::before {
+    content: "⚠";
+    position: absolute;
+    left: 0;
+    color: #FF9800;
+}
+
+.success-item::before {
+    content: "★";
+    position: absolute;
+    left: 0;
+    color: #2196F3;
+}
+
+
 .card-header {
     display: flex;
     align-items: center;
@@ -796,47 +899,50 @@ a:focus {
     transform: translateY(-1px);
 }
 
-/* Secondary Button */
+/* Secondary Button - Soft Sage Green */
 .btn-secondary,
 .secondary-btn {
-    background: #e65100;
-    /* Warm Orange for Share button - action/visibility */
-    color: var(--text-white);
-    border: 2px solid #bf360c;
+    background: #81C784;
+    /* Soft Sage Green for Share button */
+    color: #1b5e20;
+    border: 2px solid #66BB6A;
     box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover,
 .secondary-btn:hover {
-    background: #bf360c;
-    color: var(--text-white);
+    background: #66BB6A;
+    color: #1b5e20;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
 
-/* Accent Button */
+/* Accent Button - Soft Peach/Coral */
 .accent-btn {
-    background: var(--secondary-orange);
-    color: var(--text-white);
+    background: #FFAB91;
+    /* Soft Peach for New Test button */
+    color: #bf360c;
     box-shadow: var(--shadow-md);
 }
 
 .accent-btn:hover {
-    background: var(--secondary-orange-dark);
+    background: #FF8A65;
+    color: #bf360c;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
 
-/* Info Button - PDF Save */
+/* Info Button - Soft Sky Blue */
 .info-btn {
-    background: #795548;
-    /* Earthy Brown for PDF Save - professional document action */
-    color: var(--text-white);
+    background: #90CAF9;
+    /* Soft Sky Blue for PDF Save */
+    color: #0d47a1;
     box-shadow: var(--shadow-md);
 }
 
 .info-btn:hover {
-    background: #5d4037;
+    background: #64B5F6;
+    color: #0d47a1;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
