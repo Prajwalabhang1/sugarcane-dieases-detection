@@ -1288,10 +1288,31 @@
     }
 
     .flash-message {
-        background: var(--bg-card);
-        backdrop-filter: blur(20px);
-        color: #E8F5E8;
+        background: #FFFFFF !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        color: #212121;
     }
+
+    .flash-error {
+        background: #FFEBEE !important;
+        color: #B71C1C !important;
+    }
+
+    .flash-warning {
+        background: #FFF3E0 !important;
+        color: #E65100 !important;
+    }
+
+    .flash-success {
+        background: #E8F5E9 !important;
+        color: #1B5E20 !important;
+    }
+
+    .flash-info {
+        background: #E3F2FD !important;
+        color: #0D47A1 !important;
+    }
+
 
     .camera-body {
         background: #1a1a1a;

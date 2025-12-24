@@ -550,7 +550,7 @@ a:focus {
     font-size: var(--fs-base);
 }
 
-/* Flash Messages */
+/* Flash Messages / Toast Notifications */
 .flash-messages {
     position: fixed;
     top: var(--spacing-4);
@@ -567,10 +567,9 @@ a:focus {
     padding: var(--spacing-4);
     margin-bottom: var(--spacing-3);
     border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     animation: slideIn 0.3s ease-out;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 @keyframes slideIn {
@@ -586,27 +585,27 @@ a:focus {
 }
 
 .flash-error {
-    background: rgba(244, 67, 54, 0.1);
-    border-left: 4px solid var(--critical-red);
-    color: var(--critical-red);
+    background: #FFEBEE;
+    border-left: 4px solid #D32F2F;
+    color: #B71C1C;
 }
 
 .flash-warning {
-    background: rgba(255, 152, 0, 0.1);
-    border-left: 4px solid var(--warning-orange);
-    color: var(--warning-orange);
+    background: #FFF3E0;
+    border-left: 4px solid #FF9800;
+    color: #E65100;
 }
 
 .flash-success {
-    background: rgba(76, 175, 80, 0.1);
-    border-left: 4px solid var(--healthy-green);
-    color: var(--healthy-green);
+    background: #E8F5E9;
+    border-left: 4px solid #4CAF50;
+    color: #1B5E20;
 }
 
 .flash-info {
-    background: rgba(25, 118, 210, 0.1);
-    border-left: 4px solid var(--info-blue);
-    color: var(--info-blue);
+    background: #E3F2FD;
+    border-left: 4px solid #1976D2;
+    color: #0D47A1;
 }
 
 .flash-icon {
@@ -616,7 +615,8 @@ a:focus {
 
 .flash-text {
     flex: 1;
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 .flash-close {
@@ -633,6 +633,7 @@ a:focus {
 .flash-close:hover {
     background: rgba(0, 0, 0, 0.1);
 }
+
 
 /* Main Content */
 .main-content {
