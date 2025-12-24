@@ -799,16 +799,16 @@ a:focus {
 /* Secondary Button */
 .btn-secondary,
 .secondary-btn {
-    background: #00BCD4;
-    /* Cyan/Teal background for share button */
+    background: #e65100;
+    /* Warm Orange for Share button - action/visibility */
     color: var(--text-white);
-    border: 2px solid #0097A7;
+    border: 2px solid #bf360c;
     box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover,
 .secondary-btn:hover {
-    background: #0097A7;
+    background: #bf360c;
     color: var(--text-white);
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
@@ -827,16 +827,16 @@ a:focus {
     transform: translateY(-1px);
 }
 
-/* Info Button */
+/* Info Button - PDF Save */
 .info-btn {
-    background: #2196F3;
-    /* Blue background for PDF save button */
+    background: #795548;
+    /* Earthy Brown for PDF Save - professional document action */
     color: var(--text-white);
     box-shadow: var(--shadow-md);
 }
 
 .info-btn:hover {
-    background: #1976D2;
+    background: #5d4037;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
@@ -2438,41 +2438,42 @@ select.input-field {
 
 @media (prefers-color-scheme: dark) {
 
-    /* PDF Save Button - Blue */
+    /* PDF Save Button - Earthy Brown */
     .action-btn.info-btn {
-        background: #2196F3 !important;
+        background: #795548 !important;
         color: var(--text-white) !important;
-        border-color: #1976D2 !important;
+        border-color: #5d4037 !important;
     }
 
     .action-btn.info-btn:hover {
-        background: #1976D2 !important;
-        border-color: #1565C0 !important;
+        background: #5d4037 !important;
+        border-color: #4e342e !important;
     }
 
-    /* Share Button - Teal/Cyan */
+    /* Share Button - Warm Orange */
     .action-btn.secondary-btn {
-        background: #00BCD4 !important;
+        background: #e65100 !important;
         color: var(--text-white) !important;
-        border-color: #0097A7 !important;
+        border-color: #bf360c !important;
     }
 
     .action-btn.secondary-btn:hover {
-        background: #0097A7 !important;
-        border-color: #00838F !important;
+        background: #bf360c !important;
+        border-color: #a93205 !important;
     }
 
-    /* New Test Button (Marathi) - Orange */
+    /* New Test Button (Marathi) - Forest Green */
     .action-btn.accent-btn {
-        background: #FF9800 !important;
+        background: #2e7d32 !important;
         color: var(--text-white) !important;
-        border-color: #F57C00 !important;
+        border-color: #1b5e20 !important;
     }
 
     .action-btn.accent-btn:hover {
-        background: #F57C00 !important;
-        border-color: #E65100 !important;
+        background: #1b5e20 !important;
+        border-color: #0d4a12 !important;
     }
+
 
     /* ================================================
        High Contrast Text Colors (For readable cards in all modes)
