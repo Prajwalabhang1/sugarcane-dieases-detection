@@ -1305,7 +1305,7 @@
     .info-card {
         background: #2E2E2E;
         border-color: #404040;
-        color: #E8F5E8;
+        color: #F5F5F5;
     }
 
     /* Headings */
@@ -1315,59 +1315,7 @@
     h4,
     h5,
     h6 {
-        color: #E8F5E8;
-    }
-
-    /* Text elements */
-    p,
-    span,
-    li {
-        color: #C8E6C9;
-    }
-
-    /* Preview info - override */
-    .preview-info {
-        background: #1e3a1e;
-    }
-
-    .info-label {
-        color: #a5d6a7 !important;
-    }
-
-    .info-value {
-        color: #c5e1a5 !important;
-    }
-
-    /* Buttons */
-    .option-btn,
-    .action-btn {
-        background: #2E2E2E;
-        border-color: #66BB6A;
-        color: #E8F5E8;
-    }
-
-    .option-btn:hover,
-    .action-btn:hover {
-        background: #3a3a3a;
-    }
-
-    .primary-btn {
-        background: #66BB6A;
-        color: #1a1a1a;
-    }
-
-    /* Input fields */
-    input,
-    textarea,
-    select {
-        background: #2E2E2E;
-        border-color: #404040;
-        color: #E8F5E8;
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-        color: #888;
+        color: #FFFFFF;
     }
 
     /* Diagnosis cards */
@@ -1377,11 +1325,11 @@
     }
 
     .disease-name {
-        color: #E8F5E8;
+        color: #FFFFFF !important;
     }
 
     .disease-name-english {
-        color: #C8E6C9;
+        color: #E0E0E0 !important;
     }
 
     /* Info sections */
@@ -1396,11 +1344,13 @@
     }
 
     .card-title {
-        color: #E8F5E8;
+        color: #A5D6A7 !important;
     }
 
-    .content-text {
-        color: #C8E6C9;
+    .content-text,
+    .basic-info,
+    .card-content p {
+        color: #F5F5F5 !important;
     }
 }
 

@@ -799,18 +799,19 @@ a:focus {
 /* Secondary Button */
 .btn-secondary,
 .secondary-btn {
-    background: #ffffff;
-    /* FIXED: Explicit white background */
-    color: #1b5e20;
-    /* FIXED: Dark green text for high contrast */
-    border: 2px solid var(--primary-green);
-    /* Green border */
+    background: #00BCD4;
+    /* Cyan/Teal background for share button */
+    color: var(--text-white);
+    border: 2px solid #0097A7;
+    box-shadow: var(--shadow-md);
 }
 
 .btn-secondary:hover,
 .secondary-btn:hover {
-    background: var(--primary-green);
+    background: #0097A7;
     color: var(--text-white);
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-1px);
 }
 
 /* Accent Button */
@@ -828,13 +829,14 @@ a:focus {
 
 /* Info Button */
 .info-btn {
-    background: var(--info-blue);
+    background: #2196F3;
+    /* Blue background for PDF save button */
     color: var(--text-white);
     box-shadow: var(--shadow-md);
 }
 
 .info-btn:hover {
-    background: #1565C0;
+    background: #1976D2;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
@@ -2428,4 +2430,124 @@ select.input-field {
     .download-options {
         grid-template-columns: 1fr;
     }
+}
+
+/* ================================================
+   Dark Mode Support for Action Buttons
+   ================================================ */
+
+@media (prefers-color-scheme: dark) {
+
+    /* PDF Save Button - Blue */
+    .action-btn.info-btn {
+        background: #2196F3 !important;
+        color: var(--text-white) !important;
+        border-color: #1976D2 !important;
+    }
+
+    .action-btn.info-btn:hover {
+        background: #1976D2 !important;
+        border-color: #1565C0 !important;
+    }
+
+    /* Share Button - Teal/Cyan */
+    .action-btn.secondary-btn {
+        background: #00BCD4 !important;
+        color: var(--text-white) !important;
+        border-color: #0097A7 !important;
+    }
+
+    .action-btn.secondary-btn:hover {
+        background: #0097A7 !important;
+        border-color: #00838F !important;
+    }
+
+    /* New Test Button (Marathi) - Orange */
+    .action-btn.accent-btn {
+        background: #FF9800 !important;
+        color: var(--text-white) !important;
+        border-color: #F57C00 !important;
+    }
+
+    .action-btn.accent-btn:hover {
+        background: #F57C00 !important;
+        border-color: #E65100 !important;
+    }
+
+    /* ================================================
+       Diagnosis Card Dark Mode Text Colors
+       ================================================ */
+
+    /* 1. Main Headings - Pure White */
+    .disease-name,
+    h1.disease-name,
+    .section-title,
+    .confidence-level,
+    .confidence-text {
+        color: #FFFFFF !important;
+    }
+
+    /* 2. Secondary Titles - Light Teal/Green */
+    .card-title,
+    h3.card-title,
+    .info-card .card-title,
+    .modal-header h3 {
+        color: #A5D6A7 !important;
+    }
+
+    /* 3. Sub-headings & English Names - Soft Amber/Wheat */
+    .disease-name-english,
+    h2.disease-name-english,
+    h4.card-title,
+    .action-title,
+    .info-card h4,
+    .alt-disease {
+        color: #FFE082 !important;
+    }
+
+    /* 4. Body Content & Bullet Points - Soft Off-white */
+    .card-content,
+    .card-content p,
+    .basic-info,
+    .content-text,
+    .info-card li,
+    .info-card ul,
+    .info-card ol,
+    .action-item,
+    .warning-item,
+    .success-item,
+    .alt-english,
+    .disease-desc {
+        color: #F5F5F5 !important;
+    }
+
+    /* Bullet Icons Color */
+    .info-card li::before,
+    .action-item::before {
+        color: #81C784 !important;
+    }
+}
+
+/* Explicit class selectors for manual Dark Mode toggle */
+body.dark-mode .disease-name,
+body.dark-mode h1.disease-name,
+body.dark-mode .section-title,
+body.dark-mode .card-title,
+body.dark-mode h3.card-title,
+body.dark-mode .info-card .card-title {
+    color: #FFFFFF !important;
+}
+
+body.dark-mode .card-content,
+body.dark-mode .card-content p,
+body.dark-mode .content-text,
+body.dark-mode .info-card li,
+body.dark-mode .action-item {
+    color: #F5F5F5 !important;
+}
+
+body.dark-mode .disease-name-english,
+body.dark-mode h2.disease-name-english,
+body.dark-mode h4.card-title {
+    color: #FFE082 !important;
 }
