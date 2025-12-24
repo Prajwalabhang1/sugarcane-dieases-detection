@@ -213,12 +213,13 @@ def predict_disease():
 @main_bp.route('/api/generate-pdf', methods=['POST'])
 def generate_pdf():
     """
-    Server-side PDF generation using xhtml2pdf.
-    Converts HTML with Marathi content to a proper PDF file.
+    Server-side PDF generation using WeasyPrint.
+    Produces high-quality PDFs with full CSS support and Marathi fonts.
     """
     try:
         import os
-        from xhtml2pdf import pisa
+        from weasyprint import HTML, CSS
+        from weasyprint.text.fonts import FontConfiguration
         
         # Handle both JSON and form-encoded data
         data = request.get_json(silent=True)
@@ -234,6 +235,7 @@ def generate_pdf():
         farmerinfo = data.get('farmerinfo', {})
         actionplan = data.get('actionplan', {})
         
+        # Extract Data
         disease_name = diagnosis.get('diseasename', 'अज्ञात')
         disease_english = diagnosis.get('diseasenameenglish', 'Unknown')
         confidence = diagnosis.get('confidence', 0)
@@ -241,291 +243,207 @@ def generate_pdf():
         confidence_level = diagnosis.get('confidencelevel', 'मध्यम')
         severity = diagnosis.get('severity', 'मध्यम')
 
-        # Ensure reports directory exists
+        # Paths
         reports_dir = os.path.join(current_app.static_folder, 'reports')
         os.makedirs(reports_dir, exist_ok=True)
         
-        # Font path
         font_path = os.path.join(current_app.static_folder, 'fonts', 'NotoSansDevanagari-Regular.ttf')
+        # WeasyPrint needs file:// URL for local fonts
+        font_url = f"file://{font_path}"
         
-        # Generate PDF filename
         filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         filepath = os.path.join(reports_dir, filename)
         
-        # Helper functions
-        def is_valid(content):
-            return content and content != "Not available" and str(content).strip() != ""
-        
-        def format_list_items(items):
-            if not items or not isinstance(items, list):
-                return ""
-            valid = [item for item in items if is_valid(item)]
-            if not valid:
-                return ""
-            return "\\n".join([f"<li>{item}</li>" for item in valid])
-        
-        # Build sections (reuse logic)
-        symptoms_html = ""
+        # Helper: Clean list items
+        def format_list(items):
+            if not items or not isinstance(items, list): return ""
+            return "".join([f"<li>{item}</li>" for item in items if item and item != "Not available"])
+
+        # Content Generation
+        symptoms_content = ""
         if farmerinfo.get('symptoms'):
-            symptoms = farmerinfo['symptoms']
-            symptoms_html = '<div class="info-section">'
-            symptoms_html += '<h3>🔍 रोगाची लक्षणे</h3>'
-            if is_valid(symptoms.get('symptoms')):
-                symptoms_html += f'<p><strong>मुख्य लक्षणे:</strong> {symptoms["symptoms"]}</p>'
-            if symptoms.get('detailed'):
-                detailed = format_list_items(symptoms['detailed'])
-                if detailed:
-                    symptoms_html += f'<p><strong>तपशीलवार लक्षणे:</strong></p><ul>{detailed}</ul>'
-            symptoms_html += '</div>'
-        
-        treatment_html = ""
+            s = farmerinfo['symptoms']
+            symptoms_content = f"""
+            <div class="section">
+                <h3>🔍 रोगाची लक्षणे (Symptoms)</h3>
+                <div class="card">
+                    <p><strong>सार:</strong> {s.get('symptoms', 'N/A')}</p>
+                    { f'<div class="detailed-list"><strong>तपशील:</strong><ul>{format_list(s.get("detailed", []))}</ul></div>' if s.get("detailed") else '' }
+                </div>
+            </div>
+            """
+            
+        treatment_content = ""
         if farmerinfo.get('treatment'):
-            treatment = farmerinfo['treatment']
-            treatment_html = '<div class="info-section">'
-            treatment_html += '<h3>💊 उपचार पद्धती</h3>'
-            if is_valid(treatment.get('solution')):
-                solution = treatment['solution'].replace('\\n', '<br>')
-                treatment_html += f'<div class="treatment-box"><strong>मुख्य उपाय:</strong><br>{solution}</div>'
-            if treatment.get('organic_solutions'):
-                organic = format_list_items(treatment['organic_solutions'])
-                if organic:
-                    treatment_html += f'<p><strong>सेंद्रिय उपाय:</strong></p><ul>{organic}</ul>'
-            treatment_html += '</div>'
-        
-        prevention_html = ""
+            t = farmerinfo['treatment']
+            treatment_content = f"""
+            <div class="section">
+                <h3>💊 उपचार पद्धती (Treatment)</h3>
+                <div class="card treatment-card">
+                    <div class="highlight-box">
+                        <strong>मुख्य उपाय:</strong><br/>
+                        {t.get('solution', 'N/A').replace(chr(10), '<br/>')}
+                    </div>
+                     { f'<div class="organic-section"><strong>🌿 सेंद्रिय उपाय:</strong><ul>{format_list(t.get("organic_solutions", []))}</ul></div>' if t.get("organic_solutions") else '' }
+                </div>
+            </div>
+            """
+
+        prevention_content = ""
         if farmerinfo.get('prevention', {}).get('immediate_care'):
-            care = format_list_items(farmerinfo['prevention']['immediate_care'])
-            if care:
-                prevention_html = '<div class="info-section">'
-                prevention_html += '<h3>🛡️ प्रतिबंधक उपाय</h3>'
-                prevention_html += f'<ul>{care}</ul>'
-                prevention_html += '</div>'
-        
-        cost_html = ""
-        if farmerinfo.get('costinfo'):
-            costinfo = farmerinfo['costinfo']
-            if is_valid(costinfo.get('cost_estimate')) or is_valid(costinfo.get('recovery_time')):
-                cost_html = '<div class="info-section">'
-                cost_html += '<h3>💰 अंदाजित खर्च</h3>'
-                if is_valid(costinfo.get('cost_estimate')):
-                    cost_html += f'<p><strong>खर्चाचा अंदाज:</strong> {costinfo["cost_estimate"]}</p>'
-                if is_valid(costinfo.get('recovery_time')):
-                    cost_html += f'<p><strong>सुधारण्याचा कालावधी:</strong> {costinfo["recovery_time"]}</p>'
-                cost_html += '</div>'
-        
-        action_html = ""
+            prevention_content = f"""
+            <div class="section">
+                <h3>🛡️ प्रतिबंधक उपाय (Prevention)</h3>
+                <div class="card">
+                    <ul>{format_list(farmerinfo['prevention']['immediate_care'])}</ul>
+                </div>
+            </div>
+            """
+
+        action_content = ""
         if actionplan.get('nextsteps', {}).get('steps'):
-            steps = format_list_items(actionplan['nextsteps']['steps'])
-            if steps:
-                action_html = '<div class="info-section">'
-                action_html += '<h3>📋 कृती आराखडा</h3>'
-                action_html += f'<ul>{steps}</ul>'
-                action_html += '</div>'
-        
-        # PDF-Specific HTML with Embedded Fonts - OPTIMIZED FOR XHTML2PDF
-        # Uses Table-based layout instead of Grid/Flexbox which are not supported
-        html_content = f"""
+             action_content = f"""
+            <div class="section">
+                <h3>📋 कृती आराखडा (Action Plan)</h3>
+                <div class="card action-card">
+                    <ul>{format_list(actionplan['nextsteps']['steps'])}</ul>
+                </div>
+            </div>
+            """
+            
+        # HTML Template with Modern CSS for WeasyPrint
+        html_string = f"""
         <!DOCTYPE html>
         <html>
         <head>
             <meta charset="UTF-8">
             <style>
                 @font-face {{
-                    font-family: 'MarathiFont';
-                    src: url('{font_path}');
+                    font-family: 'Noto Sans Devanagari';
+                    src: url('{font_url}');
                 }}
-                
+                @page {{
+                    size: A4;
+                    margin: 2cm;
+                    @bottom-center {{
+                        content: "Page " counter(page) " of " counter(pages);
+                        font-family: 'Noto Sans Devanagari', sans-serif;
+                        font-size: 9pt;
+                    }}
+                }}
                 body {{
-                    font-family: 'MarathiFont', sans-serif;
-                    padding: 30px;
-                    font-size: 12px;
-                    color: #333333;
+                    font-family: 'Noto Sans Devanagari', sans-serif;
+                    color: #333;
+                    line-height: 1.5;
+                    font-size: 11pt;
                 }}
-                
-                /* Layout Tables */
-                table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
-                td {{ valign: top; padding: 5px; }}
-                
-                .header-table {{
-                    background-color: #2e7d32;
-                    color: white;
-                    border-radius: 8px; /* xhtml2pdf supports basic radius */
+                .header {{
+                    text-align: center;
+                    border-bottom: 3px solid #4CAF50;
+                    padding-bottom: 20px;
+                    margin-bottom: 30px;
                 }}
+                .header h1 {{ color: #2E7D32; margin: 0; font-size: 24pt; }}
+                .header p {{ color: #666; margin: 5px 0 0 0; }}
                 
-                .header-title {{ font-size: 24px; font-weight: bold; color: white; }}
-                .header-subtitle {{ font-size: 16px; color: #e8f5e9; }}
-                .header-info {{ font-size: 12px; color: #c8e6c9; }}
-                
-                /* Diagnosis Section */
-                .diagnosis-box {{
-                    border: 1px solid #4caf50;
-                    margin-bottom: 20px;
-                    padding: 10px;
+                .meta-grid {{
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 15px;
+                    margin-bottom: 30px;
+                    background: #f1f8e9;
+                    padding: 15px;
+                    border-radius: 8px;
+                    border: 1px solid #c5e1a5;
                 }}
+                .meta-item {{ padding: 5px; }}
+                .label {{ font-weight: bold; color: #558b2f; display: block; font-size: 0.9em; }}
+                .value {{ font-size: 1.1em; font-weight: 600; }}
                 
-                .diagnosis-table td {{
-                    border-bottom: 1px solid #e0e0e0;
-                    padding: 8px;
-                }}
-                
-                .label {{ font-weight: bold; color: #2e7d32; width: 40%; }}
-                .value {{ font-weight: bold; color: #333; }}
-                
-                /* Section Styles */
                 h3 {{
-                    color: #1565c0;
-                    border-bottom: 2px solid #90caf9;
+                    color: #1565C0;
+                    border-bottom: 2px solid #BBDEFB;
                     padding-bottom: 5px;
-                    margin-top: 20px;
-                    margin-bottom: 10px;
-                    font-size: 14px;
+                    margin-top: 25px;
                 }}
                 
-                .content-box {{
-                    margin-bottom: 15px;
-                    padding-left: 5px;
+                .card {{
+                    background: #fff;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 5px;
+                    padding: 15px;
+                    page-break-inside: avoid;
                 }}
                 
-                /* Lists */
-                ul {{ margin: 0; padding-left: 20px; }}
-                li {{ margin-bottom: 5px; line-height: 1.4; }}
+                .treatment-card {{ border-left: 4px solid #FF9800; background: #fff3e0; border-color: #ffe0b2; }}
+                .highlight-box {{ margin-bottom: 15px; }}
+                .organic-section {{ border-top: 1px dashed #ffa726; padding-top: 10px; }}
                 
-                /* Treatment Box */
-                .treatment-box {{
-                    background-color: #fff3e0;
-                    border: 1px solid #ffe0b2;
-                    padding: 10px;
-                    margin-bottom: 10px;
-                }}
+                .action-card {{ background: #e3f2fd; border: 1px solid #90caf9; }}
                 
-                .organic-box {{
-                    border-left: 3px solid #8bc34a;
-                    padding-left: 10px;
-                    margin-top: 10px;
-                }}
-                
-                /* Badges */
-                .badge {{
-                    color: #f57f17;
-                    font-weight: bold;
-                }}
+                ul {{ padding-left: 20px; margin: 5px 0; }}
+                li {{ margin-bottom: 6px; }}
                 
                 .footer {{
+                    margin-top: 40px;
                     text-align: center;
-                    font-size: 9px;
-                    color: #666;
-                    margin-top: 50px;
-                    border-top: 1px solid #eeeeee;
-                    padding-top: 10px;
+                    font-size: 9pt;
+                    color: #777;
+                    border-top: 1px solid #eee;
+                    padding-top: 15px;
                 }}
             </style>
         </head>
         <body>
-            <!-- Header using Table -->
-            <table class="header-table" cellpadding="10">
-                <tr>
-                    <td align="center">
-                        <div class="header-title">Sugarcane Disease Report</div>
-                        <div class="header-subtitle">Chordz Technologies</div>
-                        <div class="header-info">
-                            Date: {datetime.now().strftime('%d/%m/%Y')} | Time: {datetime.now().strftime('%I:%M %p')}
-                        </div>
-                    </td>
-                </tr>
-            </table>
-            
-            <!-- Diagnosis Section -->
-            <div class="diagnosis-box">
-                <table class="diagnosis-table" cellspacing="0">
-                    <tr>
-                        <td class="label">Disease (Marathi):</td>
-                        <td class="value">{disease_name}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Disease (English):</td>
-                        <td class="value">{disease_english}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Confidence:</td>
-                        <td class="value">{confidence_text}</td>
-                    </tr>
-                    <tr>
-                        <td class="label">Severity:</td>
-                        <td class="value"><span class="badge">{severity}</span></td>
-                    </tr>
-                </table>
+            <div class="header">
+                <h1>Sugarcane Disease Report</h1>
+                <p>Chordz Technologies | AI Diagnosis</p>
+                <p style="font-size: 0.9rem; margin-top: 5px;">Generated on: {datetime.now().strftime('%d %B %Y, %I:%M %p')}</p>
             </div>
             
-            <!-- Symptoms -->
-            <h3>🔍 रोगाची लक्षणे (Symptoms)</h3>
-            <div class="content-box">
-                {f'<p><strong>मुख्य लक्षणे:</strong> {farmerinfo["symptoms"]["symptoms"]}</p>' if is_valid(farmerinfo.get("symptoms", {}).get("symptoms")) else ''}
-                
-                {f'<p><strong>तपशीलवार लक्षणे:</strong></p><ul>{format_list_items(farmerinfo["symptoms"]["detailed"])}</ul>' if farmerinfo.get("symptoms", {}).get("detailed") else ''}
-            </div>
-
-            <!-- Treatment -->
-            <h3>💊 उपचार पद्धती (Treatment)</h3>
-            <div class="content-box">
-                {f'<div class="treatment-box"><strong>मुख्य उपाय:</strong><br/>{farmerinfo["treatment"]["solution"].replace(chr(10), "<br/>")}</div>' if is_valid(farmerinfo.get("treatment", {}).get("solution")) else ''}
-                
-                {f'<div class="organic-box"><strong>सेंद्रिय उपाय:</strong><br/><ul>{format_list_items(farmerinfo["treatment"]["organic_solutions"])}</ul></div>' if farmerinfo.get("treatment", {}).get("organic_solutions") else ''}
+            <div class="meta-grid">
+                <div class="meta-item">
+                    <span class="label">Disease (Marathi)</span>
+                    <span class="value">{disease_name}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">Disease (English)</span>
+                    <span class="value">{disease_english}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">Confidence Score</span>
+                    <span class="value">{confidence_text}</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">Severity Level</span>
+                    <span class="value" style="color: {'#d32f2f' if severity == 'High' else '#f57c00' if severity == 'Medium' else '#388e3c'}">{severity}</span>
+                </div>
             </div>
             
-            <!-- Prevention -->
-            {f'''
-            <h3>🛡️ प्रतिबंधक उपाय (Prevention)</h3>
-            <div class="content-box">
-                <ul>{format_list_items(farmerinfo["prevention"]["immediate_care"])}</ul>
-            </div>
-            ''' if farmerinfo.get("prevention", {}).get("immediate_care") else ''}
+            {symptoms_content}
+            {treatment_content}
+            {prevention_content}
+            {action_content}
             
-            <!-- Cost -->
-            {f'''
-            <h3>💰 अंदाजित खर्च (Estimated Cost)</h3>
-            <div class="content-box">
-                {f'<p><strong>खर्चाचा अंदाज:</strong> {farmerinfo["costinfo"]["cost_estimate"]}</p>' if is_valid(farmerinfo["costinfo"].get("cost_estimate")) else ''}
-                {f'<p><strong>सुधारण्याचा कालावधी:</strong> {farmerinfo["costinfo"]["recovery_time"]}</p>' if is_valid(farmerinfo["costinfo"].get("recovery_time")) else ''}
-            </div>
-            ''' if farmerinfo.get("costinfo") else ''}
-
-            <!-- Action Plan -->
-            {f'''
-            <h3>📋 कृती आराखडा (Action Plan)</h3>
-            <div class="content-box">
-                <ul>{format_list_items(actionplan["nextsteps"]["steps"])}</ul>
-            </div>
-            ''' if actionplan.get("nextsteps", {}).get("steps") else ''}
-            
-            <!-- Footer -->
             <div class="footer">
-                Powered by Chordz Technologies | Contact: +91 7517311326<br/>
-                AI-Based Sugarcane Disease Detection System
+                <p>For expert consultation, call: <strong>+91 7517311326</strong> | Email: chordzconnect@gmail.com</p>
+                <p>&copy; {datetime.now().year} Chordz Technologies. All rights reserved.</p>
             </div>
         </body>
         </html>
         """
         
-        # Convert HTML to PDF using xhtml2pdf
-        with open(filepath, "wb") as pdf_file:
-            pisa_status = pisa.CreatePDF(
-                html_content, 
-                dest=pdf_file,
-                encoding='utf-8'
-            )
-            
-        if pisa_status.err:
-            raise Exception("PDF Generation Error")
+        # Generate PDF
+        HTML(string=html_string).write_pdf(filepath)
         
         # Return download URL
         download_url = f"/api/download-report/{filename}"
         full_url = request.url_root.rstrip('/') + download_url
         
-        logger.info(f"PDF generated: {filename}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
 
     except Exception as e:
-        logger.error(f"Report generation error: {e}")
+        logger.error(f"WeasyPrint PDF error: {e}")
         logger.error(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
 
