@@ -34,6 +34,25 @@ const SugarcaneApp = {
     lastHealthCheck: null,
     userPreferences: {},
     failedRequests: [],
+    isWebView: null, // Will be detected on init
+  },
+
+  // Detect if running in WebView (Android or iOS)
+  isRunningInWebView() {
+    if (this.state.isWebView !== null) {
+      return this.state.isWebView;
+    }
+    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    // Check for Android WebView
+    const isAndroidWebView = /wv/.test(userAgent) ||
+      (typeof window.Android !== 'undefined') ||
+      (userAgent.includes('Android') && userAgent.includes('wv'));
+    // Check for iOS WebView (WKWebView or UIWebView)
+    const isIOSWebView = /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(userAgent) ||
+      (window.webkit && window.webkit.messageHandlers);
+    this.state.isWebView = isAndroidWebView || isIOSWebView;
+    console.log('WebView detected:', this.state.isWebView, 'UserAgent:', userAgent);
+    return this.state.isWebView;
   },
 
   // Messages in Marathi & English
@@ -1533,31 +1552,55 @@ const SugarcaneApp = {
     const shareText = this.createDetailedShareText(result);
 
     try {
-      // Try to share with Web Share API (modern mobile browsers)
+      // Try to share with Web Share API directly (don't use canShare check in WebView)
       if (navigator.share) {
         const shareData = {
           title: "🌾 ऊस एकरी १०० टन - रोग निदान परिणाम",
           text: shareText,
         };
 
-        // Check if we can share files (for PDF)
-        if (navigator.canShare && navigator.canShare(shareData)) {
+        try {
           await navigator.share(shareData);
           this.showToast("परिणाम यशस्वीरित्या शेअर केले!", "success");
           return;
+        } catch (shareError) {
+          if (shareError.name === 'AbortError') {
+            // User cancelled - don't show error
+            console.log('User cancelled share');
+            return;
+          }
+          console.log('navigator.share failed:', shareError.message);
+          // Continue to fallback methods
         }
       }
 
-      // Fallback: Copy detailed text to clipboard
+      // Fallback: Try Android native interface
+      if (typeof window.Android !== 'undefined' && window.Android.shareText) {
+        window.Android.shareText(shareText, '🌾 ऊस रोग निदान परिणाम');
+        this.showToast("परिणाम शेअर करत आहे...", "success");
+        return;
+      }
+
+      // Fallback: Try iOS webkit message handler
+      if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.shareHandler) {
+        window.webkit.messageHandlers.shareHandler.postMessage({
+          text: shareText,
+          title: '🌾 ऊस रोग निदान परिणाम'
+        });
+        this.showToast("परिणाम शेअर करत आहे...", "success");
+        return;
+      }
+
+      // Final fallback: Copy to clipboard
       await this.copyToClipboard(shareText);
-      this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले! आता कुठेही पेस्ट करा", "success");
+      this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले! आता WhatsApp मध्ये पेस्ट करा", "success");
 
     } catch (error) {
       console.error("Share error:", error);
       // Final fallback: copy to clipboard
       try {
         await this.copyToClipboard(shareText);
-        this.showToast("परिणाम क्लिपबोर्डवर कॉपी केले!", "info");
+        this.showToast("माहिती कॉपी केली! आता कुठेही पेस्ट करा", "info");
       } catch (clipError) {
         this.showToast("शेअर करण्यात त्रुटी", "error");
       }
@@ -1676,7 +1719,7 @@ const SugarcaneApp = {
       modal.remove();
     };
 
-    // Download PDF button handler
+    // Download PDF button handler - WebView compatible
     document.getElementById('html-pdf-download-btn').onclick = async () => {
       try {
         // Show loading state
@@ -1725,14 +1768,64 @@ const SugarcaneApp = {
           heightLeft -= pageHeight;
         }
 
-        // Save PDF
-        pdf.save(fileName);
+        // Get PDF as blob for WebView compatibility
+        const pdfBlob = pdf.output('blob');
+        const blobUrl = URL.createObjectURL(pdfBlob);
+
+        // Check if running in WebView
+        if (this.isRunningInWebView()) {
+          console.log('WebView detected - using alternative download method');
+
+          // Method 1: Try to use Android interface if available
+          if (typeof window.Android !== 'undefined' && window.Android.downloadPDF) {
+            const base64PDF = pdf.output('datauristring');
+            window.Android.downloadPDF(base64PDF, fileName);
+            this.showToast('PDF डाउनलोड सुरू झाले!', 'success');
+          }
+          // Method 2: Try iOS webkit message handler
+          else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadHandler) {
+            const base64PDF = pdf.output('datauristring');
+            window.webkit.messageHandlers.downloadHandler.postMessage({
+              data: base64PDF,
+              filename: fileName,
+              type: 'application/pdf'
+            });
+            this.showToast('PDF डाउनलोड सुरू झाले!', 'success');
+          }
+          // Method 3: Open blob URL in new window (some WebViews handle this)
+          else {
+            // Create a temporary link and try to open/download
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.download = fileName;
+            link.target = '_blank';
+
+            // Try click download first
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            // Also try opening in new window as fallback
+            setTimeout(() => {
+              window.open(blobUrl, '_blank');
+            }, 500);
+
+            this.showToast('PDF तयार झाले! "डाउनलोड" किंवा "ओपन" वर क्लिक करा', 'success');
+          }
+        } else {
+          // Standard browser download
+          pdf.save(fileName);
+          this.showToast('PDF यशस्वीरित्या डाउनलोड झाले!', 'success');
+        }
+
+        // Cleanup blob URL after delay
+        setTimeout(() => {
+          URL.revokeObjectURL(blobUrl);
+        }, 10000);
 
         // Reset button
         downloadBtn.innerHTML = originalHTML;
         downloadBtn.disabled = false;
-
-        this.showToast('PDF यशस्वीरित्या डाउनलोड झाले!', 'success');
 
         // Close modal after successful download
         setTimeout(() => {
@@ -1817,55 +1910,79 @@ const SugarcaneApp = {
       try {
         // Check if Web Share API is available
         if (navigator.share) {
-          // Verify we can share this content
           const shareData = {
             title: '🌾 ऊस रोग निदान रिपोर्ट',
             text: shareText
           };
 
-          // Check if share is supported for this data (optional but recommended)
-          if (navigator.canShare && !navigator.canShare(shareData)) {
-            console.log('Share data not supported, falling back to clipboard');
-            await this.copyToClipboard(shareText);
-            this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता कुठेही पेस्ट करा', 'success', 3500);
+          // In WebView, try to share directly without checking canShare
+          // canShare() often returns false in WebViews even when share works
+          try {
+            await navigator.share(shareData);
+            // Success - user completed sharing
+            this.showToast('परिणाम यशस्वीरित्या शेअर केले!', 'success');
             return;
+          } catch (shareError) {
+            // If share failed, check the error type
+            if (shareError.name === 'AbortError') {
+              // User cancelled - don't show error
+              console.log('User cancelled share');
+              return;
+            }
+            // For other errors, continue to fallback
+            console.log('navigator.share failed:', shareError.message);
+            throw shareError;
           }
-
-          // Attempt to share
-          await navigator.share(shareData);
-
-          // Success - user completed sharing
-          this.showToast('परिणाम यशस्वीरित्या शेअर केले!', 'success');
-
-        } else {
-          // Web Share API not available - use clipboard
-          console.log('Web Share API not available');
-          await this.copyToClipboard(shareText);
-          this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता कुठेही पेस्ट करा', 'success', 3500);
         }
+
+        // Fallback: Try Android native interface if available
+        if (typeof window.Android !== 'undefined' && window.Android.shareText) {
+          window.Android.shareText(shareText, '🌾 ऊस रोग निदान रिपोर्ट');
+          this.showToast('परिणाम शेअर करत आहे...', 'success');
+          return;
+        }
+
+        // Fallback: Try iOS webkit message handler
+        if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.shareHandler) {
+          window.webkit.messageHandlers.shareHandler.postMessage({
+            text: shareText,
+            title: '🌾 ऊस रोग निदान रिपोर्ट'
+          });
+          this.showToast('परिणाम शेअर करत आहे...', 'success');
+          return;
+        }
+
+        // Final fallback: Copy to clipboard
+        console.log('No share method available, using clipboard');
+        await this.copyToClipboard(shareText);
+        this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता WhatsApp मध्ये पेस्ट करा', 'success', 3500);
+
       } catch (error) {
         console.error('Share error:', error);
 
         // Check if user cancelled the share
         if (error.name === 'AbortError') {
-          // User cancelled - don't do anything, don't show error
           console.log('User cancelled share');
           return;
         }
 
-        // Check for other specific errors
+        // Check for permission errors
         if (error.name === 'NotAllowedError') {
-          // Permission denied or not secure context
           console.error('Share not allowed - check HTTPS and user gesture');
-          this.showToast('शेअर करण्यास परवानगी नाही', 'warning');
+          // Still try clipboard as last resort
+          try {
+            await this.copyToClipboard(shareText);
+            this.showToast('माहिती कॉपी केली! आता कुठेही पेस्ट करा', 'info');
+          } catch (e) {
+            this.showToast('शेअर करण्यास परवानगी नाही', 'warning');
+          }
           return;
         }
 
         // For other errors, fall back to clipboard
-        console.log('Share failed, falling back to clipboard');
         try {
           await this.copyToClipboard(shareText);
-          this.showToast('शेअर करता आले नाही. माहिती कॉपी केली', 'info');
+          this.showToast('माहिती कॉपी केली! आता WhatsApp मध्ये पेस्ट करा', 'info');
         } catch (clipError) {
           this.showToast('शेअर करण्यात त्रुटी', 'error');
         }
