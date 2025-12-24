@@ -583,14 +583,28 @@ def generate_pdf():
         with open(filepath, 'w', encoding='utf-8') as f:
             f.write(html_content)
         
-        # Return public URL
-        public_url = f"/static/reports/{filename}"
-        full_url = request.url_root.rstrip('/') + public_url
+        # Return download URL (not static URL)
+        # This endpoint will force 'Content-Disposition: attachment'
+        download_url = f"/api/download-report/{filename}"
+        full_url = request.url_root.rstrip('/') + download_url
         
-        logger.info(f"Report generated successfully: {filename}")
+        logger.info(f"Report report generated: {filename}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
 
     except Exception as e:
         logger.error(f"Report generation error: {e}")
         logger.error(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
+
+@main_bp.route('/api/download-report/<path:filename>')
+def download_report(filename):
+    """
+    Serve report with Content-Disposition: attachment to force download
+    """
+    try:
+        from flask import send_from_directory
+        reports_dir = os.path.join(current_app.static_folder, 'reports')
+        return send_from_directory(reports_dir, filename, as_attachment=True)
+    except Exception as e:
+        logger.error(f"Download error: {e}")
+        return str(e), 404

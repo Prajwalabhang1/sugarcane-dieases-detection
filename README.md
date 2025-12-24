@@ -2,7 +2,7 @@
 
 **AI-Powered Sugarcane Disease Detection and Treatment System**
 
-*Developed by Chordz Technologies*
+*Developed by Prajwal Abhang*
 
 ## Overview
 
