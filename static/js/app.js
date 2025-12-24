@@ -1613,7 +1613,7 @@ const SugarcaneApp = {
     return shareText;
   },
 
-  // Save Result to PDF - HTML-Based for Marathi Support
+  // Save Result to PDF - Unified approach for Mobile & Desktop
   async saveResultToPDF() {
     if (!this.state.currentPrediction) {
       this.showToast("PDF साठवण्यासाठी कोणताही परिणाम नाही", "warning");
@@ -1626,16 +1626,8 @@ const SugarcaneApp = {
       // Create HTML content with proper Marathi font support
       const printContent = this.createPrintableContent(this.state.currentPrediction);
 
-      // Check if mobile device
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-
-      if (isMobile) {
-        // Mobile: Show HTML preview in modal with print option
-        this.showHTMLPDFPreview(printContent);
-      } else {
-        // Desktop: Open in new window and print
-        this.openPrintWindow(printContent);
-      }
+      // Show preview modal with direct HTML rendering (works on both mobile & desktop)
+      this.showHTMLPDFPreview(printContent);
 
       this.hideLoadingOverlay();
 
@@ -1646,94 +1638,26 @@ const SugarcaneApp = {
     }
   },
 
-  // Show HTML PDF Preview (Mobile) - Supports Marathi properly
+  // Show HTML PDF Preview (Universal - Mobile & Desktop)
   showHTMLPDFPreview(htmlContent) {
     const fileName = this.generatePDFFilename();
 
-    // Create full HTML document
-    const fullHTML = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ऊस रोग निदान परिणाम</title>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
-        <style>
-          body { 
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
-            margin: 0;
-            padding: 20px;
-            background: white;
-          }
-          .header { 
-            text-align: center; 
-            border-bottom: 2px solid #4CAF50; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px; 
-          }
-          .header h1 { color: #4CAF50; margin-bottom: 10px; }
-          .header h2 { color: #666; margin-bottom: 15px; }
-          .diagnosis-section { 
-            background: #f8f9fa; 
-            padding: 20px; 
-            border-radius: 8px; 
-            margin-bottom: 25px; 
-          }
-          .info-section { 
-            margin-bottom: 25px; 
-            padding-bottom: 20px; 
-            border-bottom: 1px solid #eee; 
-          }
-          .info-section h3 { 
-            color: #2c3e50; 
-            border-left: 4px solid #4CAF50; 
-            padding-left: 10px; 
-            margin-bottom: 15px; 
-          }
-          .detail-content { margin-left: 20px; color: #555; }
-          .recommendations ul { padding-left: 20px; }
-          .recommendations li { margin-bottom: 8px; }
-          .footer { 
-            margin-top: 40px; 
-            padding-top: 20px; 
-            border-top: 2px solid #4CAF50; 
-            text-align: center; 
-            color: #666; 
-          }
-          .contact-info { margin-bottom: 20px; }
-          @media print {
-            body { margin: 0; padding: 15px; }
-            .no-print { display: none; }
-          }
-        </style>
-      </head>
-      <body>
-        ${htmlContent}
-      </body>
-      </html>
-    `;
-
-    // Create blob URL
-    const blob = new Blob([fullHTML], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-
-    // Create modal
+    // Create modal with direct HTML rendering (no iframe)
     const modal = document.createElement('div');
     modal.className = 'pdf-preview-modal';
     modal.innerHTML = `
       <div class="pdf-preview-content">
         <div class="pdf-preview-header">
           <h3>📄 PDF पूर्वावलोकन</h3>
-          <button class="pdf-close-btn" onclick="this.closest('.pdf-preview-modal').remove(); URL.revokeObjectURL('${url}');">
-            ✕
-          </button>
+          <button class="pdf-close-btn" id="pdf-close-btn">✕</button>
         </div>
         <div class="pdf-preview-body">
-          <iframe src="${url}" class="pdf-viewer" frameborder="0"></iframe>
+          <div class="pdf-content-preview" id="pdf-content-preview">
+            ${htmlContent}
+          </div>
         </div>
         <div class="pdf-preview-actions">
-          <button class="pdf-action-btn download-btn" id="html-pdf-print-btn">
+          <button class="pdf-action-btn download-btn" id="html-pdf-download-btn">
             <span class="btn-icon">📥</span>
             <span class="btn-text">PDF साठवा</span>
           </button>
@@ -1747,28 +1671,97 @@ const SugarcaneApp = {
 
     document.body.appendChild(modal);
 
-    // Add event listeners
-    document.getElementById('html-pdf-print-btn').onclick = () => {
-      // Get iframe and trigger print
-      const iframe = modal.querySelector('.pdf-viewer');
-      if (iframe && iframe.contentWindow) {
-        iframe.contentWindow.print();
-        this.showToast('PDF साठवण्यासाठी Print ते Save as PDF निवडा', 'info', 4000);
+    // Close button handler
+    document.getElementById('pdf-close-btn').onclick = () => {
+      modal.remove();
+    };
+
+    // Download PDF button handler
+    document.getElementById('html-pdf-download-btn').onclick = async () => {
+      try {
+        // Show loading state
+        const downloadBtn = document.getElementById('html-pdf-download-btn');
+        const originalHTML = downloadBtn.innerHTML;
+        downloadBtn.innerHTML = '<span class="btn-icon">⏳</span><span class="btn-text">तयार करत आहे...</span>';
+        downloadBtn.disabled = true;
+
+        // Get the preview content
+        const contentElement = document.getElementById('pdf-content-preview');
+
+        // Use html2canvas to convert HTML to canvas
+        const canvas = await html2canvas(contentElement, {
+          scale: 2, // Higher quality
+          useCORS: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          windowWidth: 800,
+          windowHeight: contentElement.scrollHeight
+        });
+
+        // Get canvas dimensions
+        const imgWidth = 210; // A4 width in mm
+        const pageHeight = 297; // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+        // Convert canvas to image
+        const imgData = canvas.toDataURL('image/png');
+
+        // Create PDF using jsPDF
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'mm', 'a4');
+
+        let heightLeft = imgHeight;
+        let position = 0;
+
+        // Add first page
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
+
+        // Add additional pages if content is longer than one page
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight;
+        }
+
+        // Save PDF
+        pdf.save(fileName);
+
+        // Reset button
+        downloadBtn.innerHTML = originalHTML;
+        downloadBtn.disabled = false;
+
+        this.showToast('PDF यशस्वीरित्या डाउनलोड झाले!', 'success');
+
+        // Close modal after successful download
+        setTimeout(() => {
+          modal.remove();
+        }, 1500);
+
+      } catch (error) {
+        console.error('PDF download error:', error);
+        this.showToast('PDF डाउनलोड करण्यात त्रुटी', 'error');
+
+        // Reset button on error
+        const downloadBtn = document.getElementById('html-pdf-download-btn');
+        if (downloadBtn) {
+          downloadBtn.innerHTML = '<span class="btn-icon">📥</span><span class="btn-text">PDF साठवा</span>';
+          downloadBtn.disabled = false;
+        }
       }
     };
 
+    // Share button handler (same as before)
     document.getElementById('html-pdf-share-btn').onclick = async () => {
-      // Create comprehensive share message from current prediction
       const result = this.state.currentPrediction;
       const diagnosis = result?.diagnosis || {};
       const farmerInfo = result?.farmerinfo || {};
       const actionPlan = result?.actionplan || {};
 
-      // Build detailed share text
       let shareText = `🌾 *ऊस एकरी १०० टन - रोग निदान रिपोर्ट*\n`;
       shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
 
-      // Diagnosis
       shareText += `📋 *निदान परिणाम:*\n`;
       shareText += `रोग: ${diagnosis.diseasename || 'अज्ञात'}\n`;
       if (diagnosis.diseasenameenglish) {
@@ -1777,12 +1770,10 @@ const SugarcaneApp = {
       shareText += `विश्वास: ${diagnosis.confidence || 0}%\n`;
       shareText += `गंभीरता: ${diagnosis.severity || 'मध्यम'}\n\n`;
 
-      // Symptoms
       if (farmerInfo.symptoms?.symptoms) {
         shareText += `🔍 *मुख्य लक्षणे:*\n${farmerInfo.symptoms.symptoms}\n\n`;
       }
 
-      // Treatment
       if (farmerInfo.treatment?.solution) {
         const treatmentSummary = farmerInfo.treatment.solution.length > 200
           ? farmerInfo.treatment.solution.substring(0, 200) + '...'
@@ -1790,7 +1781,6 @@ const SugarcaneApp = {
         shareText += `💊 *उपचार:*\n${treatmentSummary}\n\n`;
       }
 
-      // Cost Info
       if (farmerInfo.costinfo?.cost_estimate) {
         shareText += `💰 *अंदाजित खर्च:* ${farmerInfo.costinfo.cost_estimate}\n`;
       }
@@ -1801,7 +1791,6 @@ const SugarcaneApp = {
         shareText += `\n`;
       }
 
-      // Action Plan
       if (actionPlan.nextsteps?.steps && actionPlan.nextsteps.steps.length > 0) {
         shareText += `📋 *पुढील पावले:*\n`;
         actionPlan.nextsteps.steps.slice(0, 3).forEach((step, idx) => {
@@ -1810,7 +1799,6 @@ const SugarcaneApp = {
         shareText += `\n`;
       }
 
-      // Important Notes
       shareText += `⚠️ *महत्वाची सूचना:*\n`;
       shareText += `• हे निदान AI तंत्रज्ञानावर आधारित आहे\n`;
       shareText += `• कृपया कृषी तज्ञांचा सल्ला घ्या\n`;
@@ -1819,7 +1807,6 @@ const SugarcaneApp = {
       }
       shareText += `\n`;
 
-      // Contact Info
       shareText += `━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
       shareText += `📞 *संपर्क:*\n`;
       shareText += `📧 chordzconnect@gmail.com\n`;
@@ -1827,101 +1814,67 @@ const SugarcaneApp = {
       shareText += `🤖 Powered by Chordz Technologies\n`;
       shareText += `📅 ${new Date().toLocaleDateString('mr-IN')}\n`;
 
-      // Try to share
       try {
+        // Check if Web Share API is available
         if (navigator.share) {
-          await navigator.share({
+          // Verify we can share this content
+          const shareData = {
             title: '🌾 ऊस रोग निदान रिपोर्ट',
             text: shareText
-          });
+          };
+
+          // Check if share is supported for this data (optional but recommended)
+          if (navigator.canShare && !navigator.canShare(shareData)) {
+            console.log('Share data not supported, falling back to clipboard');
+            await this.copyToClipboard(shareText);
+            this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता कुठेही पेस्ट करा', 'success', 3500);
+            return;
+          }
+
+          // Attempt to share
+          await navigator.share(shareData);
+
+          // Success - user completed sharing
           this.showToast('परिणाम यशस्वीरित्या शेअर केले!', 'success');
+
         } else {
-          // Fallback to clipboard
+          // Web Share API not available - use clipboard
+          console.log('Web Share API not available');
           await this.copyToClipboard(shareText);
           this.showToast('संपूर्ण माहिती क्लिपबोर्डवर कॉपी केली! आता कुठेही पेस्ट करा', 'success', 3500);
         }
       } catch (error) {
         console.error('Share error:', error);
-        // Try clipboard as final fallback
+
+        // Check if user cancelled the share
+        if (error.name === 'AbortError') {
+          // User cancelled - don't do anything, don't show error
+          console.log('User cancelled share');
+          return;
+        }
+
+        // Check for other specific errors
+        if (error.name === 'NotAllowedError') {
+          // Permission denied or not secure context
+          console.error('Share not allowed - check HTTPS and user gesture');
+          this.showToast('शेअर करण्यास परवानगी नाही', 'warning');
+          return;
+        }
+
+        // For other errors, fall back to clipboard
+        console.log('Share failed, falling back to clipboard');
         try {
           await this.copyToClipboard(shareText);
-          this.showToast('माहिती कॉपी केली', 'info');
+          this.showToast('शेअर करता आले नाही. माहिती कॉपी केली', 'info');
         } catch (clipError) {
           this.showToast('शेअर करण्यात त्रुटी', 'error');
         }
       }
     };
-    // Show success message
+
     this.showToast('PDF पूर्वावलोकन तयार!', 'success');
   },
 
-  // Open Print Window (Desktop)
-  openPrintWindow(htmlContent) {
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>ऊस रोग निदान परिणाम</title>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
-        <style>
-          body { 
-            font-family: 'Noto Sans Devanagari', Arial, sans-serif; 
-            margin: 20px; 
-          }
-          .header { 
-            text-align: center; 
-            border-bottom: 2px solid #4CAF50; 
-            padding-bottom: 20px; 
-            margin-bottom: 30px; 
-          }
-          .diagnosis { 
-            background: #f5f5f5; 
-            padding: 20px; 
-            border-radius: 10px; 
-            margin: 20px 0; 
-          }
-          .info-section { 
-            margin: 20px 0; 
-            padding: 15px; 
-            border-left: 4px solid #4CAF50; 
-          }
-          .footer { 
-            margin-top: 50px; 
-            text-align: center; 
-            color: #666; 
-            font-size: 12px; 
-          }
-          @media print { 
-            body { margin: 0; } 
-          }
-        </style>
-      </head>
-      <body>${htmlContent}</body>
-      </html>
-    `);
-
-    printWindow.document.close();
-    printWindow.focus();
-
-    setTimeout(() => {
-      printWindow.print();
-      this.showToast("PDF साठवण्यासाठी Save as PDF निवडा", "info", 3500);
-    }, 500);
-  },
-
-  // Download PDF
-  downloadPDF(blob, fileName) {
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  },
 
   // Generate PDF Filename
   generatePDFFilename() {
@@ -3250,29 +3203,20 @@ const SugarcaneApp = {
     tooltip.style.zIndex = "10000";
   },
 
-  addContextualHelp() {
-    // Add help buttons in relevant sections
-    const helpSections = [
-      { selector: ".input-section", helpText: "फोटो अपलोडसाठी मदत" },
-      { selector: ".camera-container", helpText: "कॅमेरा वापरण्यासाठी मदत" },
-    ];
+  // REMOVED: addContextualHelp() - Question mark help buttons
+  // This function previously added help buttons with "?" icon
+  // Removed as per user request
 
-    helpSections.forEach((section) => {
-      const element = document.querySelector(section.selector);
-      if (element && !element.querySelector(".help-button")) {
-        const helpBtn = document.createElement("button");
-        helpBtn.className = "help-button";
-        helpBtn.innerHTML = "?";
-        helpBtn.title = section.helpText;
-        helpBtn.onclick = () => this.showContextualHelp(section.helpText);
-        element.appendChild(helpBtn);
-      }
-    });
+  addContextualHelp() {
+    // Disabled - help buttons removed
+    return;
   },
 
   showContextualHelp(helpText) {
-    this.showToast(`💡 ${helpText}`, "info", 5000);
+    // Disabled - help buttons removed
+    return;
   },
+
 
   // Toast logic to prevent duplicates
   showToast(message, type = 'info', duration = 5000) {

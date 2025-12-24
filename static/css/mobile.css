@@ -503,14 +503,20 @@
 
     .info-item {
         padding: var(--spacing-2);
+        min-width: 0;
     }
 
     .info-label {
         font-size: var(--fs-xs);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .info-value {
-        font-size: var(--fs-sm);
+        font-size: var(--fs-xs);
+        word-break: break-word;
+        overflow-wrap: break-word;
     }
 
     .preview-actions {
@@ -1526,19 +1532,88 @@
     flex: 1;
     overflow: auto;
     background: #f5f5f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    padding: 20px;
     min-height: 400px;
     max-height: calc(95vh - 200px);
 }
 
-.pdf-viewer {
+/* Direct HTML Preview Container */
+.pdf-content-preview {
     width: 100%;
-    height: 100%;
-    min-height: 400px;
-    border: none;
+    max-width: 800px;
+    margin: 0 auto;
     background: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Noto Sans Devanagari', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+.pdf-content-preview .header {
+    text-align: center;
+    border-bottom: 2px solid #4CAF50;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+}
+
+.pdf-content-preview .header h1 {
+    color: #4CAF50;
+    margin-bottom: 10px;
+    font-size: 2rem;
+}
+
+.pdf-content-preview .header h2 {
+    color: #666;
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+}
+
+.pdf-content-preview .diagnosis-section {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
+
+.pdf-content-preview .info-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.pdf-content-preview .info-section h3 {
+    color: #2c3e50;
+    border-left: 4px solid #4CAF50;
+    padding-left: 10px;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+}
+
+.pdf-content-preview .detail-content {
+    margin-left: 20px;
+    color: #555;
+}
+
+.pdf-content-preview .recommendations ul {
+    padding-left: 20px;
+}
+
+.pdf-content-preview .recommendations li {
+    margin-bottom: 8px;
+}
+
+.pdf-content-preview .footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 2px solid #4CAF50;
+    text-align: center;
+    color: #666;
+}
+
+.pdf-content-preview .contact-info {
+    margin-bottom: 20px;
 }
 
 .pdf-preview-actions {
@@ -1630,10 +1705,24 @@
     .pdf-preview-body {
         max-height: calc(100vh - 180px);
         min-height: 300px;
+        padding: 15px;
     }
 
-    .pdf-viewer {
-        min-height: 300px;
+    .pdf-content-preview {
+        padding: 20px;
+        font-size: 14px;
+    }
+
+    .pdf-content-preview .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .pdf-content-preview .header h2 {
+        font-size: 1.2rem;
+    }
+
+    .pdf-content-preview .info-section h3 {
+        font-size: 1.1rem;
     }
 
     .pdf-preview-actions {
