@@ -2475,37 +2475,47 @@ select.input-field {
     }
 
     /* ================================================
-       Diagnosis Card Dark Mode Text Colors
+       High Contrast Text Colors (For readable cards in all modes)
        ================================================ */
 
-    /* 1. Main Headings - Pure White */
+    /* Force White Background for Cards to ensure Dark Text is readable */
+    .diagnosis-card,
+    .info-card,
+    .card,
+    .input-card,
+    .result-card {
+        background: #FFFFFF !important;
+        border-color: #e0e0e0 !important;
+    }
+
+    /* 1. Main Headings - Dark Green */
     .disease-name,
     h1.disease-name,
     .section-title,
     .confidence-level,
     .confidence-text {
-        color: #FFFFFF !important;
+        color: #1b5e20 !important;
     }
 
-    /* 2. Secondary Titles - Light Teal/Green */
+    /* 2. Secondary Titles - Dark Teal/Green */
     .card-title,
     h3.card-title,
     .info-card .card-title,
     .modal-header h3 {
-        color: #A5D6A7 !important;
+        color: #004d40 !important;
     }
 
-    /* 3. Sub-headings & English Names - Soft Amber/Wheat */
+    /* 3. Sub-headings & English Names - Dark Orange/Amber */
     .disease-name-english,
     h2.disease-name-english,
     h4.card-title,
     .action-title,
     .info-card h4,
     .alt-disease {
-        color: #FFE082 !important;
+        color: #e65100 !important;
     }
 
-    /* 4. Body Content & Bullet Points - Soft Off-white */
+    /* 4. Body Content & Bullet Points - Black / Dark Grey */
     .card-content,
     .card-content p,
     .basic-info,
@@ -2518,24 +2528,24 @@ select.input-field {
     .success-item,
     .alt-english,
     .disease-desc {
-        color: #F5F5F5 !important;
+        color: #000000 !important;
     }
 
     /* Bullet Icons Color */
     .info-card li::before,
     .action-item::before {
-        color: #81C784 !important;
+        color: #2e7d32 !important;
     }
 }
 
-/* Explicit class selectors for manual Dark Mode toggle */
+/* Explicit class selectors for manual Dark Mode toggle (Enforcing High Contrast) */
 body.dark-mode .disease-name,
 body.dark-mode h1.disease-name,
 body.dark-mode .section-title,
 body.dark-mode .card-title,
 body.dark-mode h3.card-title,
 body.dark-mode .info-card .card-title {
-    color: #FFFFFF !important;
+    color: #1b5e20 !important;
 }
 
 body.dark-mode .card-content,
@@ -2543,11 +2553,17 @@ body.dark-mode .card-content p,
 body.dark-mode .content-text,
 body.dark-mode .info-card li,
 body.dark-mode .action-item {
-    color: #F5F5F5 !important;
+    color: #000000 !important;
 }
 
 body.dark-mode .disease-name-english,
 body.dark-mode h2.disease-name-english,
 body.dark-mode h4.card-title {
-    color: #FFE082 !important;
+    color: #e65100 !important;
+}
+
+body.dark-mode .diagnosis-card,
+body.dark-mode .info-card,
+body.dark-mode .card {
+    background: #FFFFFF !important;
 }
