@@ -20,6 +20,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     libhdf5-dev \
     curl \
+    pkg-config \
+    libcairo2-dev \
+    python3-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create app directory
