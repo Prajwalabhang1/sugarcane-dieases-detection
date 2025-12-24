@@ -250,8 +250,9 @@ def generate_pdf():
         font_path = os.path.join(current_app.static_folder, 'fonts', 'NotoSansDevanagari-Regular.ttf')
         # WeasyPrint needs file:// URL for local fonts
         font_url = f"file://{font_path}"
-        
-        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        # Filename with Brand and Disease Name (Sanitized for compatibility)
+        safe_disease = disease_english.replace(' ', '_')
+        filename = f"Chordz_Technologies_Sugarcane_Report_{safe_disease}_{datetime.now().strftime('%d%m%Y')}.pdf"
         filepath = os.path.join(reports_dir, filename)
         
         # Helper: Clean list items
@@ -259,7 +260,7 @@ def generate_pdf():
             if not items or not isinstance(items, list): return ""
             return "".join([f"<li>{item}</li>" for item in items if item and item != "Not available"])
 
-        # Content Generation
+        # Content Generation (... same as before ...)
         symptoms_content = ""
         if farmerinfo.get('symptoms'):
             s = farmerinfo['symptoms']
@@ -384,8 +385,21 @@ def generate_pdf():
                 ul {{ padding-left: 20px; margin: 5px 0; }}
                 li {{ margin-bottom: 6px; }}
                 
-                .footer {{
+                .disclaimer {{
                     margin-top: 40px;
+                    padding: 15px;
+                    background-color: #fafafa;
+                    border: 1px solid #eeeeee;
+                    border-radius: 5px;
+                    font-size: 10pt;
+                    color: #555;
+                    text-align: justify;
+                }}
+                
+                .disclaimer strong {{ color: #d32f2f; }}
+                
+                .footer {{
+                    margin-top: 20px;
                     text-align: center;
                     font-size: 9pt;
                     color: #777;
@@ -424,6 +438,11 @@ def generate_pdf():
             {treatment_content}
             {prevention_content}
             {action_content}
+            
+            <div class="disclaimer">
+                <strong>अस्वीकरण (Disclaimer):</strong><br/>
+                कृपया लक्षात घ्या: हा परिणाम AI तंत्रज्ञानावर आधारित आहे आणि सतत प्रशिक्षण घेत आहे. त्यामुळे निदान बरोबर नसेल अशी शक्यता आहे. कृपया नेहमी तज्ञांचा सल्ला घ्या.
+            </div>
             
             <div class="footer">
                 <p>For expert consultation, call: <strong>+91 7517311326</strong> | Email: chordzconnect@gmail.com</p>
