@@ -214,16 +214,16 @@ def predict_disease():
 def generate_pdf():
     """
     Server-side PDF generation for WebView compatibility.
-    Accepts JSON with disease report data and returns a downloadable PDF.
+    Accepts JSON with disease report data and returns a downloadable PDF URL.
     """
     try:
         from flask import make_response
         from io import BytesIO
+        import os
         
         # Handle both JSON and form-encoded data
         data = request.get_json(silent=True)
         if not data:
-            # Try to get from form data
             form_data = request.form.get('data')
             if form_data:
                 data = json.loads(form_data)
@@ -233,36 +233,35 @@ def generate_pdf():
         
         diagnosis = data.get('diagnosis', {})
         farmerinfo = data.get('farmerinfo', {})
-        actionplan = data.get('actionplan', {})
         
         disease_name = diagnosis.get('diseasename', 'अज्ञात')
         disease_english = diagnosis.get('diseasenameenglish', 'Unknown')
         confidence = diagnosis.get('confidence', 0)
         severity = diagnosis.get('severity', 'मध्यम')
+
+        # Ensure reports directory exists
+        reports_dir = os.path.join(current_app.static_folder, 'reports')
+        os.makedirs(reports_dir, exist_ok=True)
         
-        # Create a simple text-based PDF using reportlab if available
-        # Otherwise fall back to HTML that can be rendered
+        # Generate filename
+        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        filepath = os.path.join(reports_dir, filename)
+        
+        # Try generating PDF
+        pdf_generated = False
         try:
             from reportlab.lib import colors
             from reportlab.lib.pagesizes import A4
             from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
             from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle
-            from reportlab.pdfbase import pdfmetrics
-            from reportlab.pdfbase.ttfonts import TTFont
             
-            buffer = BytesIO()
-            doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=30, bottomMargin=30)
+            # Create PDF directly to file
+            doc = SimpleDocTemplate(filepath, pagesize=A4, topMargin=30, bottomMargin=30)
             elements = []
             styles = getSampleStyleSheet()
             
             # Title
-            title_style = ParagraphStyle(
-                'Title',
-                parent=styles['Heading1'],
-                fontSize=18,
-                spaceAfter=20,
-                alignment=1  # Center
-            )
+            title_style = ParagraphStyle('Title', parent=styles['Heading1'], fontSize=18, spaceAfter=20, alignment=1)
             elements.append(Paragraph("Sugarcane Disease Detection Report", title_style))
             elements.append(Spacer(1, 20))
             
@@ -278,154 +277,60 @@ def generate_pdf():
             table = Table(table_data, colWidths=[150, 300])
             table.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (0, -1), colors.lightgreen),
-                ('TEXTCOLOR', (0, 0), (-1, -1), colors.black),
-                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-                ('FONTSIZE', (0, 0), (-1, -1), 11),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
-                ('TOPPADDING', (0, 0), (-1, -1), 10),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black)
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('PADDING', (0, 0), (-1, -1), 10),
             ]))
             elements.append(table)
             elements.append(Spacer(1, 20))
             
-            # Symptoms
-            symptoms = farmerinfo.get('symptoms', {})
-            if symptoms.get('detailed'):
+            # Dynamic content...
+            if farmerinfo.get('symptoms', {}).get('detailed'):
                 elements.append(Paragraph("Symptoms:", styles['Heading2']))
-                for symptom in symptoms['detailed']:
-                    elements.append(Paragraph(f"• {symptom}", styles['Normal']))
-                elements.append(Spacer(1, 15))
-            
-            # Treatment
-            treatment = farmerinfo.get('treatment', {})
-            if treatment.get('solution'):
+                for s in farmerinfo['symptoms']['detailed']:
+                    elements.append(Paragraph(f"• {s}", styles['Normal']))
+                elements.append(Spacer(1, 10))
+
+            if farmerinfo.get('treatment', {}).get('solution'):
                 elements.append(Paragraph("Treatment:", styles['Heading2']))
-                elements.append(Paragraph(treatment['solution'], styles['Normal']))
-                elements.append(Spacer(1, 15))
-            
-            # Prevention
-            prevention = farmerinfo.get('prevention', {})
-            if prevention.get('immediate_care'):
-                elements.append(Paragraph("Prevention:", styles['Heading2']))
-                for care in prevention['immediate_care']:
-                    elements.append(Paragraph(f"• {care}", styles['Normal']))
-                elements.append(Spacer(1, 15))
-            
-            # Cost Info
-            costinfo = farmerinfo.get('costinfo', {})
-            if costinfo.get('cost_estimate') or costinfo.get('recovery_time'):
-                elements.append(Paragraph("Cost Information:", styles['Heading2']))
-                if costinfo.get('cost_estimate'):
-                    elements.append(Paragraph(f"Estimated Cost: {costinfo['cost_estimate']}", styles['Normal']))
-                if costinfo.get('recovery_time'):
-                    elements.append(Paragraph(f"Recovery Time: {costinfo['recovery_time']}", styles['Normal']))
-                elements.append(Spacer(1, 15))
-            
+                elements.append(Paragraph(farmerinfo['treatment']['solution'], styles['Normal']))
+                elements.append(Spacer(1, 10))
+                
             # Footer
             elements.append(Spacer(1, 30))
-            footer_style = ParagraphStyle(
-                'Footer',
-                parent=styles['Normal'],
-                fontSize=10,
-                textColor=colors.grey,
-                alignment=1
-            )
-            elements.append(Paragraph("Powered by Chordz Technologies", footer_style))
-            elements.append(Paragraph("Contact: chordzconnect@gmail.com | +91 7517311326", footer_style))
+            elements.append(Paragraph("Powered by Chordz Technologies | +91 7517311326", styles['Normal']))
             
             doc.build(elements)
-            
-            pdf_data = buffer.getvalue()
-            buffer.close()
+            pdf_generated = True
             
         except ImportError:
-            # Fallback: Create a simple text-based response if reportlab is not available
-            logger.warning("reportlab not available, using HTML fallback")
+            logger.warning("reportlab not found, falling back to HTML")
+        except Exception as e:
+            logger.error(f"ReportLab error: {e}")
             
-            # Generate HTML content that can be printed as PDF
+        # Fallback to HTML if PDF failed
+        if not pdf_generated:
+            # Change extension to .html
+            filename = filename.replace('.pdf', '.html')
+            filepath = os.path.join(reports_dir, filename)
+            
             html_content = f"""
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="UTF-8">
-                <title>Disease Report - {disease_english}</title>
-                <style>
-                    body {{ font-family: Arial, sans-serif; padding: 40px; }}
-                    h1 {{ color: #2e7d32; text-align: center; }}
-                    .section {{ margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 8px; }}
-                    .section h2 {{ color: #1976d2; margin-top: 0; }}
-                    table {{ width: 100%; border-collapse: collapse; }}
-                    th, td {{ padding: 10px; border: 1px solid #ddd; text-align: left; }}
-                    th {{ background: #4caf50; color: white; }}
-                    .footer {{ text-align: center; color: #666; margin-top: 40px; font-size: 12px; }}
-                </style>
-            </head>
-            <body>
-                <h1>🌾 Sugarcane Disease Detection Report</h1>
-                
-                <div class="section">
-                    <h2>Diagnosis</h2>
-                    <table>
-                        <tr><th>Disease (Marathi)</th><td>{disease_name}</td></tr>
-                        <tr><th>Disease (English)</th><td>{disease_english}</td></tr>
-                        <tr><th>Confidence</th><td>{confidence}%</td></tr>
-                        <tr><th>Severity</th><td>{severity}</td></tr>
-                        <tr><th>Date</th><td>{datetime.now().strftime('%Y-%m-%d %H:%M')}</td></tr>
-                    </table>
-                </div>
-                
-                <div class="footer">
-                    <p>Powered by Chordz Technologies</p>
-                    <p>Contact: chordzconnect@gmail.com | +91 7517311326</p>
-                </div>
-            </body>
-            </html>
+            <html><body>
+                <h1>Report: {disease_name}</h1>
+                <p>Confidence: {confidence}%</p>
+                <p>Date: {datetime.now()}</p>
+                <hr>
+                <p>{farmerinfo.get('treatment', {}).get('solution', '')}</p>
+            </body></html>
             """
-            
-            # Return HTML as attachment
-            response = make_response(html_content)
-            response.headers['Content-Type'] = 'text/html; charset=utf-8'
-            response.headers['Content-Disposition'] = f'attachment; filename="Disease_Report_{disease_english}_{datetime.now().strftime("%Y%m%d")}.html"'
-            return response
-        
-        # Save PDF to static/reports folder
-        import os
-        
-        # Ensure reports directory exists
-        reports_dir = os.path.join(current_app.static_folder, 'reports')
-        os.makedirs(reports_dir, exist_ok=True)
-        
-        # Clean up old reports (optional) - remove files older than 1 hour
-        try:
-            import time
-            current_time = time.time()
-            for f in os.listdir(reports_dir):
-                f_path = os.path.join(reports_dir, f)
-                if os.path.isfile(f_path) and (current_time - os.path.getmtime(f_path) > 3600):
-                    os.remove(f_path)
-        except Exception:
-            pass
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write(html_content)
 
-        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
-        filepath = os.path.join(reports_dir, filename)
-        
-        doc.build(elements)
-        
-        # Save buffer to file
-        with open(filepath, 'wb') as f:
-            f.write(buffer.getvalue())
-            
-        buffer.close()
-        
         # Return public URL
-        # For WebView 'breakout' strategy
         public_url = f"/static/reports/{filename}"
         full_url = request.url_root.rstrip('/') + public_url
         
-        logger.info(f"PDF generated at: {filepath}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
-        
+
     except Exception as e:
         logger.error(f"PDF generation error: {e}")
-        logger.error(traceback.format_exc())
         return jsonify({'success': False, 'error': str(e)}), 500
