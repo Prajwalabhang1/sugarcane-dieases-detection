@@ -318,277 +318,151 @@ def generate_pdf():
                 action_html += f'<ul>{steps}</ul>'
                 action_html += '</div>'
         
-        # Generate complete HTML
+        # Prepare HTML for PDF conversion
+        # We need to use absolute paths for fonts/images in xhtml2pdf
+        font_path = os.path.join(current_app.static_folder, 'fonts', 'NotoSansDevanagari-Regular.ttf')
+        # Handle Windows paths for xhtml2pdf
+        if os.name == 'nt':
+             font_path = font_path.replace('\\', '/')
+
         html_content = f"""<!DOCTYPE html>
 <html lang="mr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ऊस रोग निदान रिपोर्ट - {disease_name}</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap');
+        @font-face {{
+            font-family: 'NotoSans';
+            src: url('{font_path}');
+        }}
         
         * {{
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }}
         
         body {{
-            font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 20px;
-            line-height: 1.6;
+            font-family: 'NotoSans', sans-serif;
+            padding: 30px;
             color: #333;
-        }}
-        
-        .container {{
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            overflow: hidden;
+            font-size: 14px;
         }}
         
         .header {{
-            background: linear-gradient(135deg, #2e7d32 0%, #4caf50 100%);
-            color: white;
-            padding: 30px;
             text-align: center;
-        }}
-        
-        .header h1 {{
-            font-size: 28px;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }}
-        
-        .header h2 {{
-            font-family: 'Roboto', sans-serif;
-            font-size: 18px;
-            margin-bottom: 10px;
-            opacity: 0.9;
-        }}
-        
-        .header p {{
-            font-size: 14px;
-            opacity: 0.85;
-            margin: 3px 0;
-        }}
-        
-        .content {{
-            padding: 30px;
-        }}
-        
-        .diagnosis-box {{
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-            border-left: 5px solid #4caf50;
+            color: white;
+            background-color: #2e7d32;
             padding: 20px;
             border-radius: 10px;
-            margin-bottom: 25px;
-        }}
-        
-        .diagnosis-box h2 {{
-            color: #2e7d32;
-            font-size: 22px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4caf50;
-            padding-bottom: 10px;
-        }}
-        
-        .diagnosis-grid {{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 15px;
-        }}
-        
-        .diagnosis-item {{
-            background: white;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #a5d6a7;
-        }}
-        
-        .diagnosis-item strong {{
-            color: #2e7d32;
-            display: block;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }}
-        
-        .diagnosis-item span {{
-            color: #1b5e20;
-            font-size: 16px;
-            font-weight: 600;
-        }}
-        
-        .info-section {{
-            background: #f9fafb;
-            border: 1px solid #e5e7eb;
-            border-radius: 10px;
-            padding: 20px;
             margin-bottom: 20px;
         }}
         
-        .info-section h3 {{
-            color: #1976d2;
-            font-size: 20px;
+        h1 {{ font-size: 24px; margin-bottom: 5px; color: white; }}
+        h2 {{ font-size: 16px; margin: 5px 0; color: #e8f5e9; }}
+        h3 {{ color: #1565c0; border-bottom: 2px solid #90caf9; padding-bottom: 5px; margin-top: 20px; }}
+        
+        .diagnosis-box {{
+            border: 2px solid #4caf50;
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }}
+        
+        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
+        td {{ padding: 8px; border-bottom: 1px solid #c8e6c9; }}
+        .label {{ font-weight: bold; color: #2e7d32; width: 40%; }}
+        .value {{ font-weight: bold; color: #000; }}
+        
+        .info-section {{
             margin-bottom: 15px;
-            border-bottom: 2px solid #42a5f5;
-            padding-bottom: 8px;
-        }}
-        
-        .info-section p {{
-            margin: 10px 0;
-            font-size: 15px;
-        }}
-        
-        .info-section strong {{
-            color: #0d47a1;
-        }}
-        
-        .info-section ul {{
-            margin: 10px 0;
-            padding-left: 25px;
-        }}
-        
-        .info-section li {{
-            margin: 8px 0;
-            font-size: 15px;
-            line-height: 1.6;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            background-color: #fafafa;
         }}
         
         .treatment-box {{
-            background: #fff3e0;
-            border: 2px solid #ff9800;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
+            background-color: #fff3e0;
+            border: 1px solid #ffe0b2;
+            padding: 10px;
+            border-radius: 5px;
         }}
+        
+        ul {{ margin-top: 5px; padding-left: 20px; }}
+        li {{ margin-bottom: 5px; }}
         
         .footer {{
-            background: #37474f;
-            color: white;
-            padding: 20px;
             text-align: center;
-        }}
-        
-        .footer p {{
-            margin: 5px 0;
-            font-size: 14px;
-        }}
-        
-        .footer strong {{
-            color: #4caf50;
-        }}
-        
-        .badge {{
-            display: inline-block;
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-            margin-left: 10px;
-        }}
-        
-        .badge-high {{
-            background: #c8e6c9;
-            color: #1b5e20;
-        }}
-        
-        .badge-medium {{
-            background: #fff9c4;
-            color: #f57f17;
-        }}
-        
-        .badge-critical {{
-            background: #ffcdd2;
-            color: #b71c1c;
-        }}
-        
-        @media print {{
-            body {{
-                background: white;
-                padding: 0;
-            }}
-            
-            .container {{
-                box-shadow: none;
-            }}
+            margin-top: 40px;
+            font-size: 10px;
+            color: #666;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
         }}
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>🌾 ऊस एकरी १०० टन</h1>
-            <h2>Chordz Technologies</h2>
-            <p>ऊसाच्या रोगाचे AI निदान परिणाम</p>
-            <p>दिनांक: {datetime.now().strftime('%d/%m/%Y')} | वेळ: {datetime.now().strftime('%I:%M %p')}</p>
-        </div>
-        
-        <div class="content">
-            <div class="diagnosis-box">
-                <h2>📋 निदान परिणाम</h2>
-                <div class="diagnosis-grid">
-                    <div class="diagnosis-item">
-                        <strong>रोग (मराठी)</strong>
-                        <span>{disease_name}</span>
-                    </div>
-                    <div class="diagnosis-item">
-                        <strong>Disease (English)</strong>
-                        <span>{disease_english}</span>
-                    </div>
-                    <div class="diagnosis-item">
-                        <strong>विश्वास पातळी</strong>
-                        <span>{confidence_text}</span>
-                    </div>
-                    <div class="diagnosis-item">
-                        <strong>विश्वासार्हता</strong>
-                        <span>{confidence_level}</span>
-                    </div>
-                    <div class="diagnosis-item">
-                        <strong>गंभीरता</strong>
-                        <span class="badge badge-medium">{severity}</span>
-                    </div>
-                </div>
-            </div>
-            
-            {symptoms_html}
-            {treatment_html}
-            {prevention_html}
-            {cost_html}
-            {action_html}
-            
-            <div class="info-section">
-                <h3>📞 संपर्क माहिती</h3>
-                <p><strong>ईमेल:</strong> chordzconnect@gmail.com</p>
-                <p><strong>फोन:</strong> +91 7517311326</p>
-                <p>तज्ञांशी सल्लामसलत करण्यासाठी कृपया संपर्क साधा</p>
-            </div>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Powered by Chordz Technologies</strong></p>
-            <p>AI-Based Sugarcane Disease Detection System</p>
-            <p>© {datetime.now().year} - All Rights Reserved</p>
-        </div>
+    <div class="header">
+        <h1>🌾 ऊस एकरी १०० टन</h1>
+        <h2>Chordz Technologies</h2>
+        <p>AI ऊस रोग निदान रिपोर्ट | {datetime.now().strftime('%d/%m/%Y')}</p>
+    </div>
+    
+    <div class="diagnosis-box">
+        <h3 style="color: #2e7d32; margin-top: 0;">📋 निदान परिणाम</h3>
+        <table>
+            <tr><td class="label">रोग (मराठी)</td><td class="value">{disease_name}</td></tr>
+            <tr><td class="label">Disease (English)</td><td class="value">{disease_english}</td></tr>
+            <tr><td class="label">विश्वास पातळी</td><td class="value">{confidence_text}</td></tr>
+            <tr><td class="label">गंभीरता</td><td class="value">{severity}</td></tr>
+        </table>
+    </div>
+    
+    {symptoms_html}
+    {treatment_html}
+    {prevention_html}
+    {cost_html}
+    {action_html}
+    
+    <div class="footer">
+        <p><strong>Powered by Chordz Technologies</strong> | +91 7517311326 | chordzconnect@gmail.com</p>
+        <p>This is an AI-generated report. Please consult an expert for verification.</p>
     </div>
 </body>
 </html>"""
         
-        # Save HTML file
-        with open(filepath, 'w', encoding='utf-8') as f:
+        # Save HTML file (debug purpose)
+        html_filepath = filepath.replace('.pdf', '.html')
+        with open(html_filepath, 'w', encoding='utf-8') as f:
             f.write(html_content)
+
+        # Convert to PDF
+        try:
+            from xhtml2pdf import pisa
+            
+            # Open PDF file
+            with open(filepath, "wb") as pdf_file:
+                # Convert HTML to PDF
+                pisa_status = pisa.CreatePDF(
+                    html_content, 
+                    dest=pdf_file,
+                    encoding='utf-8'
+                )
+                
+            if pisa_status.err:
+                raise Exception("PDF generation error")
+                
+            filename = filename # .pdf
+            
+        except Exception as e:
+            logger.error(f"xhtml2pdf error: {e}")
+            # Fallback to HTML if PDF conversion fails
+            filename = os.path.basename(html_filepath)
         
         # Return download URL (not static URL)
-        # This endpoint will force 'Content-Disposition: attachment'
         download_url = f"/api/download-report/{filename}"
         full_url = request.url_root.rstrip('/') + download_url
         
-        logger.info(f"Report report generated: {filename}")
+        logger.info(f"Report generated: {filename}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
 
     except Exception as e:

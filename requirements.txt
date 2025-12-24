@@ -21,3 +21,4 @@ uvicorn
 PyYAML
 matplotlib
 reportlab
+xhtml2pdf
