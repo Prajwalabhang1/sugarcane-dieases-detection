@@ -322,7 +322,8 @@ def generate_pdf():
                 action_html += f'<ul>{steps}</ul>'
                 action_html += '</div>'
         
-        # PDF-Specific HTML with Embedded Fonts
+        # PDF-Specific HTML with Embedded Fonts - OPTIMIZED FOR XHTML2PDF
+        # Uses Table-based layout instead of Grid/Flexbox which are not supported
         html_content = f"""
         <!DOCTYPE html>
         <html>
@@ -336,90 +337,170 @@ def generate_pdf():
                 
                 body {{
                     font-family: 'MarathiFont', sans-serif;
-                    padding: 20px;
+                    padding: 30px;
                     font-size: 12px;
-                    color: #333;
+                    color: #333333;
                 }}
                 
-                .header {{
+                /* Layout Tables */
+                table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
+                td {{ valign: top; padding: 5px; }}
+                
+                .header-table {{
                     background-color: #2e7d32;
                     color: white;
-                    padding: 20px;
-                    text-align: center;
-                    border-radius: 8px;
-                    margin-bottom: 20px;
+                    border-radius: 8px; /* xhtml2pdf supports basic radius */
                 }}
                 
-                .header h1 {{ font-size: 24px; margin: 5px 0; }}
-                .header h2 {{ font-size: 16px; margin: 5px 0; opacity: 0.9; }}
-                .header p {{ margin: 2px 0; }}
+                .header-title {{ font-size: 24px; font-weight: bold; color: white; }}
+                .header-subtitle {{ font-size: 16px; color: #e8f5e9; }}
+                .header-info {{ font-size: 12px; color: #c8e6c9; }}
                 
+                /* Diagnosis Section */
                 .diagnosis-box {{
-                    background-color: #e8f5e9;
                     border: 1px solid #4caf50;
-                    padding: 15px;
-                    border-radius: 8px;
                     margin-bottom: 20px;
-                }}
-                
-                .diagnosis-row {{
-                    padding: 5px 0;
-                    border-bottom: 1px solid #c8e6c9;
-                }}
-                
-                .info-section {{
-                    margin-bottom: 15px;
                     padding: 10px;
-                    border: 1px solid #e0e0e0;
                 }}
                 
-                h3 {{ color: #1565c0; border-bottom: 1px solid #90caf9; padding-bottom: 5px; }}
+                .diagnosis-table td {{
+                    border-bottom: 1px solid #e0e0e0;
+                    padding: 8px;
+                }}
                 
+                .label {{ font-weight: bold; color: #2e7d32; width: 40%; }}
+                .value {{ font-weight: bold; color: #333; }}
+                
+                /* Section Styles */
+                h3 {{
+                    color: #1565c0;
+                    border-bottom: 2px solid #90caf9;
+                    padding-bottom: 5px;
+                    margin-top: 20px;
+                    margin-bottom: 10px;
+                    font-size: 14px;
+                }}
+                
+                .content-box {{
+                    margin-bottom: 15px;
+                    padding-left: 5px;
+                }}
+                
+                /* Lists */
+                ul {{ margin: 0; padding-left: 20px; }}
+                li {{ margin-bottom: 5px; line-height: 1.4; }}
+                
+                /* Treatment Box */
                 .treatment-box {{
                     background-color: #fff3e0;
-                    padding: 10px;
                     border: 1px solid #ffe0b2;
+                    padding: 10px;
+                    margin-bottom: 10px;
                 }}
                 
+                .organic-box {{
+                    border-left: 3px solid #8bc34a;
+                    padding-left: 10px;
+                    margin-top: 10px;
+                }}
+                
+                /* Badges */
                 .badge {{
-                    background-color: #fff9c4;
-                    padding: 2px 8px;
-                    border-radius: 4px;
+                    color: #f57f17;
+                    font-weight: bold;
                 }}
                 
                 .footer {{
                     text-align: center;
-                    font-size: 10px;
+                    font-size: 9px;
                     color: #666;
-                    margin-top: 30px;
-                    border-top: 1px solid #eee;
+                    margin-top: 50px;
+                    border-top: 1px solid #eeeeee;
                     padding-top: 10px;
                 }}
             </style>
         </head>
         <body>
-            <div class="header">
-                <h1>Sugarcane Disease Report</h1>
-                <h2>Chordz Technologies</h2>
-                <p>Date: {datetime.now().strftime('%d/%m/%Y')} | Time: {datetime.now().strftime('%I:%M %p')}</p>
-            </div>
+            <!-- Header using Table -->
+            <table class="header-table" cellpadding="10">
+                <tr>
+                    <td align="center">
+                        <div class="header-title">Sugarcane Disease Report</div>
+                        <div class="header-subtitle">Chordz Technologies</div>
+                        <div class="header-info">
+                            Date: {datetime.now().strftime('%d/%m/%Y')} | Time: {datetime.now().strftime('%I:%M %p')}
+                        </div>
+                    </td>
+                </tr>
+            </table>
             
+            <!-- Diagnosis Section -->
             <div class="diagnosis-box">
-                <div class="diagnosis-row"><strong>Disease (Marathi):</strong> {disease_name}</div>
-                <div class="diagnosis-row"><strong>Disease (English):</strong> {disease_english}</div>
-                <div class="diagnosis-row"><strong>Confidence:</strong> {confidence_text}</div>
-                <div class="diagnosis-row"><strong>Severity:</strong> <span class="badge">{severity}</span></div>
+                <table class="diagnosis-table" cellspacing="0">
+                    <tr>
+                        <td class="label">Disease (Marathi):</td>
+                        <td class="value">{disease_name}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Disease (English):</td>
+                        <td class="value">{disease_english}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Confidence:</td>
+                        <td class="value">{confidence_text}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Severity:</td>
+                        <td class="value"><span class="badge">{severity}</span></td>
+                    </tr>
+                </table>
             </div>
             
-            {symptoms_html}
-            {treatment_html}
-            {prevention_html}
-            {cost_html}
-            {action_html}
+            <!-- Symptoms -->
+            <h3>🔍 रोगाची लक्षणे (Symptoms)</h3>
+            <div class="content-box">
+                {f'<p><strong>मुख्य लक्षणे:</strong> {farmerinfo["symptoms"]["symptoms"]}</p>' if is_valid(farmerinfo.get("symptoms", {}).get("symptoms")) else ''}
+                
+                {f'<p><strong>तपशीलवार लक्षणे:</strong></p><ul>{format_list_items(farmerinfo["symptoms"]["detailed"])}</ul>' if farmerinfo.get("symptoms", {}).get("detailed") else ''}
+            </div>
+
+            <!-- Treatment -->
+            <h3>💊 उपचार पद्धती (Treatment)</h3>
+            <div class="content-box">
+                {f'<div class="treatment-box"><strong>मुख्य उपाय:</strong><br/>{farmerinfo["treatment"]["solution"].replace(chr(10), "<br/>")}</div>' if is_valid(farmerinfo.get("treatment", {}).get("solution")) else ''}
+                
+                {f'<div class="organic-box"><strong>सेंद्रिय उपाय:</strong><br/><ul>{format_list_items(farmerinfo["treatment"]["organic_solutions"])}</ul></div>' if farmerinfo.get("treatment", {}).get("organic_solutions") else ''}
+            </div>
             
+            <!-- Prevention -->
+            {f'''
+            <h3>🛡️ प्रतिबंधक उपाय (Prevention)</h3>
+            <div class="content-box">
+                <ul>{format_list_items(farmerinfo["prevention"]["immediate_care"])}</ul>
+            </div>
+            ''' if farmerinfo.get("prevention", {}).get("immediate_care") else ''}
+            
+            <!-- Cost -->
+            {f'''
+            <h3>💰 अंदाजित खर्च (Estimated Cost)</h3>
+            <div class="content-box">
+                {f'<p><strong>खर्चाचा अंदाज:</strong> {farmerinfo["costinfo"]["cost_estimate"]}</p>' if is_valid(farmerinfo["costinfo"].get("cost_estimate")) else ''}
+                {f'<p><strong>सुधारण्याचा कालावधी:</strong> {farmerinfo["costinfo"]["recovery_time"]}</p>' if is_valid(farmerinfo["costinfo"].get("recovery_time")) else ''}
+            </div>
+            ''' if farmerinfo.get("costinfo") else ''}
+
+            <!-- Action Plan -->
+            {f'''
+            <h3>📋 कृती आराखडा (Action Plan)</h3>
+            <div class="content-box">
+                <ul>{format_list_items(actionplan["nextsteps"]["steps"])}</ul>
+            </div>
+            ''' if actionplan.get("nextsteps", {}).get("steps") else ''}
+            
+            <!-- Footer -->
             <div class="footer">
-                <p>Powered by Chordz Technologies | Contact: +91 7517311326</p>
-                <p>AI-Based Sugarcane Disease Detection System</p>
+                Powered by Chordz Technologies | Contact: +91 7517311326<br/>
+                AI-Based Sugarcane Disease Detection System
             </div>
         </body>
         </html>
