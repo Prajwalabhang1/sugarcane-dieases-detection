@@ -213,11 +213,12 @@ def predict_disease():
 @main_bp.route('/api/generate-pdf', methods=['POST'])
 def generate_pdf():
     """
-    Server-side PDF generation for WebView compatibility.
-    Generates HTML report that displays properly with Marathi content.
+    Server-side PDF generation using xhtml2pdf.
+    Converts HTML with Marathi content to a proper PDF file.
     """
     try:
         import os
+        from xhtml2pdf import pisa
         
         # Handle both JSON and form-encoded data
         data = request.get_json(silent=True)
@@ -244,8 +245,11 @@ def generate_pdf():
         reports_dir = os.path.join(current_app.static_folder, 'reports')
         os.makedirs(reports_dir, exist_ok=True)
         
-        # Generate HTML filename
-        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.html"
+        # Font path
+        font_path = os.path.join(current_app.static_folder, 'fonts', 'NotoSansDevanagari-Regular.ttf')
+        
+        # Generate PDF filename
+        filename = f"report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
         filepath = os.path.join(reports_dir, filename)
         
         # Helper functions
@@ -260,7 +264,7 @@ def generate_pdf():
                 return ""
             return "\\n".join([f"<li>{item}</li>" for item in valid])
         
-        # Build sections
+        # Build sections (reuse logic)
         symptoms_html = ""
         if farmerinfo.get('symptoms'):
             symptoms = farmerinfo['symptoms']
@@ -318,151 +322,125 @@ def generate_pdf():
                 action_html += f'<ul>{steps}</ul>'
                 action_html += '</div>'
         
-        # Prepare HTML for PDF conversion
-        # We need to use absolute paths for fonts/images in xhtml2pdf
-        font_path = os.path.join(current_app.static_folder, 'fonts', 'NotoSansDevanagari-Regular.ttf')
-        # Handle Windows paths for xhtml2pdf
-        if os.name == 'nt':
-             font_path = font_path.replace('\\', '/')
-
-        html_content = f"""<!DOCTYPE html>
-<html lang="mr">
-<head>
-    <meta charset="UTF-8">
-    <style>
-        @font-face {{
-            font-family: 'NotoSans';
-            src: url('{font_path}');
-        }}
-        
-        * {{
-            box-sizing: border-box;
-        }}
-        
-        body {{
-            font-family: 'NotoSans', sans-serif;
-            padding: 30px;
-            color: #333;
-            font-size: 14px;
-        }}
-        
-        .header {{
-            text-align: center;
-            color: white;
-            background-color: #2e7d32;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }}
-        
-        h1 {{ font-size: 24px; margin-bottom: 5px; color: white; }}
-        h2 {{ font-size: 16px; margin: 5px 0; color: #e8f5e9; }}
-        h3 {{ color: #1565c0; border-bottom: 2px solid #90caf9; padding-bottom: 5px; margin-top: 20px; }}
-        
-        .diagnosis-box {{
-            border: 2px solid #4caf50;
-            background-color: #f1f8e9;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }}
-        
-        table {{ width: 100%; border-collapse: collapse; margin-top: 10px; }}
-        td {{ padding: 8px; border-bottom: 1px solid #c8e6c9; }}
-        .label {{ font-weight: bold; color: #2e7d32; width: 40%; }}
-        .value {{ font-weight: bold; color: #000; }}
-        
-        .info-section {{
-            margin-bottom: 15px;
-            padding: 10px;
-            border: 1px solid #e0e0e0;
-            border-radius: 5px;
-            background-color: #fafafa;
-        }}
-        
-        .treatment-box {{
-            background-color: #fff3e0;
-            border: 1px solid #ffe0b2;
-            padding: 10px;
-            border-radius: 5px;
-        }}
-        
-        ul {{ margin-top: 5px; padding-left: 20px; }}
-        li {{ margin-bottom: 5px; }}
-        
-        .footer {{
-            text-align: center;
-            margin-top: 40px;
-            font-size: 10px;
-            color: #666;
-            border-top: 1px solid #ddd;
-            padding-top: 10px;
-        }}
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>🌾 ऊस एकरी १०० टन</h1>
-        <h2>Chordz Technologies</h2>
-        <p>AI ऊस रोग निदान रिपोर्ट | {datetime.now().strftime('%d/%m/%Y')}</p>
-    </div>
-    
-    <div class="diagnosis-box">
-        <h3 style="color: #2e7d32; margin-top: 0;">📋 निदान परिणाम</h3>
-        <table>
-            <tr><td class="label">रोग (मराठी)</td><td class="value">{disease_name}</td></tr>
-            <tr><td class="label">Disease (English)</td><td class="value">{disease_english}</td></tr>
-            <tr><td class="label">विश्वास पातळी</td><td class="value">{confidence_text}</td></tr>
-            <tr><td class="label">गंभीरता</td><td class="value">{severity}</td></tr>
-        </table>
-    </div>
-    
-    {symptoms_html}
-    {treatment_html}
-    {prevention_html}
-    {cost_html}
-    {action_html}
-    
-    <div class="footer">
-        <p><strong>Powered by Chordz Technologies</strong> | +91 7517311326 | chordzconnect@gmail.com</p>
-        <p>This is an AI-generated report. Please consult an expert for verification.</p>
-    </div>
-</body>
-</html>"""
-        
-        # Save HTML file (debug purpose)
-        html_filepath = filepath.replace('.pdf', '.html')
-        with open(html_filepath, 'w', encoding='utf-8') as f:
-            f.write(html_content)
-
-        # Convert to PDF
-        try:
-            from xhtml2pdf import pisa
-            
-            # Open PDF file
-            with open(filepath, "wb") as pdf_file:
-                # Convert HTML to PDF
-                pisa_status = pisa.CreatePDF(
-                    html_content, 
-                    dest=pdf_file,
-                    encoding='utf-8'
-                )
+        # PDF-Specific HTML with Embedded Fonts
+        html_content = f"""
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                @font-face {{
+                    font-family: 'MarathiFont';
+                    src: url('{font_path}');
+                }}
                 
-            if pisa_status.err:
-                raise Exception("PDF generation error")
+                body {{
+                    font-family: 'MarathiFont', sans-serif;
+                    padding: 20px;
+                    font-size: 12px;
+                    color: #333;
+                }}
                 
-            filename = filename # .pdf
+                .header {{
+                    background-color: #2e7d32;
+                    color: white;
+                    padding: 20px;
+                    text-align: center;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                }}
+                
+                .header h1 {{ font-size: 24px; margin: 5px 0; }}
+                .header h2 {{ font-size: 16px; margin: 5px 0; opacity: 0.9; }}
+                .header p {{ margin: 2px 0; }}
+                
+                .diagnosis-box {{
+                    background-color: #e8f5e9;
+                    border: 1px solid #4caf50;
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin-bottom: 20px;
+                }}
+                
+                .diagnosis-row {{
+                    padding: 5px 0;
+                    border-bottom: 1px solid #c8e6c9;
+                }}
+                
+                .info-section {{
+                    margin-bottom: 15px;
+                    padding: 10px;
+                    border: 1px solid #e0e0e0;
+                }}
+                
+                h3 {{ color: #1565c0; border-bottom: 1px solid #90caf9; padding-bottom: 5px; }}
+                
+                .treatment-box {{
+                    background-color: #fff3e0;
+                    padding: 10px;
+                    border: 1px solid #ffe0b2;
+                }}
+                
+                .badge {{
+                    background-color: #fff9c4;
+                    padding: 2px 8px;
+                    border-radius: 4px;
+                }}
+                
+                .footer {{
+                    text-align: center;
+                    font-size: 10px;
+                    color: #666;
+                    margin-top: 30px;
+                    border-top: 1px solid #eee;
+                    padding-top: 10px;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>Sugarcane Disease Report</h1>
+                <h2>Chordz Technologies</h2>
+                <p>Date: {datetime.now().strftime('%d/%m/%Y')} | Time: {datetime.now().strftime('%I:%M %p')}</p>
+            </div>
             
-        except Exception as e:
-            logger.error(f"xhtml2pdf error: {e}")
-            # Fallback to HTML if PDF conversion fails
-            filename = os.path.basename(html_filepath)
+            <div class="diagnosis-box">
+                <div class="diagnosis-row"><strong>Disease (Marathi):</strong> {disease_name}</div>
+                <div class="diagnosis-row"><strong>Disease (English):</strong> {disease_english}</div>
+                <div class="diagnosis-row"><strong>Confidence:</strong> {confidence_text}</div>
+                <div class="diagnosis-row"><strong>Severity:</strong> <span class="badge">{severity}</span></div>
+            </div>
+            
+            {symptoms_html}
+            {treatment_html}
+            {prevention_html}
+            {cost_html}
+            {action_html}
+            
+            <div class="footer">
+                <p>Powered by Chordz Technologies | Contact: +91 7517311326</p>
+                <p>AI-Based Sugarcane Disease Detection System</p>
+            </div>
+        </body>
+        </html>
+        """
         
-        # Return download URL (not static URL)
+        # Convert HTML to PDF using xhtml2pdf
+        with open(filepath, "wb") as pdf_file:
+            pisa_status = pisa.CreatePDF(
+                html_content, 
+                dest=pdf_file,
+                encoding='utf-8'
+            )
+            
+        if pisa_status.err:
+            raise Exception("PDF Generation Error")
+        
+        # Return download URL
         download_url = f"/api/download-report/{filename}"
         full_url = request.url_root.rstrip('/') + download_url
         
-        logger.info(f"Report generated: {filename}")
+        logger.info(f"PDF generated: {filename}")
         return jsonify({'success': True, 'url': full_url, 'filename': filename})
 
     except Exception as e:
