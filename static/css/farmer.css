@@ -519,7 +519,7 @@ body.farmer-friendly {
     grid-template-columns: repeat(3, 1fr);
     gap: var(--spacing-3);
     padding: var(--spacing-4);
-    background: var(--gray-50);
+    background: #e8f5e9;
     border-radius: var(--radius-lg);
 }
 
@@ -535,8 +535,8 @@ body.farmer-friendly {
 .info-label {
     display: block;
     font-size: var(--fs-sm);
-    color: #ffff;
-    font-weight: 500;
+    color: #1b5e20;
+    font-weight: 600;
     margin-bottom: var(--spacing-1);
     white-space: nowrap;
 }
@@ -544,11 +544,26 @@ body.farmer-friendly {
 .info-value {
     display: block;
     font-size: var(--fs-sm);
-    color: #d6ee03;
-    font-weight: 600;
+    color: #2e7d32;
+    font-weight: 700;
     word-break: break-word;
     overflow-wrap: break-word;
     max-width: 100%;
+}
+
+/* Dark mode support for preview-info */
+@media (prefers-color-scheme: dark) {
+    .preview-info {
+        background: #1e3a1e;
+    }
+
+    .info-label {
+        color: #a5d6a7;
+    }
+
+    .info-value {
+        color: #c5e1a5;
+    }
 }
 
 .preview-actions {

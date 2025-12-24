@@ -1271,7 +1271,15 @@
         --text-secondary: #C8E6C9;
         --gray-200: #404040;
         --gray-100: #383838;
-        --gray-50: #333333;
+        --gray-50: #1e3a1e;
+        --primary-green: #66BB6A;
+        --primary-green-light: #81C784;
+        --primary-green-dark: #4CAF50;
+    }
+
+    body {
+        background: #1a1a1a;
+        color: #E8F5E8;
     }
 
     .main-nav {
@@ -1282,10 +1290,117 @@
     .flash-message {
         background: var(--bg-card);
         backdrop-filter: blur(20px);
+        color: #E8F5E8;
     }
 
     .camera-body {
         background: #1a1a1a;
+    }
+
+    /* Cards and containers */
+    .input-card,
+    .preview-container,
+    .instructions-card,
+    .result-card,
+    .info-card {
+        background: #2E2E2E;
+        border-color: #404040;
+        color: #E8F5E8;
+    }
+
+    /* Headings */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        color: #E8F5E8;
+    }
+
+    /* Text elements */
+    p,
+    span,
+    li {
+        color: #C8E6C9;
+    }
+
+    /* Preview info - override */
+    .preview-info {
+        background: #1e3a1e;
+    }
+
+    .info-label {
+        color: #a5d6a7 !important;
+    }
+
+    .info-value {
+        color: #c5e1a5 !important;
+    }
+
+    /* Buttons */
+    .option-btn,
+    .action-btn {
+        background: #2E2E2E;
+        border-color: #66BB6A;
+        color: #E8F5E8;
+    }
+
+    .option-btn:hover,
+    .action-btn:hover {
+        background: #3a3a3a;
+    }
+
+    .primary-btn {
+        background: #66BB6A;
+        color: #1a1a1a;
+    }
+
+    /* Input fields */
+    input,
+    textarea,
+    select {
+        background: #2E2E2E;
+        border-color: #404040;
+        color: #E8F5E8;
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+        color: #888;
+    }
+
+    /* Diagnosis cards */
+    .diagnosis-card {
+        background: #2E2E2E;
+        border-left-color: #66BB6A;
+    }
+
+    .disease-name {
+        color: #E8F5E8;
+    }
+
+    .disease-name-english {
+        color: #C8E6C9;
+    }
+
+    /* Info sections */
+    .info-section {
+        background: #2E2E2E;
+        border-color: #404040;
+    }
+
+    .card-header {
+        background: #1e3a1e;
+        border-color: #404040;
+    }
+
+    .card-title {
+        color: #E8F5E8;
+    }
+
+    .content-text {
+        color: #C8E6C9;
     }
 }
 
