@@ -2,7 +2,11 @@
 
 **AI-Powered Sugarcane Disease Detection and Treatment System**
 
+<<<<<<< HEAD
 *Developed by Prajwal Abhang*
+=======
+*Developed by prajwal Abhang*
+>>>>>>> 1fda0fbac2bb4bb7494c8d6c18ae63442b9b549b
 
 ## Overview
 
