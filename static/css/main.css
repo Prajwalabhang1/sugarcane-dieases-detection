@@ -932,20 +932,21 @@ a:focus {
     transform: translateY(-1px);
 }
 
-/* Info Button - Soft Sky Blue */
+/* Info Button - Earthy Brown for PDF Save */
 .info-btn {
-    background: #90CAF9;
-    /* Soft Sky Blue for PDF Save */
-    color: #0d47a1;
+    background: #A1887F;
+    /* Earthy Brown for PDF Save */
+    color: #3E2723;
     box-shadow: var(--shadow-md);
 }
 
 .info-btn:hover {
-    background: #64B5F6;
-    color: #0d47a1;
+    background: #8D6E63;
+    color: #3E2723;
     box-shadow: var(--shadow-lg);
     transform: translateY(-1px);
 }
+
 
 /* Button Sizes */
 .btn-sm {
@@ -2544,17 +2545,18 @@ select.input-field {
 
 @media (prefers-color-scheme: dark) {
 
-    /* PDF Save Button - Soft Blue */
+    /* PDF Save Button - Earthy Brown */
     .action-btn.info-btn {
-        background: #90CAF9 !important;
-        color: #0D47A1 !important;
-        border-color: #64B5F6 !important;
+        background: #A1887F !important;
+        color: #3E2723 !important;
+        border-color: #8D6E63 !important;
     }
 
     .action-btn.info-btn:hover {
-        background: #64B5F6 !important;
-        border-color: #42A5F5 !important;
+        background: #8D6E63 !important;
+        border-color: #795548 !important;
     }
+
 
     /* Share Button - Soft Blue */
     .action-btn.secondary-btn {
