@@ -1719,7 +1719,7 @@ const SugarcaneApp = {
       modal.remove();
     };
 
-    // Download PDF button handler - WebView compatible
+    // Download PDF button handler - WebView compatible with Print fallback
     document.getElementById('html-pdf-download-btn').onclick = async () => {
       try {
         // Show loading state
@@ -1731,9 +1731,134 @@ const SugarcaneApp = {
         // Get the preview content
         const contentElement = document.getElementById('pdf-content-preview');
 
+        // Check if running in WebView - use print method for WebView
+        if (this.isRunningInWebView()) {
+          console.log('WebView detected - using print method for PDF');
+
+          // Create a new window with print-optimized content
+          const printContent = contentElement.innerHTML;
+          const printWindow = window.open('', '_blank', 'width=800,height=600');
+
+          if (printWindow) {
+            printWindow.document.write(`
+              <!DOCTYPE html>
+              <html>
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>ऊस रोग निदान रिपोर्ट - ${fileName}</title>
+                <style>
+                  * { margin: 0; padding: 0; box-sizing: border-box; }
+                  body { 
+                    font-family: 'Noto Sans Devanagari', 'Arial Unicode MS', Arial, sans-serif;
+                    padding: 20px;
+                    background: white;
+                    color: #333;
+                    line-height: 1.6;
+                  }
+                  .print-header {
+                    text-align: center;
+                    padding: 20px;
+                    background: linear-gradient(135deg, #2e7d32, #4caf50);
+                    color: white;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                  }
+                  .print-header h1 { font-size: 24px; margin-bottom: 5px; }
+                  .print-header p { font-size: 14px; opacity: 0.9; }
+                  .print-actions {
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    display: flex;
+                    gap: 10px;
+                    z-index: 1000;
+                  }
+                  .print-btn {
+                    padding: 12px 24px;
+                    font-size: 16px;
+                    border: none;
+                    border-radius: 8px;
+                    cursor: pointer;
+                    font-weight: bold;
+                  }
+                  .print-btn.primary {
+                    background: #2e7d32;
+                    color: white;
+                  }
+                  .print-btn.secondary {
+                    background: #f5f5f5;
+                    color: #333;
+                    border: 1px solid #ddd;
+                  }
+                  .content-area {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                  }
+                  .save-instructions {
+                    background: #e3f2fd;
+                    border: 1px solid #2196f3;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 20px;
+                    text-align: center;
+                  }
+                  .save-instructions h3 { color: #1976d2; margin-bottom: 10px; }
+                  .save-instructions p { color: #555; font-size: 14px; }
+                  @media print {
+                    .print-actions, .save-instructions { display: none !important; }
+                    body { padding: 0; }
+                    .content-area { box-shadow: none; }
+                  }
+                </style>
+              </head>
+              <body>
+                <div class="print-actions">
+                  <button class="print-btn primary" onclick="window.print()">🖨️ प्रिंट / PDF सेव्ह करा</button>
+                  <button class="print-btn secondary" onclick="window.close()">✕ बंद करा</button>
+                </div>
+                
+                <div class="save-instructions">
+                  <h3>📄 PDF म्हणून सेव्ह करण्यासाठी:</h3>
+                  <p>1. "प्रिंट / PDF सेव्ह करा" बटण दाबा</p>
+                  <p>2. प्रिंटर म्हणून "Save as PDF" किंवा "PDF" निवडा</p>
+                  <p>3. "Save" किंवा "Print" दाबा</p>
+                </div>
+                
+                <div class="content-area">
+                  ${printContent}
+                </div>
+                
+                <script>
+                  // Auto-trigger print after a short delay
+                  setTimeout(function() {
+                    // Don't auto-print, let user read instructions first
+                    console.log('PDF save window ready');
+                  }, 500);
+                </script>
+              </body>
+              </html>
+            `);
+            printWindow.document.close();
+
+            this.showToast('PDF सेव्ह विंडो उघडली! "प्रिंट" बटण दाबा आणि "Save as PDF" निवडा', 'success', 5000);
+          } else {
+            // Popup blocked - try alternative
+            this.showToast('पॉपअप ब्लॉक झाले. कृपया पॉपअप परवानगी द्या.', 'warning');
+          }
+
+          // Reset button
+          downloadBtn.innerHTML = originalHTML;
+          downloadBtn.disabled = false;
+          return;
+        }
+
+        // For regular browsers - use jsPDF download
         // Use html2canvas to convert HTML to canvas
         const canvas = await html2canvas(contentElement, {
-          scale: 2, // Higher quality
+          scale: 2,
           useCORS: true,
           logging: false,
           backgroundColor: '#ffffff',
@@ -1768,60 +1893,9 @@ const SugarcaneApp = {
           heightLeft -= pageHeight;
         }
 
-        // Get PDF as blob for WebView compatibility
-        const pdfBlob = pdf.output('blob');
-        const blobUrl = URL.createObjectURL(pdfBlob);
-
-        // Check if running in WebView
-        if (this.isRunningInWebView()) {
-          console.log('WebView detected - using alternative download method');
-
-          // Method 1: Try to use Android interface if available
-          if (typeof window.Android !== 'undefined' && window.Android.downloadPDF) {
-            const base64PDF = pdf.output('datauristring');
-            window.Android.downloadPDF(base64PDF, fileName);
-            this.showToast('PDF डाउनलोड सुरू झाले!', 'success');
-          }
-          // Method 2: Try iOS webkit message handler
-          else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.downloadHandler) {
-            const base64PDF = pdf.output('datauristring');
-            window.webkit.messageHandlers.downloadHandler.postMessage({
-              data: base64PDF,
-              filename: fileName,
-              type: 'application/pdf'
-            });
-            this.showToast('PDF डाउनलोड सुरू झाले!', 'success');
-          }
-          // Method 3: Open blob URL in new window (some WebViews handle this)
-          else {
-            // Create a temporary link and try to open/download
-            const link = document.createElement('a');
-            link.href = blobUrl;
-            link.download = fileName;
-            link.target = '_blank';
-
-            // Try click download first
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            // Also try opening in new window as fallback
-            setTimeout(() => {
-              window.open(blobUrl, '_blank');
-            }, 500);
-
-            this.showToast('PDF तयार झाले! "डाउनलोड" किंवा "ओपन" वर क्लिक करा', 'success');
-          }
-        } else {
-          // Standard browser download
-          pdf.save(fileName);
-          this.showToast('PDF यशस्वीरित्या डाउनलोड झाले!', 'success');
-        }
-
-        // Cleanup blob URL after delay
-        setTimeout(() => {
-          URL.revokeObjectURL(blobUrl);
-        }, 10000);
+        // Standard browser download
+        pdf.save(fileName);
+        this.showToast('PDF यशस्वीरित्या डाउनलोड झाले!', 'success');
 
         // Reset button
         downloadBtn.innerHTML = originalHTML;
