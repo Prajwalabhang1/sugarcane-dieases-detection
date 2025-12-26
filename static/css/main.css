@@ -1728,7 +1728,7 @@ select.input-field {
     justify-content: center;
     border-radius: var(--radius-full);
     font-size: var(--fs-3xl);
-    margin-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-6);
     position: relative;
     z-index: 1;
 }

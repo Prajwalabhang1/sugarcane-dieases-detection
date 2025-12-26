@@ -73,9 +73,12 @@
     }
 
     .main-header .company-logo {
+        width: 130px;
+        height: 130px;
         border: 2.5px solid rgba(255, 255, 255, 0.18);
         box-shadow: 0 1px 6px 0 rgba(56, 142, 60, 0.10);
         background: rgba(255, 255, 255, 0.10);
+        object-fit: cover;
     }
 
     .main-header h1,
