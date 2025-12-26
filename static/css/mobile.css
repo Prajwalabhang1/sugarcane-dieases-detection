@@ -1339,8 +1339,18 @@
         color: #1b5e20 !important;
     }
 
+    /* SPECIFIC OVERRIDE for Main Header to ensure it stays Dark Green */
+    .main-header h1,
+    .main-header .app-title,
+    body.dark-mode .main-header h1,
+    body.dark-mode .main-header .app-title {
+        color: #0d4a12 !important;
+        text-shadow: none !important;
+    }
+
     /* Diagnosis cards */
-    .diagnosis-card {
+    .diagnosis-card,
+    body.dark-mode .diagnosis-card {
         background: #FFFFFF !important;
         border-left-color: #2e7d32;
     }
@@ -1832,6 +1842,16 @@
 
     .pdf-action-btn .btn-text {
         font-size: 0.9rem;
+    }
+}
+
+/* Manual Dark Mode Override */
+@media screen and (max-width: 768px) {
+
+    body.dark-mode .main-header h1,
+    body.dark-mode .main-header .app-title {
+        color: #0d4a12 !important;
+        text-shadow: none !important;
     }
 }
 
