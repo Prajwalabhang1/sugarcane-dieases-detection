@@ -343,9 +343,30 @@ a:focus {
     margin-bottom: var(--spacing-2);
 }
 
+@media (prefers-color-scheme: dark) {
+    .loading-text {
+        color: #ffffff !important;
+    }
+}
+
+body.dark-mode .loading-text {
+    color: #ffffff !important;
+}
+
+
 .loading-subtext {
     font-size: var(--fs-sm);
     color: var(--text-muted);
+}
+
+@media (prefers-color-scheme: dark) {
+    .loading-subtext {
+        color: #e0e0e0 !important;
+    }
+}
+
+body.dark-mode .loading-subtext {
+    color: #e0e0e0 !important;
 }
 
 /* Header Styles */
