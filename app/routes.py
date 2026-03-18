@@ -40,6 +40,12 @@ def home():
 def health_check():
     return jsonify({'status': 'healthy', 'timestamp': datetime.now().isoformat()})
 
+@main_bp.route('/BingSiteAuth.xml')
+def bing_site_auth():
+    """Serve Bing Webmaster Tools verification file."""
+    from flask import send_from_directory
+    return send_from_directory(current_app.static_folder, 'BingSiteAuth.xml', mimetype='application/xml')
+
 @main_bp.route('/api/all-diseases')
 def get_all_diseases():
     try:
@@ -128,16 +134,31 @@ def predict_disease():
         ml = get_model_loader(current_app.config)
         ip = get_image_processor(current_app.config)
 
-        if not ml or not ml.model:
+        # Check if any model is loaded
+        if not ml or (not ml.model and not ml.paligemma):
             return jsonify({'success': False, 'error': 'Model not loaded'}), 503
 
+        # Process image for prediction
         proc = ip.process_image_for_prediction(img)
         if proc is None:
             return jsonify({'success': False, 'error': 'Processing failed'}), 400
 
+        # Make prediction (automatically uses PaliGemma if available, falls back to CNN)
         res = ml.predict(proc)
+        
+        # Handle validation failures from PaliGemma
         if not res or not res.get('success'):
-            return jsonify({'success': False, 'error': 'Prediction failed'}), 500
+            error_msg = res.get('message', {})
+            if isinstance(error_msg, dict):
+                # PaliGemma validation error with Marathi message
+                marathi_msg = error_msg.get('marathi', 'निदान अपयशी')
+                return jsonify({
+                    'success': False,
+                    'error': res.get('error', 'Prediction failed'),
+                    'message': marathi_msg
+                }), 400
+            else:
+                return jsonify({'success': False, 'error': 'Prediction failed'}), 500
 
         disease_english = res['predicted_class']
         conf = res['confidence']
